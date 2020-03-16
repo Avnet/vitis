@@ -81,7 +81,7 @@ help:
 	@$(MAKE) -pRrq -f $(lastword $(MAKEFILE_LIST)) : 2>/dev/null | awk -v RS= -F: '/^# File/,/^# Finished Make data base/ {if ($$1 !~ "^[#.]") {print $$1}}' | sort | egrep -v -e '^[^[:alnum:]]' -e '^$@$$' -e 'cleanall'
 	@echo -e '${LYEL}  make <target> step=<step>${NC}'
 	@echo -e '      builds a specific target to a specific build point'
-	@echo -e "${LYEL}  make <target> 'step=<step1> <step2>...<stepn>'${NC}"
+	@echo -e "${LYEL}  make <trgt1> <trgt2>...<trgtn> 'step=<step1> <step2>...<stepn>'${NC}"
 	@echo -e '      builds a specific target to multiple build points'
 	@echo -e '  steps:  xsa          - Builds up to Vivado Project (xsa output)'
 	@echo -e '          plnx         - Builds up to PetaLinux Project (bsp output)'
