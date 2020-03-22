@@ -118,22 +118,40 @@ else
 endif
 
 sysroot:
+# removed fast mechanism as appears to be missing pieces for AI/ML
+#ifneq (,$(wildcard ${VITIS_CONSOLIDATED_SYSROOT_FOLDER}))
+#	@echo -e '${CSTR} SYSROOT Exists, cleansysroot before rebuild'
+#	@echo -e '${CSTR}         Skipping extract sysroot'
+#else
+#	@echo -e '${CSTR} Extracting sysroot'
+#	mkdir -p ${VITIS_CONSOLIDATED_SYSROOT_FOLDER}
+#	tar -xvf ${PETALINUX_PROJECTS_FOLDER}/${PETALINUX_PROJECT_NAME}/images/linux/rootfs.tar.gz -C ${VITIS_CONSOLIDATED_SYSROOT_FOLDER} ./usr ./lib
+#	cp -rf ${PETALINUX_PROJECTS_FOLDER}/${PETALINUX_PROJECT_NAME}/build/tmp/work/aarch64-xilinx-linux ${VITIS_CONSOLIDATED_SYSROOT_FOLDER}
+#endif
+
+# mechanism that uses sdk.sh method (recomended by Xilinx)
+# although takes longer for this flow
 ifneq (,$(wildcard ${VITIS_CONSOLIDATED_SYSROOT_FOLDER}))
 	@echo -e '${CSTR} SYSROOT Exists, cleansysroot before rebuild'
 	@echo -e '${CSTR}         Skipping extract sysroot'
 else
 	@echo -e '${CSTR} Extracting sysroot'
 	mkdir -p ${VITIS_CONSOLIDATED_SYSROOT_FOLDER}
-	tar -xvf ${PETALINUX_PROJECTS_FOLDER}/${PETALINUX_PROJECT_NAME}/images/linux/rootfs.tar.gz -C ${VITIS_CONSOLIDATED_SYSROOT_FOLDER} ./usr ./lib
-	cp -rf ${PETALINUX_PROJECTS_FOLDER}/${PETALINUX_PROJECT_NAME}/build/tmp/work/aarch64-xilinx-linux ${VITIS_CONSOLIDATED_SYSROOT_FOLDER}
+	echo ${VITIS_CONSOLIDATED_SYSROOT_FOLDER}
+	echo "${PETALINUX_PROJECTS_FOLDER}/${PETALINUX_PROJECT_NAME}/${MAKENAME}"
+	@echo -e 'all: sdk\n  \nsdk:\n	petalinux-build -s\n	petalinux-package --sysroot -d' ${VITIS_CONSOLIDATED_SYSROOT_FOLDER} > ${PETALINUX_PROJECTS_FOLDER}/${PETALINUX_PROJECT_NAME}/${MAKENAME}
+	if [ ! -f "${PETALINUX_PROJECTS_FOLDER}/${PETALINUX_PROJECT_NAME}/images/linux/sdk.sh" ];                                                      \
+              then make -f ${MAKENAME} -C ${PETALINUX_PROJECTS_FOLDER}/${PETALINUX_PROJECT_NAME} all;                                              \
+              else echo -e '${CSTR} sdk.sh already packaged';                                                                                      \
+    fi
+	echo "${VITIS_CONSOLIDATED_SYSROOT_FOLDER}/sysroots"
+	echo ${PETALINUX_PROJECTS_FOLDER}/${PETALINUX_PROJECT_NAME}/images/linux/sdk.sh -y -d
+	echo ${VITIS_CONSOLIDATED_SYSROOT_FOLDER}
+	if [ ! -d "${VITIS_CONSOLIDATED_SYSROOT_FOLDER}/sysroots" ];                                                                                   \
+              then ${PETALINUX_PROJECTS_FOLDER}/${PETALINUX_PROJECT_NAME}/images/linux/sdk.sh -y -d ${VITIS_CONSOLIDATED_SYSROOT_FOLDER};          \
+              else echo -e '${CSTR} sdk.sh already Installed to SYSROOT';                                                                          \
+    fi
 endif
-
-	# Seemingly not needed due to the targeted nature of how we are building this
-	#mkdir -p ${VITIS_CONSOLIDATED_SYSROOT_FOLDER}
-	#@echo -e 'all: sdk\n  \nsdk:\n	petalinux-build -s\n	petalinux-package --sysroot -d' ${VITIS_CONSOLIDATED_SYSROOT_FOLDER} > ${PETALINUX_PROJECTS_FOLDER}/${PETALINUX_PROJECT_NAME}/${MAKENAME} 
-	#if [ ! -f "${PETALINUX_PROJECTS_FOLDER}/${PETALINUX_PROJECT_NAME}/${MAKENAME}" ]; then rm ${PETALINUX_PROJECTS_FOLDER}/${PROJECT}/${MAKENAME} ; else echo -e '${CSTR} sdk.sh Makefile not present'; fi
-	#if [ ! -f "${PETALINUX_PROJECTS_FOLDER}/${PETALINUX_PROJECT_NAME}/images/linux/sdk.sh" ]; then make -f ${MAKENAME} -C ${PETALINUX_PROJECTS_FOLDER}/${PROJECT} all; else echo -e '${CSTR} sdk.sh already packaged'; fi
-	#if [ ! -d "${VITIS_CONSOLIDATED_SYSROOT_FOLDER}/sysroots" ]; then ${PETALINUX_PROJECTS_FOLDER}/${PETALINUX_PROJECT_NAME}/images/linux/sdk.sh -y -d ${VITIS_CONSOLIDATED_SYSROOT_FOLDER}; else echo -e '${CSTR} sdk.sh already Installed to SYSROOT'; fi
 
 pfm:
 ifneq (,$(wildcard ${VITIS_PLATFORM_REPO_FOLDER}/${HDL_BOARD_NAME}))
@@ -141,28 +159,29 @@ ifneq (,$(wildcard ${VITIS_PLATFORM_REPO_FOLDER}/${HDL_BOARD_NAME}))
 	@echo -e '${CSTR}         Skipping create Platform'
 else
 	@echo -e '${CSTR} Creating Folder Structure'
-	mkdir -p ${VITIS_CONSOLIDATED_BOOT_FOLDER}
-	mkdir -p ${VITIS_CONSOLIDATED_IMAGE_FOLDER}
-	mkdir -p ${VITIS_CONSOLIDATED_XSA_FOLDER}
+	mkdir -pv ${VITIS_CONSOLIDATED_BOOT_FOLDER}
+	mkdir -pv ${VITIS_CONSOLIDATED_IMAGE_FOLDER}
+	mkdir -pv ${VITIS_CONSOLIDATED_XSA_FOLDER}
 	@echo -e '${CSTR} Copying in all Build Articles'
-	cp ${BIF_FILENAME} ${VITIS_CONSOLIDATED_FOLDER}/linux.bif
-	cp ${PETALINUX_PROJECTS_FOLDER}/${PETALINUX_PROJECT_NAME}/images/linux/bl31.elf                   ${VITIS_CONSOLIDATED_BOOT_FOLDER}
-	cp ${PETALINUX_PROJECTS_FOLDER}/${PETALINUX_PROJECT_NAME}/images/linux/pmufw.elf                  ${VITIS_CONSOLIDATED_BOOT_FOLDER}
-	cp ${PETALINUX_PROJECTS_FOLDER}/${PETALINUX_PROJECT_NAME}/images/linux/u-boot.elf                 ${VITIS_CONSOLIDATED_BOOT_FOLDER}
-	cp ${PETALINUX_PROJECTS_FOLDER}/${PETALINUX_PROJECT_NAME}/images/linux/zynqmp_fsbl.elf            ${VITIS_CONSOLIDATED_BOOT_FOLDER}
-	cp ${PETALINUX_PROJECTS_FOLDER}/${PETALINUX_PROJECT_NAME}/images/linux/image.ub                   ${VITIS_CONSOLIDATED_IMAGE_FOLDER}
-	cp ${PETALINUX_PROJECTS_FOLDER}/${PETALINUX_PROJECT_NAME}/images/linux/rootfs.tar.gz              ${VITIS_CONSOLIDATED_IMAGE_FOLDER}
-	cp ${HDL_PROJECTS_FOLDER}/${HDL_PROJECT_NAME}/${HDL_BOARD_NAME}_${PLNX_VER}/${HDL_BOARD_NAME}.xsa ${VITIS_CONSOLIDATED_XSA_FOLDER}
+	cp -v ${BIF_FILENAME} ${VITIS_CONSOLIDATED_FOLDER}/linux.bif
+	cp -v ${PETALINUX_PROJECTS_FOLDER}/${PETALINUX_PROJECT_NAME}/images/linux/bl31.elf                   ${VITIS_CONSOLIDATED_BOOT_FOLDER}
+	cp -v ${PETALINUX_PROJECTS_FOLDER}/${PETALINUX_PROJECT_NAME}/images/linux/pmufw.elf                  ${VITIS_CONSOLIDATED_BOOT_FOLDER}
+	cp -v ${PETALINUX_PROJECTS_FOLDER}/${PETALINUX_PROJECT_NAME}/images/linux/u-boot.elf                 ${VITIS_CONSOLIDATED_BOOT_FOLDER}
+	cp -v ${PETALINUX_PROJECTS_FOLDER}/${PETALINUX_PROJECT_NAME}/images/linux/zynqmp_fsbl.elf            ${VITIS_CONSOLIDATED_BOOT_FOLDER}
+	cp -v ${PETALINUX_PROJECTS_FOLDER}/${PETALINUX_PROJECT_NAME}/images/linux/image.ub                   ${VITIS_CONSOLIDATED_IMAGE_FOLDER}
+	cp -v ${PETALINUX_PROJECTS_FOLDER}/${PETALINUX_PROJECT_NAME}/images/linux/rootfs.tar.gz              ${VITIS_CONSOLIDATED_IMAGE_FOLDER}
+	cp -v ${HDL_PROJECTS_FOLDER}/${HDL_PROJECT_NAME}/${HDL_BOARD_NAME}_${PLNX_VER}/${HDL_BOARD_NAME}.xsa ${VITIS_CONSOLIDATED_XSA_FOLDER}
 	
 	@echo -e '${CSTR} Executing Platform Generation'
 
 	$(XSCT) -sdx ${PFM_TCL_FILENAME} \
 	             ${HDL_BOARD_NAME}                    \
-	             ${VITIS_CONSOLIDATED_XSA_FOLDER}     \
 	             ${VITIS_PLATFORM_PLATFORM_WORKSPACE} \
 	             ${VITIS_CONSOLIDATED_FOLDER}         \
 	             ${VITIS_CONSOLIDATED_BOOT_FOLDER}    \
 	             ${VITIS_CONSOLIDATED_IMAGE_FOLDER}   \
+	             ${VITIS_CONSOLIDATED_XSA_FOLDER}     \
+	             ${VITIS_CONSOLIDATED_SYSROOT_FOLDER} \
 	             ${PROJECT_ROOT_FOLDER}               \
 	             ${VITIS_ARCHITECTURE}                \
 	             ${VITIS_PROJECT_DESCRIPTION}         \
@@ -197,8 +216,9 @@ cleanplnx:
 
 cleansysroot:
 	@echo -e '${CSTR} Deleting Sysroot...'
-	# only needed if using the sdk.sh method
-	#${RM} ${HDL_SCRIPTS_FOLDER}/${MAKENAME}
+	@# only needed if using the sdk.sh method
+	${RM} ${PETALINUX_PROJECTS_FOLDER}/${PETALINUX_PROJECT_NAME}/${MAKENAME}
+	${RM} ${PETALINUX_PROJECTS_FOLDER}/${PETALINUX_PROJECT_NAME}/images/linux/sdk.sh
 	${RM} -r ${VITIS_CONSOLIDATED_SYSROOT_FOLDER}
 
 cleanpfm:

@@ -32,32 +32,35 @@
 
 set platform_name [lindex $argv 0]
 puts "platform name             : \"$platform_name\"" 
-set xsa_folder [lindex $argv 1]
-puts "xsa path                  : \"$xsa_folder\"" 
-set pfm_folder [lindex $argv 2]
+set pfm_folder [lindex $argv 1]
 puts "platform_workspace        : \"$pfm_folder\"" 
-set consolidated_folder [lindex $argv 3]
+set consolidated_folder [lindex $argv 2]
 puts "consolidated folder       : \"$consolidated_folder\"" 
-set consolidated_boot_folder [lindex $argv 4]
-puts "consolidated boot folder  : \"$consolidated_boot_folder\"" 
-set consolidated_image_folder [lindex $argv 5]
-puts "consolidated image folder : \"$consolidated_image_folder\"" 
-set root_folder [lindex $argv 6]
-puts "root_folder folder        : \"$root_folder\"" 
-set architecture [lindex $argv 7]
+set boot_folder [lindex $argv 3]
+puts "boot folder               : \"$boot_folder\"" 
+set image_folder [lindex $argv 4]
+puts "image folder              : \"$image_folder\"" 
+set xsa_folder [lindex $argv 5]
+puts "xsa folder                : \"$xsa_folder\"" 
+set sysroot_folder [lindex $argv 6]
+puts "sysroot folder            : \"$sysroot_folder\"" 
+set root_folder [lindex $argv 7]
+puts "root folder               : \"$root_folder\"" 
+set architecture [lindex $argv 8]
 puts "architecture              : \"$architecture\"" 
-set description [lindex $argv 8]
+set description [lindex $argv 9]
 puts "description               : \"$description\"" 
 
 platform -name $platform_name -desc $description -hw $root_folder/$xsa_folder/$platform_name.xsa -out $root_folder/$pfm_folder
 
-domain -name PetaLinux -proc $architecture -os linux -image $consolidated_folder/image
-domain config -boot $root_folder/$consolidated_folder/boot
+domain -name PetaLinux -proc $architecture -os linux -image $image_folder
+domain config -boot $root_folder/$boot_folder
 domain config -bif $root_folder/$consolidated_folder/linux.bif
 domain -runtime opencl
 #domain -pmuqemu-args $consolidated_folder/src/qemu/lnx/pmu_args.txt
 #domain -qemu-args $consolidated_folder/src/qemu/lnx/qemu_args.txt
 #domain -qemu-data $consolidated_folder/src/boot
-domain -sysroot $root_folder/$consolidated_folder/sysroot
+#domain -sysroot $root_folder/$consolidated_folder/sysroot
+domain -sysroot  $root_folder/$sysroot_folder/sysroots/aarch64-xilinx-linux
 
 platform -generate
