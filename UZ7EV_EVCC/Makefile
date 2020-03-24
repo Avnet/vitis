@@ -54,6 +54,9 @@ PETALINUX_ROOTFS_NAME             := uz7ev_evcc
 VITIS_ARCHITECTURE                := psu_cortexa53
 VITIS_PROJECT_DESCRIPTION         := "UltraZed-EV Vitis platform based on the Out Of Box image.  More information can be found at https://www.element14.com/community/community/designcenter/zedboardcommunity/ultrazed/ultrazed-ev"
 
+# MPSoC     = aarch64-xilinx-linux
+# Zynq 7000 = cortexa9t2hf-neon-xilinx-linux-gnueabi
+SYSROOTTYPE                       := aarch64-xilinx-linux
 
 #-=-=-=-=-=-=-=--=-=-=-=-=-=-=--=-=-=-=-=-=-=--=-=-=-=-=-=-=--=-=-=-=-=-=-=--=-=-
 # Check for Environment Configuration

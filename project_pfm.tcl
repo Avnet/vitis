@@ -31,25 +31,25 @@
 
 
 set platform_name [lindex $argv 0]
-puts "platform name             : \"$platform_name\"" 
+puts "platform name       : \"$platform_name\"" 
 set pfm_folder [lindex $argv 1]
-puts "platform_workspace        : \"$pfm_folder\"" 
+puts "platform_workspace  :  \"$pfm_folder\"" 
 set consolidated_folder [lindex $argv 2]
-puts "consolidated folder       : \"$consolidated_folder\"" 
+puts "consolidated folder : \"$consolidated_folder\"" 
 set boot_folder [lindex $argv 3]
-puts "boot folder               : \"$boot_folder\"" 
+puts "boot folder         : \"$boot_folder\"" 
 set image_folder [lindex $argv 4]
-puts "image folder              : \"$image_folder\"" 
+puts "image folder        : \"$image_folder\"" 
 set xsa_folder [lindex $argv 5]
-puts "xsa folder                : \"$xsa_folder\"" 
+puts "xsa folder          : \"$xsa_folder\"" 
 set sysroot_folder [lindex $argv 6]
-puts "sysroot folder            : \"$sysroot_folder\"" 
+puts "sysroot folder      : \"$sysroot_folder\"" 
 set root_folder [lindex $argv 7]
-puts "root folder               : \"$root_folder\"" 
+puts "root folder         : \"$root_folder\"" 
 set architecture [lindex $argv 8]
-puts "architecture              : \"$architecture\"" 
+puts "architecture        : \"$architecture\"" 
 set description [lindex $argv 9]
-puts "description               : \"$description\"" 
+puts "description         : \"$description\"" 
 
 platform -name $platform_name -desc $description -hw $root_folder/$xsa_folder/$platform_name.xsa -out $root_folder/$pfm_folder
 
@@ -61,6 +61,7 @@ domain -runtime opencl
 #domain -qemu-args $consolidated_folder/src/qemu/lnx/qemu_args.txt
 #domain -qemu-data $consolidated_folder/src/boot
 #domain -sysroot $root_folder/$consolidated_folder/sysroot
-domain -sysroot  $root_folder/$sysroot_folder/sysroots/aarch64-xilinx-linux
+puts "$root_folder/$sysroot_folder"
+domain -sysroot  $root_folder/$sysroot_folder
 
 platform -generate
