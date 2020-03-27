@@ -174,7 +174,7 @@ else
 	mkdir -p ${VITIS_CONSOLIDATED_SYSROOT_FOLDER}
 	echo ${VITIS_CONSOLIDATED_SYSROOT_FOLDER}
 	echo "${PETALINUX_PROJECTS_FOLDER}/${PETALINUX_PROJECT_NAME}/${MAKENAME}"
-	@echo -e 'all: sdk\n  \nsdk:\n	petalinux-build -s\n	petalinux-package --sysroot -d' ${VITIS_CONSOLIDATED_SYSROOT_FOLDER} > ${PETALINUX_PROJECTS_FOLDER}/${PETALINUX_PROJECT_NAME}/${MAKENAME}
+	@echo -e 'all: sdk\n  \nsdk:\n	petalinux-build -s\n	petalinux-package --sysroot -d' ${PROJECT_ROOT_FOLDER}/${VITIS_CONSOLIDATED_SYSROOT_FOLDER} > ${PETALINUX_PROJECTS_FOLDER}/${PETALINUX_PROJECT_NAME}/${MAKENAME}
 	if [ ! -f "${PETALINUX_PROJECTS_FOLDER}/${PETALINUX_PROJECT_NAME}/images/linux/sdk.sh" ];                                                      \
               then make -f ${MAKENAME} -C ${PETALINUX_PROJECTS_FOLDER}/${PETALINUX_PROJECT_NAME} all;                                              \
               else echo -e '${CSTR} sdk.sh already packaged';                                                                                      \
@@ -252,7 +252,7 @@ cleansysroot:
 	@echo -e '${CSTR} Deleting Sysroot...'
 	# only needed if using the sdk.sh method
 	${RM} ${PETALINUX_PROJECTS_FOLDER}/${PETALINUX_PROJECT_NAME}/${MAKENAME}
-	#${RM} ${PETALINUX_PROJECTS_FOLDER}/${PETALINUX_PROJECT_NAME}/images/linux/sdk.sh
+	${RM} ${PETALINUX_PROJECTS_FOLDER}/${PETALINUX_PROJECT_NAME}/images/linux/sdk.sh
 	${RM} -r ${VITIS_CONSOLIDATED_SYSROOT_FOLDER}
 
 cleanpfm:
