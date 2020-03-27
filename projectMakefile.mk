@@ -101,29 +101,26 @@ ifneq (,$(wildcard ${HDL_PROJECTS_FOLDER}/${HDL_PROJECT_NAME}/${HDL_BOARD_NAME}_
 	@echo -e '${CSTR}         Skipping XSA creation'  
 	@echo '        ' ${HDL_PROJECTS_FOLDER}/${HDL_PROJECT_NAME}/${HDL_BOARD_NAME}_${PLNX_VER}/${HDL_BOARD_NAME}.xsa
 else
-	# seems some combination of Ubuntu 18, make, multithreading, execution of
-	# shell scripts seems that it can break things, so ask users to manually 
-	# produce the XSA and PLNX pieces for now
-	#@echo -e '${CSTR} Making XSA'
-	#@echo -e 'xsa: \n	@vivado -mode batch -notrace -source make_${HDL_PROJECT_NAME}.tcl \
-	#                            -tclargs ${HDL_BOARD_NAME} ${HDL_PROJECT_NAME}' > ${HDL_SCRIPTS_FOLDER}/${MAKENAME}
-	#$(MAKE) -f ${MAKENAME} -C ${HDL_SCRIPTS_FOLDER} xsa
-	@echo
-	@echo
-	@echo -e '${LGRN}***********************'
-	@echo -e '  ${CSTR}'
-	@echo
-	@echo -e '  Please execute the XSA build script from the '
-	@echo -e ' ../hdl/Scripts folder'
-	@echo -e ' From the above folder, you can copy/paste the below command:'
-	@echo -e '    vivado -mode batch -notrace -source make_${HDL_PROJECT_NAME}.tcl -tclargs ${HDL_BOARD_NAME} ${HDL_PROJECT_NAME}'
-	@echo -e ' or execute the build script from the PetaLinux flow,'
-	@echo -e ' which will auto generate the XSA'
-	@echo -e ' Scripting should be located:'
-	@echo -e ' ../petalinux/scripts'
-	@echo -e '    ./make_${HDL_PROJECT_NAME}_bsp.sh ${HDL_BOARD_NAME}'
-	@echo	
-	@echo -e '${LGRN}***********************'
+	@echo -e '${CSTR} Making XSA'
+	@echo -e 'xsa: \n	@vivado -mode batch -notrace -source make_${HDL_PROJECT_NAME}.tcl \
+	                            -tclargs ${HDL_BOARD_NAME} ${HDL_PROJECT_NAME}' > ${HDL_SCRIPTS_FOLDER}/${MAKENAME}
+	$(MAKE) -f ${MAKENAME} -C ${HDL_SCRIPTS_FOLDER} xsa
+	#@echo
+	#@echo
+	#@echo -e '${LGRN}***********************'
+	#@echo -e '  ${CSTR}'
+	#@echo
+	#@echo -e '  Please execute the XSA build script from the '
+	#@echo -e ' ../hdl/Scripts folder'
+	#@echo -e ' From the above folder, you can copy/paste the below command:'
+	#@echo -e '    vivado -mode batch -notrace -source make_${HDL_PROJECT_NAME}.tcl -tclargs ${HDL_BOARD_NAME} ${HDL_PROJECT_NAME}'
+	#@echo -e ' or execute the build script from the PetaLinux flow,'
+	#@echo -e ' which will auto generate the XSA'
+	#@echo -e ' Scripting should be located:'
+	#@echo -e ' ../petalinux/scripts'
+	#@echo -e '    ./make_${HDL_PROJECT_NAME}_bsp.sh ${HDL_BOARD_NAME}'
+	#@echo	
+	#@echo -e '${LGRN}***********************'
 endif
 
 plnx:
@@ -132,24 +129,21 @@ ifneq (,$(wildcard ${PETALINUX_PROJECTS_FOLDER}/${PETALINUX_PROJECT_NAME}.bsp))
 	@echo -e '${CSTR}         Skipping BSP creation'
 	@echo '        ' ${PETALINUX_PROJECTS_FOLDER}/${PETALINUX_PROJECT_NAME}.bsp
 else
-	# seems some combination of Ubuntu 18, make, multithreading, execution of
-	# shell scripts seems that it can break things, so ask users to manually 
-	# produce the XSA and PLNX pieces for now
-	#@echo -e '${CSTR} Making PLNX Project'
-	#@echo -e 'plnx: \n	./make_${HDL_PROJECT_NAME}_bsp.sh ${HDL_BOARD_NAME}' > ${PETALINUX_SCRIPTS_FOLDER}/${MAKENAME}
-	#$(MAKE) -f ${MAKENAME} -C ${PETALINUX_SCRIPTS_FOLDER} plnx  
-	@echo
-	@echo
-	@echo -e '${LGRN}***********************'
-	@echo -e '  ${CSTR}'
-	@echo
-	@echo -e ' execute the build script from the PetaLinux flow,'
-	@echo -e ' which will auto generate the XSA'
-	@echo -e ' Scripting should be located:'
-	@echo -e ' ../petalinux/scripts'
-	@echo -e '    ./make_${HDL_PROJECT_NAME}_bsp.sh ${HDL_BOARD_NAME}'
-	@echo	
-	@echo -e '${LGRN}***********************'
+	@echo -e '${CSTR} Making PLNX Project'
+	@echo -e 'plnx: \n	./make_${HDL_PROJECT_NAME}_bsp.sh ${HDL_BOARD_NAME}' > ${PETALINUX_SCRIPTS_FOLDER}/${MAKENAME}
+	$(MAKE) -f ${MAKENAME} -C ${PETALINUX_SCRIPTS_FOLDER} plnx  
+	#@echo
+	#@echo
+	#@echo -e '${LGRN}***********************'
+	#@echo -e '  ${CSTR}'
+	#@echo
+	#@echo -e ' execute the build script from the PetaLinux flow,'
+	#@echo -e ' which will auto generate the XSA'
+	#@echo -e ' Scripting should be located:'
+	#@echo -e ' ../petalinux/scripts'
+	#@echo -e '    ./make_${HDL_PROJECT_NAME}_bsp.sh ${HDL_BOARD_NAME}'
+	#@echo	
+	#@echo -e '${LGRN}***********************'
 endif
 
 sysroot:
