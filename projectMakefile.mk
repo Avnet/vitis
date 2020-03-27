@@ -48,6 +48,7 @@ PETALINUX_APPS_FOLDER              := ../../petalinux/apps
 PETALINUX_CONFIGS_FOLDER           := ../../petalinux/configs
 PETALINUX_PROJECTS_FOLDER          := ../../petalinux/projects
 PETALINUX_SCRIPTS_FOLDER           := ../../petalinux/scripts
+PETALINUX_TO_VITIS_FOLDER          := ../../../vitis
 
 VITIS_PLATFORM_REPO_FOLDER         := ../platform_repo
 VITIS_PLATFORM_PLATFORM_WORKSPACE  := platform_workspace
@@ -68,7 +69,7 @@ CLNTARGETS=' cleanxsa cleanplnx cleansysroot cleanpfm cleanapp '
 
 all: xsa plnx sysroot pfm app
 
-	@echo -e '${CSTR} Platform build complete'
+	@echo -e '${CSTR} Make all complete'
 
 set_bif_filename:
 ifneq (,$(wildcard linux.bif))
@@ -162,20 +163,15 @@ sysroot:
 # although takes longer for this flow
 ifneq (,$(wildcard ${VITIS_CONSOLIDATED_SYSROOTS_FOLDER}))
 	@echo -e '${CSTR} SYSROOT Exists, cleansysroot before rebuild'
-	@echo -e '${CSTR}         Skipping extract sysroot'
+	@echo -e '${CSTR}         Skipping sysroot generation'
 else
-	@echo -e '${CSTR} Extracting sysroot'
+	@echo -e '${CSTR} Generating sysroot'
 	mkdir -p ${VITIS_CONSOLIDATED_SYSROOT_FOLDER}
-	echo ${VITIS_CONSOLIDATED_SYSROOT_FOLDER}
-	echo "${PETALINUX_PROJECTS_FOLDER}/${PETALINUX_PROJECT_NAME}/${MAKENAME}"
-	@echo -e 'all: sdk\n  \nsdk:\n	petalinux-build -s\n	petalinux-package --sysroot -d' ${PROJECT_ROOT_FOLDER}/${VITIS_CONSOLIDATED_SYSROOT_FOLDER} > ${PETALINUX_PROJECTS_FOLDER}/${PETALINUX_PROJECT_NAME}/${MAKENAME}
+	@echo -e 'all: sdk\n  \nsdk:\n	petalinux-build -s\n	petalinux-package --sysroot -d' ${PETALINUX_TO_VITIS_FOLDER}/${BASENAME_FOLDER}/${VITIS_CONSOLIDATED_SYSROOT_FOLDER} > ${PETALINUX_PROJECTS_FOLDER}/${PETALINUX_PROJECT_NAME}/${MAKENAME}
 	if [ ! -f "${PETALINUX_PROJECTS_FOLDER}/${PETALINUX_PROJECT_NAME}/images/linux/sdk.sh" ];                                                      \
               then make -f ${MAKENAME} -C ${PETALINUX_PROJECTS_FOLDER}/${PETALINUX_PROJECT_NAME} all;                                              \
               else echo -e '${CSTR} sdk.sh already packaged';                                                                                      \
     fi
-	echo "${VITIS_CONSOLIDATED_SYSROOT_FOLDER}/sysroots"
-	echo ${PETALINUX_PROJECTS_FOLDER}/${PETALINUX_PROJECT_NAME}/images/linux/sdk.sh -y -d
-	echo ${VITIS_CONSOLIDATED_SYSROOT_FOLDER}
 	if [ ! -d "${VITIS_CONSOLIDATED_SYSROOT_FOLDER}/sysroots" ];                                                                                   \
               then ${PETALINUX_PROJECTS_FOLDER}/${PETALINUX_PROJECT_NAME}/images/linux/sdk.sh -y -d ${VITIS_CONSOLIDATED_SYSROOT_FOLDER};          \
               else echo -e '${CSTR} sdk.sh already Installed to SYSROOT';                                                                          \
@@ -187,6 +183,7 @@ ifneq (,$(wildcard ${VITIS_PLATFORM_REPO_FOLDER}/${HDL_BOARD_NAME}))
 	@echo -e '${CSTR} Platform Exists, cleanpfm before rebuild'
 	@echo -e '${CSTR}         Skipping create Platform'
 else
+	@echo -e '${CSTR} Starting Platform Generation'
 	@echo -e '${CSTR} Creating Folder Structure'
 	mkdir -pv ${VITIS_CONSOLIDATED_BOOT_FOLDER}
 	mkdir -pv ${VITIS_CONSOLIDATED_IMAGE_FOLDER}
@@ -221,6 +218,7 @@ else
 	#if [ -d "${VITIS_PLATFORM_REPO_FOLDER}/${HDL_BOARD_NAME}" ]; then rm -rf ${VITIS_PLATFORM_REPO_FOLDER}/${HDL_BOARD_NAME}; fi
 	# for now force overwrite the platform
 	cp -rf ./${VITIS_PLATFORM_PLATFORM_WORKSPACE}/${HDL_BOARD_NAME}/export/${HDL_BOARD_NAME} ${VITIS_PLATFORM_REPO_FOLDER}/
+	@echo -e '${CSTR} Platform build complete'
 endif
 
 app:

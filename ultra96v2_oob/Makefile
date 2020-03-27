@@ -35,6 +35,7 @@
 
 PLNX_VER             = $(strip $(subst .,_, ${PETALINUX_VER}))
 PROJECT_ROOT_FOLDER  = $(shell pwd)
+BASENAME_FOLDER      = $(shell basename ${PROJECT_ROOT_FOLDER})
 
 #-=-=-=-=-=-=-=--=-=-=-=-=-=-=--=-=-=-=-=-=-=--=-=-=-=-=-=-=--=-=-=-=-=-=-=--=-=-
 # Project Variables
@@ -66,7 +67,8 @@ ifeq ($(PETALINUX_ROOTFS_NAME)_, $(PETALINUX_PROJECT_NAME))
 $(error -=-=-= /_\\VNET Build Environment _NOT_ Set, Please Setup Environment =-=-=-)
 else
 $(info /_\VNET  Build Environment Configured for ${PLNX_VER} and)
-$(info /_\VNET  ${PROJECT_ROOT_FOLDER})
+$(info /_\VNET  ${PROJECT_ROOT_FOLDER} with)
+$(info /_\VNET  Basename ${BASENAME_FOLDER})
 endif
 
 #-=-=-=-=-=-=-=--=-=-=-=-=-=-=--=-=-=-=-=-=-=--=-=-=-=-=-=-=--=-=-=-=-=-=-=--=-=-
