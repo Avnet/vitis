@@ -67,7 +67,7 @@ CLNTARGETS=' cleanxsa cleanplnx cleansysroot cleanpfm cleanapp '
 .SILENT: ${TARGETS}
 
 
-all: xsa plnx sysroot pfm app
+all: xsa plnx sysroot pfm
 
 	@echo -e '${CSTR} Make all complete'
 
