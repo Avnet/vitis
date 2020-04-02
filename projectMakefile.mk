@@ -217,7 +217,8 @@ else
 	# can use make cleanpfm pfm to make this ann up arrow enter action
 	#if [ -d "${VITIS_PLATFORM_REPO_FOLDER}/${HDL_BOARD_NAME}" ]; then rm -rf ${VITIS_PLATFORM_REPO_FOLDER}/${HDL_BOARD_NAME}; fi
 	# for now force overwrite the platform
-	cp -rf ./${VITIS_PLATFORM_PLATFORM_WORKSPACE}/${HDL_BOARD_NAME}/export/${HDL_BOARD_NAME} ${VITIS_PLATFORM_REPO_FOLDER}/
+	cp -rf ./${VITIS_PLATFORM_PLATFORM_WORKSPACE}/${HDL_BOARD_NAME}/export/${HDL_BOARD_NAME}        ${VITIS_PLATFORM_REPO_FOLDER}/
+	cp -vf ${PETALINUX_PROJECTS_FOLDER}/${PETALINUX_PROJECT_NAME}/images/linux/pmufw.elf            ${VITIS_PLATFORM_REPO_FOLDER}/${HDL_BOARD_NAME}/sw/${HDL_BOARD_NAME}/boot
 	@echo -e '${CSTR} Platform build complete'
 endif
 
