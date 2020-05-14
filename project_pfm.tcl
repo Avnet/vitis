@@ -51,11 +51,13 @@ puts "architecture        : \"$architecture\""
 set description [lindex $argv 9]
 puts "description         : \"$description\"" 
 
-platform -name $platform_name -desc $description -hw $root_folder/$xsa_folder/$platform_name.xsa -out $root_folder/$pfm_folder
+platform -name $platform_name -no-boot-bsp -desc $description -hw $root_folder/$xsa_folder/$platform_name.xsa -out $root_folder/$pfm_folder
 
 domain -name PetaLinux -proc $architecture -os linux -image $image_folder
 domain config -boot $root_folder/$boot_folder
 domain config -bif $root_folder/$consolidated_folder/linux.bif
+platform config -pmufw-elf $consolidated_folder/pmufw.elf
+platform config -fsbl-elf $consolidated_folder/zynqmp_fsbl.elf
 domain -runtime opencl
 #domain -pmuqemu-args $consolidated_folder/src/qemu/lnx/pmu_args.txt
 #domain -qemu-args $consolidated_folder/src/qemu/lnx/qemu_args.txt
