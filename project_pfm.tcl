@@ -59,11 +59,9 @@ domain config -bif $root_folder/$consolidated_folder/linux.bif
 platform config -pmufw-elf $consolidated_folder/pmufw.elf
 platform config -fsbl-elf $consolidated_folder/zynqmp_fsbl.elf
 domain -runtime opencl
-#domain -pmuqemu-args $consolidated_folder/src/qemu/lnx/pmu_args.txt
-#domain -qemu-args $consolidated_folder/src/qemu/lnx/qemu_args.txt
-#domain -qemu-data $consolidated_folder/src/boot
-#domain -sysroot $root_folder/$consolidated_folder/sysroot
-puts "$root_folder/$sysroot_folder"
+domain -pmuqemu-args $consolidated_folder/pmu_args.txt
+domain -qemu-args $consolidated_folder/qemu_args.txt
+domain -qemu-data $root_folder/$boot_folder
 domain -sysroot  $root_folder/$sysroot_folder
 
 platform -generate
