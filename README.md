@@ -1,9 +1,9 @@
 ![alt text][logo]
 
-Avnet HDL Reference Designs
+Avnet Vitis Reference Designs
 ===========================
 
-Avnet HDL libraries, project build scripts, and example software source code used in Avnet Reference Designs/Tutorials.
+Avnet Vitis libraries, project build scripts, and example software source code used in Avnet Reference Designs/Tutorials.
 
 
 Current Tools Version:
