@@ -57,7 +57,7 @@ domain -name PetaLinux -proc $architecture -os linux -image $image_folder
 domain config -boot $root_folder/$boot_folder
 domain config -bif $root_folder/$consolidated_folder/linux.bif
 platform config -pmufw-elf $consolidated_folder/pmufw.elf
-platform config -fsbl-elf $consolidated_folder/zynqmp_fsbl.elf
+platform config -fsbl-elf $consolidated_folder/fsbl.elf
 domain -runtime opencl
 domain -pmuqemu-args $consolidated_folder/pmu_args.txt
 domain -qemu-args $consolidated_folder/qemu_args.txt
