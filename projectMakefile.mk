@@ -159,6 +159,14 @@ sysroot:
 #	cp -rf ${PETALINUX_PROJECTS_FOLDER}/${PETALINUX_PROJECT_NAME}/build/tmp/work/aarch64-xilinx-linux ${VITIS_CONSOLIDATED_SYSROOT_FOLDER}
 #endif
 
+	#
+	# patch to force inclusion of rootfs packages in sdk.sh
+	#    "petalinux-build --sdk" will not include all content in sdk.sh for avnet-image-minimal build target, unless it is specified in rootfs_config
+	@echo -e '${CSTR} Applying patch to force inclusion of rootfs packages in sdk.sh'
+	cp ../add_petalinux_packages.sh ${PETALINUX_PROJECTS_FOLDER}/${PETALINUX_PROJECT_NAME}/.
+	cd ${PETALINUX_PROJECTS_FOLDER}/${PETALINUX_PROJECT_NAME}; source ./add_petalinux_packages.sh
+	# 
+	#
 # mechanism that uses sdk.sh method (recomended by Xilinx)
 # although takes longer for this flow
 ifneq (,$(wildcard ${VITIS_CONSOLIDATED_SYSROOTS_FOLDER}))
@@ -231,6 +239,16 @@ app:
 	@echo -e '${CSTR} Nothing here yet...'
 	#@echo -e '${CSTR} Platform is not built!'
 	#@echo -e '${CSTR} Application already generated, run cleanapp'
+
+dpu:
+	@echo -e '${CSTR} Creating DPU-TRD Project'
+	if [ ! -d "../Vitis-AI-1.2.1" ]; then git clone -b v1.2.1 https://github.com/Xilinx/Vitis-AI ../Vitis-AI-1.2.1 ; fi
+	mkdir -p ../build
+	mkdir -p ../build/DPU-TRD-${HDL_BOARD_NAME}
+	cp -r ../Vitis-AI-1.2.1/DPU-TRD/* ../build/DPU-TRD-${HDL_BOARD_NAME}/.
+	cp -r DPU-TRD/* ../build/DPU-TRD-${HDL_BOARD_NAME}/prj/Vitis/.
+	export SDX_PLATFORM=../../../../platform_repo/${HDL_BOARD_NAME}/${HDL_BOARD_NAME}.xpfm ; \
+	make -C ../build/DPU-TRD-${HDL_BOARD_NAME}/prj/Vitis
 		
 cleanxsa:
 	@echo -e '${CSTR} Deleting Vivado Project...'
@@ -266,6 +284,11 @@ cleanpfm:
 cleanapp:
 	@echo -e '${CSTR} Deleting Application Project...'
 	#${RM} ${HDL_SCRIPTS_FOLDER}/${MAKENAME}
+
+cleandpu:
+	@echo -e '${CSTR} Deleting DPU-TRD Project...'
+	${RM} -r ../build/DPU-TRD-${HDL_BOARD_NAME}
+	${RM} -r ../Vitis-AI-1.2.1
 
 cleanall: cleanxsa cleanplnx cleansysroot cleanpfm cleanapp
 	@echo -e '${CSTR} Deleted all of the things!!'
