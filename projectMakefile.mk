@@ -56,6 +56,7 @@ VITIS_CONSOLIDATED_FOLDER          := consolidated
 VITIS_CONSOLIDATED_BOOT_FOLDER     := ${VITIS_CONSOLIDATED_FOLDER}/boot
 VITIS_CONSOLIDATED_IMAGE_FOLDER    := ${VITIS_CONSOLIDATED_FOLDER}/image
 VITIS_CONSOLIDATED_XSA_FOLDER      := ${VITIS_CONSOLIDATED_FOLDER}/xsa
+VITIS_CONSOLIDATED_ROOTFS_FOLDER   := ${VITIS_CONSOLIDATED_FOLDER}/rootfs
 VITIS_CONSOLIDATED_SYSROOT_FOLDER  := ${VITIS_CONSOLIDATED_FOLDER}/sysroot
 VITIS_CONSOLIDATED_SYSROOTS_FOLDER := ${VITIS_CONSOLIDATED_SYSROOT_FOLDER}/sysroots/${SYSROOTTYPE}
 
@@ -195,6 +196,7 @@ else
 	@echo -e '${CSTR} Creating Folder Structure'
 	mkdir -pv ${VITIS_CONSOLIDATED_BOOT_FOLDER}
 	mkdir -pv ${VITIS_CONSOLIDATED_IMAGE_FOLDER}
+	mkdir -pv ${VITIS_CONSOLIDATED_ROOTFS_FOLDER}
 	mkdir -pv ${VITIS_CONSOLIDATED_XSA_FOLDER}
 	@echo -e '${CSTR} Copying in all Build Articles'
 	cp -v ${BIF_FILENAME} ${VITIS_CONSOLIDATED_FOLDER}/linux.bif
@@ -205,6 +207,7 @@ else
 	cp -v ${PETALINUX_PROJECTS_FOLDER}/${PETALINUX_PROJECT_NAME}/images/linux/boot.scr                   ${VITIS_CONSOLIDATED_IMAGE_FOLDER}
 	cp -v ${PETALINUX_PROJECTS_FOLDER}/${PETALINUX_PROJECT_NAME}/images/linux/image.ub                   ${VITIS_CONSOLIDATED_IMAGE_FOLDER}
 	cp -v ${PETALINUX_PROJECTS_FOLDER}/${PETALINUX_PROJECT_NAME}/images/linux/rootfs.tar.gz              ${VITIS_CONSOLIDATED_IMAGE_FOLDER}
+	cp -v ${PETALINUX_PROJECTS_FOLDER}/${PETALINUX_PROJECT_NAME}/images/linux/rootfs.ext4                ${VITIS_CONSOLIDATED_ROOTFS_FOLDER}
 	echo ${HDL_BOARD_NAME}                                                                             > ${VITIS_CONSOLIDATED_IMAGE_FOLDER}/platform_desc.txt
 	cp -v ../init.sh                                                                                     ${VITIS_CONSOLIDATED_IMAGE_FOLDER}
 	cp -v ${HDL_PROJECTS_FOLDER}/${HDL_PROJECT_NAME}/${HDL_BOARD_NAME}_${PLNX_VER}/${HDL_BOARD_NAME}.xsa ${VITIS_CONSOLIDATED_XSA_FOLDER}
@@ -223,7 +226,8 @@ else
 	             ${VITIS_CONSOLIDATED_SYSROOTS_FOLDER} \
 	             ${PROJECT_ROOT_FOLDER}                \
 	             ${VITIS_ARCHITECTURE}                 \
-	             ${VITIS_PROJECT_DESCRIPTION}
+	             ${VITIS_PROJECT_DESCRIPTION}          \
+	             ${VITIS_CONSOLIDATED_ROOTFS_FOLDER}
 	@echo -e '${CSTR} Copying Platform from workspace to platform_repo'
 	if [ ! -d "${VITIS_PLATFORM_REPO_FOLDER}" ]; then mkdir ${VITIS_PLATFORM_REPO_FOLDER}; fi
 	# do not automatically delete - force user to clean first

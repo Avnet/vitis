@@ -50,6 +50,8 @@ set architecture [lindex $argv 8]
 puts "architecture        : \"$architecture\"" 
 set description [lindex $argv 9]
 puts "description         : \"$description\"" 
+set rootfs_folder [lindex $argv 10]
+puts "rootfs_folder       : \"$rootfs_folder\"" 
 
 platform -name $platform_name -no-boot-bsp -desc $description -hw $root_folder/$xsa_folder/$platform_name.xsa -out $root_folder/$pfm_folder
 
@@ -63,5 +65,6 @@ domain -pmuqemu-args $consolidated_folder/pmu_args.txt
 domain -qemu-args $consolidated_folder/qemu_args.txt
 domain -qemu-data $root_folder/$boot_folder
 domain -sysroot  $root_folder/$sysroot_folder
+domain -rootfs $root_folder/$rootfs_folder/rootfs.ext4
 
 platform -generate
