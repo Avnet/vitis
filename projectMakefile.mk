@@ -103,7 +103,7 @@ ifneq (,$(wildcard ${HDL_PROJECTS_FOLDER}/${HDL_PROJECT_NAME}/${HDL_BOARD_NAME}_
 	@echo '        ' ${HDL_PROJECTS_FOLDER}/${HDL_PROJECT_NAME}/${HDL_BOARD_NAME}_${PLNX_VER}/${HDL_BOARD_NAME}.xsa
 else
 	@echo -e '${CSTR} Making XSA'
-	@echo -e 'xsa: \n	@vivado -mode batch -notrace -source make_${HDL_PROJECT_NAME}.tcl \
+	@echo 'xsa: \n	@vivado -mode batch -notrace -source make_${HDL_PROJECT_NAME}.tcl \
 	                            -tclargs ${HDL_BOARD_NAME} ${HDL_PROJECT_NAME}' > ${HDL_SCRIPTS_FOLDER}/${MAKENAME}
 	$(MAKE) -f ${MAKENAME} -C ${HDL_SCRIPTS_FOLDER} xsa
 	#@echo
@@ -131,7 +131,7 @@ ifneq (,$(wildcard ${PETALINUX_PROJECTS_FOLDER}/${PETALINUX_PROJECT_NAME}.bsp))
 	@echo '        ' ${PETALINUX_PROJECTS_FOLDER}/${PETALINUX_PROJECT_NAME}.bsp
 else
 	@echo -e '${CSTR} Making PLNX Project'
-	@echo -e 'plnx: \n	./make_${HDL_PROJECT_NAME}_bsp.sh ${HDL_BOARD_NAME}' > ${PETALINUX_SCRIPTS_FOLDER}/${MAKENAME}
+	@echo 'SHELL := /bin/bash \n\nplnx: \n	./make_${PETALINUX_ROOTFS_NAME}.sh' > ${PETALINUX_SCRIPTS_FOLDER}/${MAKENAME}
 	$(MAKE) -f ${MAKENAME} -C ${PETALINUX_SCRIPTS_FOLDER} plnx  
 	#@echo
 	#@echo
@@ -290,7 +290,7 @@ cleandpu:
 	${RM} -r ../build/DPU-TRD-${HDL_BOARD_NAME}
 	${RM} -r ../Vitis-AI-1.2.1
 
-cleanall: cleanxsa cleanplnx cleansysroot cleanpfm cleanapp
+cleanall: cleanxsa cleanplnx cleansysroot cleanpfm cleanapp cleandpu
 	@echo -e '${CSTR} Deleted all of the things!!'
 
 	

@@ -50,7 +50,7 @@ BASENAME_FOLDER      = $(shell basename ${PROJECT_ROOT_FOLDER})
 HDL_PROJECT_NAME                  := ultra96v2_oob
 HDL_BOARD_NAME                    := ULTRA96V2
 PETALINUX_PROJECT_NAME            := ultra96v2_oob_${PLNX_VER}
-PETALINUX_ROOTFS_NAME             := ultra96v2_oob
+PETALINUX_ROOTFS_NAME             := ultra96v2
 
 VITIS_ARCHITECTURE                := psu_cortexa53
 VITIS_PROJECT_DESCRIPTION         := "Ultra96V2 Vitis platform based on the Out Of Box image.  More information can be found at https://www.element14.com/community/community/designcenter/zedboardcommunity/ultra96"

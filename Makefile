@@ -71,6 +71,12 @@ list:
 	@echo -e 'Possible make targets:'
 	@$(MAKE) -pRrq -f $(lastword $(MAKEFILE_LIST)) : 2>/dev/null | awk -v RS= -F: '/^# File/,/^# Finished Make data base/ {if ($$1 !~ "^[#.]") {print $$1}}' | sort | egrep -v -e '^[^[:alnum:]]' -e '^$@$$' -e 'cleanall'
 	@echo
+	@echo -e 'No step defaults to xsa plnx sysroot pfm:'
+	@echo -e '${LYEL}  make <target>${NC}'
+	@echo
+	@echo -e 'See help for more options'
+	@echo -e '${LYEL}  make help'
+	@echo
 	@echo -e '${LGRN}***********************'
 	@echo
 help:
@@ -81,18 +87,21 @@ help:
 	@$(MAKE) -pRrq -f $(lastword $(MAKEFILE_LIST)) : 2>/dev/null | awk -v RS= -F: '/^# File/,/^# Finished Make data base/ {if ($$1 !~ "^[#.]") {print $$1}}' | sort | egrep -v -e '^[^[:alnum:]]' -e '^$@$$' -e 'cleanall'
 	@echo -e '${LYEL}  make <target> step=<step>${NC}'
 	@echo -e '      builds a specific target to a specific build point'
-	@echo -e "${LYEL}  make <trgt1> <trgt2>...<trgtn> 'step=<step1> <step2>...<stepn>'${NC}"
+	@echo "${LYEL}  make <trgt1> <trgt2>...<trgtn> 'step=<step1> <step2>...<stepn>'${NC}"
 	@echo -e '      builds a specific target to multiple build points'
 	@echo -e '  steps:  xsa          - Builds up to Vivado Project (xsa output)'
 	@echo -e '          plnx         - Builds up to PetaLinux Project (bsp output)'
 	@echo -e '          sysroot      - Builds up to sysroot generation (see ./consolidated)'
 	@echo -e '          pfm          - Builds up to Platform Generation (see ./platform_repo)'
 	@echo -e '          app          - Not Implemented'
+	@echo -e '          dpu          - Builds the DPU-TRD'
 	@echo -e '          cleanxsa     - Cleans the Vivado Project'
 	@echo -e '          cleanplnx    - Cleans the PetaLinux Project'
 	@echo -e '          cleansysroot - Cleans the sysroot'
 	@echo -e '          cleanpfm     - Cleans the Platform'
 	@echo -e '          cleanapp     - Not Implemented'
+	@echo -e '          cleandpu     - Cleans the DPU-TRD'
+	@echo -e '          cleanall     - Cleans all steps'
 	@echo
 	@echo -e '${LGRN}***********************'
 all: $(PLATFORMS)
