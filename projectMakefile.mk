@@ -252,7 +252,7 @@ dpu:
 	cp -r ../Vitis-AI-1.2.1/DPU-TRD/* ../build/DPU-TRD-${HDL_BOARD_NAME}/.
 	cp -r DPU-TRD/* ../build/DPU-TRD-${HDL_BOARD_NAME}/prj/Vitis/.
 	export SDX_PLATFORM=../../../../platform_repo/${HDL_BOARD_NAME}/${HDL_BOARD_NAME}.xpfm ; \
-	export SDX_ROOTFS_EXT4=../../../../platform_repo/${HDL_BOARD_NAME}/sw/${HDL_BOARD_NAME}/Petalinux/rootfs/rootfs.ext4 ; \
+	export SDX_ROOTFS_EXT4=../../../../platform_repo/${HDL_BOARD_NAME}/sw/${HDL_BOARD_NAME}/PetaLinux/rootfs/rootfs.ext4 ; \
 	make -C ../build/DPU-TRD-${HDL_BOARD_NAME}/prj/Vitis
 		
 cleanxsa:
