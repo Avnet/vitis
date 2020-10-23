@@ -240,9 +240,17 @@ else
 endif
 
 app:
-	@echo -e '${CSTR} Nothing here yet...'
-	#@echo -e '${CSTR} Platform is not built!'
-	#@echo -e '${CSTR} Application already generated, run cleanapp'
+	@echo -e '${CSTR} Creating Application Project'
+	mkdir -p ../build
+	mkdir -p ../build/vadd-${HDL_BOARD_NAME}
+	cp -r ../app/vadd/* ../build/vadd-${HDL_BOARD_NAME}/.
+	@echo -e 'VITIS_PLATFORM=${HDL_BOARD_NAME}'
+	@echo -e 'VITIS_PLATFORM_DIR=../../../platform_repo/${HDL_BOARD_NAME}'
+	@echo -e 'VITIS_PLATFORM_PATH=../../../platform_repo/${HDL_BOARD_NAME}/${HDL_BOARD_NAME}.xpfm'
+	export VITIS_PLATFORM=${HDL_BOARD_NAME} ; \
+	export VITIS_PLATFORM_DIR=../../../platform_repo/${HDL_BOARD_NAME} ; \
+	export VITIS_PLATFORM_PATH=../../../platform_repo/${HDL_BOARD_NAME}/${HDL_BOARD_NAME}.xpfm ; \
+	make -C ../build/vadd-${HDL_BOARD_NAME}/hw
 
 dpu:
 	@echo -e '${CSTR} Creating DPU-TRD Project'
@@ -288,7 +296,7 @@ cleanpfm:
 
 cleanapp:
 	@echo -e '${CSTR} Deleting Application Project...'
-	#${RM} ${HDL_SCRIPTS_FOLDER}/${MAKENAME}
+	${RM} -r ../build/vadd-${HDL_BOARD_NAME}
 
 cleandpu:
 	@echo -e '${CSTR} Deleting DPU-TRD Project...'
