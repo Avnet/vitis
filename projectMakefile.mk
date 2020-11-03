@@ -62,8 +62,8 @@ VITIS_CONSOLIDATED_SYSROOTS_FOLDER := ${VITIS_CONSOLIDATED_SYSROOT_FOLDER}/sysro
 
 #-=-=-=-=-=-=-=--=-=-=-=-=-=-=--=-=-=-=-=-=-=--=-=-=-=-=-=-=--=-=-=-=-=-=-=--=-=-
 
-TARGETS=' all xsa plnx sysroot pfm app '
-CLNTARGETS=' cleanxsa cleanplnx cleansysroot cleanpfm cleanapp '
+TARGETS=' all xsa plnx sysroot pfm app dpu '
+CLNTARGETS=' cleanxsa cleanplnx cleansysroot cleanpfm cleanapp cleandpu '
 .PHONY:  ${TARGETS} ${CLNTARGETS}
 .SILENT: ${TARGETS}
 
