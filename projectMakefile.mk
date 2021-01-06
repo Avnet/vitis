@@ -62,7 +62,7 @@ VITIS_CONSOLIDATED_SYSROOTS_FOLDER := ${VITIS_CONSOLIDATED_SYSROOT_FOLDER}/sysro
 
 #-=-=-=-=-=-=-=--=-=-=-=-=-=-=--=-=-=-=-=-=-=--=-=-=-=-=-=-=--=-=-=-=-=-=-=--=-=-
 
-TARGETS=' all xsa plnx sysroot pfm app dpu '
+TARGETS=' all allplus xsa plnx sysroot pfm app dpu '
 CLNTARGETS=' cleanxsa cleanplnx cleansysroot cleanpfm cleanapp cleandpu '
 .PHONY:  ${TARGETS} ${CLNTARGETS}
 .SILENT: ${TARGETS}
@@ -71,6 +71,10 @@ CLNTARGETS=' cleanxsa cleanplnx cleansysroot cleanpfm cleanapp cleandpu '
 all: xsa plnx sysroot pfm
 
 	@echo -e '${CSTR} Make all complete'
+
+allplus: xsa plnx sysroot pfm app
+
+	@echo -e '${CSTR} Make all plus complete'
 
 set_bif_filename:
 ifneq (,$(wildcard linux.bif))

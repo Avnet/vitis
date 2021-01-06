@@ -111,7 +111,7 @@ minized:
 	$(MAKE) -C minized ${step}
 microzed7010: 
 	@echo -e '${CSTR} Building Vitis Platform for MicroZed 7010'
-	$(MAKE) -C microzed7020 ${step}
+	$(MAKE) -C microzed7010 ${step}
 microzed7020: 
 	@echo -e '${CSTR} Building Vitis Platform for MicroZed 7020'
 	$(MAKE) -C microzed7020 ${step}
