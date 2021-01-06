@@ -33,7 +33,7 @@
 set platform_name [lindex $argv 0]
 puts "platform name       : \"$platform_name\"" 
 set pfm_folder [lindex $argv 1]
-puts "platform_workspace  :  \"$pfm_folder\"" 
+puts "platform_workspace  : \"$pfm_folder\"" 
 set consolidated_folder [lindex $argv 2]
 puts "consolidated folder : \"$consolidated_folder\"" 
 set boot_folder [lindex $argv 3]
@@ -58,7 +58,9 @@ platform -name $platform_name -no-boot-bsp -desc $description -hw $root_folder/$
 domain -name PetaLinux -proc $architecture -os linux -image $image_folder
 domain config -boot $root_folder/$boot_folder
 domain config -bif $root_folder/$consolidated_folder/linux.bif
-platform config -pmufw-elf $consolidated_folder/pmufw.elf
+if {[string compare $architecture "psu_cortexa53"]} {
+	platform config -pmufw-elf $consolidated_folder/pmufw.elf
+}
 platform config -fsbl-elf $consolidated_folder/fsbl.elf
 domain -runtime opencl
 domain -pmuqemu-args $consolidated_folder/pmu_args.txt

@@ -79,7 +79,7 @@ BIF_FILENAME   := linux.bif
 else ifeq ($(VITIS_ARCHITECTURE),psu_cortexa53)
 BIF_FILENAME   := ../mpsoc_linux.bif
 $(info /_\VNET  No Platform Specific file located, using ${BIF_FILENAME})
-else ifeq ($(VITIS_ARCHITECTURE),psu_cortexa9)
+else ifeq ($(VITIS_ARCHITECTURE),ps7_cortexa9)
 BIF_FILENAME   := ../zynq_linux.bif
 $(info /_\VNET  No Platform Specific file located, using ${BIF_FILENAME})
 else
@@ -199,15 +199,22 @@ else
 	mkdir -pv ${VITIS_CONSOLIDATED_ROOTFS_FOLDER}
 	mkdir -pv ${VITIS_CONSOLIDATED_XSA_FOLDER}
 	@echo -e '${CSTR} Copying in all Build Articles'
+
 	cp -v ${BIF_FILENAME} ${VITIS_CONSOLIDATED_FOLDER}/linux.bif
-	cp -v ${PETALINUX_PROJECTS_FOLDER}/${PETALINUX_PROJECT_NAME}/images/linux/bl31.elf                   ${VITIS_CONSOLIDATED_BOOT_FOLDER}
-	cp -v ${PETALINUX_PROJECTS_FOLDER}/${PETALINUX_PROJECT_NAME}/images/linux/pmufw.elf                  ${VITIS_CONSOLIDATED_BOOT_FOLDER}
-	cp -v ${PETALINUX_PROJECTS_FOLDER}/${PETALINUX_PROJECT_NAME}/images/linux/u-boot.elf                 ${VITIS_CONSOLIDATED_BOOT_FOLDER}
-	cp -v ${PETALINUX_PROJECTS_FOLDER}/${PETALINUX_PROJECT_NAME}/images/linux/zynqmp_fsbl.elf            ${VITIS_CONSOLIDATED_BOOT_FOLDER}/fsbl.elf
 	cp -v ${PETALINUX_PROJECTS_FOLDER}/${PETALINUX_PROJECT_NAME}/images/linux/boot.scr                   ${VITIS_CONSOLIDATED_IMAGE_FOLDER}
 	cp -v ${PETALINUX_PROJECTS_FOLDER}/${PETALINUX_PROJECT_NAME}/images/linux/image.ub                   ${VITIS_CONSOLIDATED_IMAGE_FOLDER}
 	cp -v ${PETALINUX_PROJECTS_FOLDER}/${PETALINUX_PROJECT_NAME}/images/linux/rootfs.tar.gz              ${VITIS_CONSOLIDATED_IMAGE_FOLDER}
 	cp -v ${PETALINUX_PROJECTS_FOLDER}/${PETALINUX_PROJECT_NAME}/images/linux/rootfs.ext4                ${VITIS_CONSOLIDATED_ROOTFS_FOLDER}
+	cp -v ${PETALINUX_PROJECTS_FOLDER}/${PETALINUX_PROJECT_NAME}/images/linux/u-boot.elf                 ${VITIS_CONSOLIDATED_BOOT_FOLDER}
+ifeq ($(VITIS_ARCHITECTURE),psu_cortexa53)
+	@echo -e '${CSTR} Starting Platform Generation'
+	cp -v ${PETALINUX_PROJECTS_FOLDER}/${PETALINUX_PROJECT_NAME}/images/linux/bl31.elf                   ${VITIS_CONSOLIDATED_BOOT_FOLDER}
+	cp -v ${PETALINUX_PROJECTS_FOLDER}/${PETALINUX_PROJECT_NAME}/images/linux/pmufw.elf                  ${VITIS_CONSOLIDATED_BOOT_FOLDER}
+	cp -v ${PETALINUX_PROJECTS_FOLDER}/${PETALINUX_PROJECT_NAME}/images/linux/zynqmp_fsbl.elf            ${VITIS_CONSOLIDATED_BOOT_FOLDER}/fsbl.elf
+else ifeq ($(VITIS_ARCHITECTURE),ps7_cortexa9)
+	@echo -e '${CSTR} Starting Platform Generation'
+	cp -v ${PETALINUX_PROJECTS_FOLDER}/${PETALINUX_PROJECT_NAME}/images/linux/zynq_fsbl.elf              ${VITIS_CONSOLIDATED_BOOT_FOLDER}/fsbl.elf
+endif
 	echo ${HDL_BOARD_NAME}                                                                             > ${VITIS_CONSOLIDATED_IMAGE_FOLDER}/platform_desc.txt
 	cp -v ../init.sh                                                                                     ${VITIS_CONSOLIDATED_IMAGE_FOLDER}
 	cp -v ${HDL_PROJECTS_FOLDER}/${HDL_PROJECT_NAME}/${HDL_BOARD_NAME}_${PLNX_VER}/${HDL_BOARD_NAME}.xsa ${VITIS_CONSOLIDATED_XSA_FOLDER}
@@ -250,6 +257,7 @@ app:
 	export VITIS_PLATFORM=${HDL_BOARD_NAME} ; \
 	export VITIS_PLATFORM_DIR=../../../platform_repo/${HDL_BOARD_NAME} ; \
 	export VITIS_PLATFORM_PATH=../../../platform_repo/${HDL_BOARD_NAME}/${HDL_BOARD_NAME}.xpfm ; \
+	export SYSROOTTYPE=${SYSROOTTYPE} ; \
 	make -C ../build/vadd-${HDL_BOARD_NAME}/hw
 
 dpu:

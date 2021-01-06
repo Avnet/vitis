@@ -1,5 +1,6 @@
 #
 # this file was created by a computer. trust it.
+# it was then modified by a human...be weary traveler.
 #
 
 # compiler tools
@@ -7,7 +8,14 @@
 #XILINX_VIVADO ?= /tools/Xilinx/Vivado/2020.1
 XILINX_VIVADO_HLS ?= $(XILINX_VITIS)/Vivado_HLS
 
+$(info /_\VNET  Sysroot  ${SYSROOTTYPE})
+ifeq ($(SYSROOTTYPE),aarch64-xilinx-linux)
 HOST_CXX ?= aarch64-linux-gnu-g++
+else ifeq ($(SYSROOTTYPE),cortexa9t2hf-neon-xilinx-linux-gnueabi)
+HOST_CXX ?= arm-linux-gnueabihf-g++
+endif
+$(info /_\VNET  HOST_CXX  ${HOST_CXX})
+
 VPP ?= ${XILINX_VITIS}/bin/v++
 RM = rm -f
 RMDIR = rm -rf
@@ -17,12 +25,12 @@ RMDIR = rm -rf
 #VITIS_PLATFORM_PATH = ../../../platform_repo/$(TARGET)/$(TARGET).xpfm
 
 # host compiler global settings
-CXXFLAGS += -std=c++0x -DVITIS_PLATFORM=$(VITIS_PLATFORM) -D__USE_XOPEN2K8 -I$(XILINX_VIVADO)/include/ -I$(VITIS_PLATFORM_DIR)/sw/$(VITIS_PLATFORM)/PetaLinux/sysroot/aarch64-xilinx-linux/usr/include/xrt/ -O2 -g -Wall -c -fmessage-length=0 --sysroot=$(VITIS_PLATFORM_DIR)/sw/$(VITIS_PLATFORM)/PetaLinux/sysroot/aarch64-xilinx-linux
-LDFLAGS += -lxilinxopencl -lpthread -lrt -ldl -lcrypt -lstdc++ -L$(VITIS_PLATFORM_DIR)/sw/$(VITIS_PLATFORM)/PetaLinux/sysroot/aarch64-xilinx-linux/usr/lib/ --sysroot=$(VITIS_PLATFORM_DIR)/sw/$(VITIS_PLATFORM)/PetaLinux/sysroot/aarch64-xilinx-linux
+CXXFLAGS += -std=c++0x -DVITIS_PLATFORM=$(VITIS_PLATFORM) -D__USE_XOPEN2K8 -I$(XILINX_VIVADO)/include/ -I$(VITIS_PLATFORM_DIR)/sw/$(VITIS_PLATFORM)/PetaLinux/sysroot/${SYSROOTTYPE}/usr/include/xrt/ -O2 -g -Wall -c -fmessage-length=0 --sysroot=$(VITIS_PLATFORM_DIR)/sw/$(VITIS_PLATFORM)/PetaLinux/sysroot/${SYSROOTTYPE}
+LDFLAGS += -lxilinxopencl -lpthread -lrt -ldl -lcrypt -lstdc++ -L$(VITIS_PLATFORM_DIR)/sw/$(VITIS_PLATFORM)/PetaLinux/sysroot/${SYSROOTTYPE}/usr/lib/ --sysroot=$(VITIS_PLATFORM_DIR)/sw/$(VITIS_PLATFORM)/PetaLinux/sysroot/${SYSROOTTYPE}
 
 # hardware compiler shared settings
 VPP_OPTS = --target hw
-
+#/tools/Xilinx/Vitis/2020.1/bin/v++ --target hw --compile -I"../src" --config common-config.cfg --config binary_container_1-krnl_vadd-compile.cfg -o"binary_container_1.build/krnl_vadd.xo" "../src/krnl_vadd.cpp"
 #
 # OpenCL kernel files
 #
