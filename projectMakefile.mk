@@ -72,7 +72,7 @@ all: xsa plnx sysroot pfm
 
 	@echo -e '${CSTR} Make all complete'
 
-allplus: xsa plnx sysroot pfm app
+allplus: all app
 
 	@echo -e '${CSTR} Make all plus complete'
 
@@ -215,15 +215,16 @@ ifeq ($(VITIS_ARCHITECTURE),psu_cortexa53)
 	cp -v ${PETALINUX_PROJECTS_FOLDER}/${PETALINUX_PROJECT_NAME}/images/linux/bl31.elf                   ${VITIS_CONSOLIDATED_BOOT_FOLDER}
 	cp -v ${PETALINUX_PROJECTS_FOLDER}/${PETALINUX_PROJECT_NAME}/images/linux/pmufw.elf                  ${VITIS_CONSOLIDATED_BOOT_FOLDER}
 	cp -v ${PETALINUX_PROJECTS_FOLDER}/${PETALINUX_PROJECT_NAME}/images/linux/zynqmp_fsbl.elf            ${VITIS_CONSOLIDATED_BOOT_FOLDER}/fsbl.elf
+	cp -v ../zynqmp_qemu_args.txt                                                                        ${VITIS_CONSOLIDATED_FOLDER}
+	cp -v ../pmu_args.txt                                                                                ${VITIS_CONSOLIDATED_FOLDER}
 else ifeq ($(VITIS_ARCHITECTURE),ps7_cortexa9)
 	@echo -e '${CSTR} Starting Platform Generation'
 	cp -v ${PETALINUX_PROJECTS_FOLDER}/${PETALINUX_PROJECT_NAME}/images/linux/zynq_fsbl.elf              ${VITIS_CONSOLIDATED_BOOT_FOLDER}/fsbl.elf
+	cp -v ../zynq_qemu_args.txt                                                                          ${VITIS_CONSOLIDATED_FOLDER}
 endif
 	echo ${HDL_BOARD_NAME}                                                                             > ${VITIS_CONSOLIDATED_IMAGE_FOLDER}/platform_desc.txt
 	cp -v ../init.sh                                                                                     ${VITIS_CONSOLIDATED_IMAGE_FOLDER}
 	cp -v ${HDL_PROJECTS_FOLDER}/${HDL_PROJECT_NAME}/${HDL_BOARD_NAME}_${PLNX_VER}/${HDL_BOARD_NAME}.xsa ${VITIS_CONSOLIDATED_XSA_FOLDER}
-	cp -v ../qemu_args.txt                                                                               ${VITIS_CONSOLIDATED_FOLDER}
-	cp -v ../pmu_args.txt                                                                                ${VITIS_CONSOLIDATED_FOLDER}
 	
 	@echo -e '${CSTR} Executing Platform Generation'
 
