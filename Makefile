@@ -58,7 +58,7 @@ CSTR=\033[1;32m /_\\VNET\033[0m
 # Defined Platforms as phony and silent
 #-=-=-=-=-=-=-=--=-=-=-=-=-=-=--=-=-=-=-=-=-=--=-=-=-=-=-=-=--=-=-=-=-=-=-=--=-=-
 
-PLATFORMS=' minized microzed7020 picozed7030 ultra96v2_oob UZ7EV_EVCC UZ3EG_PCIEC UZ3EG_IOCC '
+PLATFORMS=' minized microzed7010 microzed7020 picozed7030 ultra96v2_oob UZ7EV_EVCC UZ3EG_PCIEC UZ3EG_IOCC '
 .PHONY:  ${PLATFORMS} list all clean cleanall
 .SILENT: ${PLATFORMS} list all clean cleanall
 
@@ -109,6 +109,9 @@ all: $(PLATFORMS)
 minized: 
 	@echo -e '${CSTR} Building Vitis Platform for Minized 7007'
 	$(MAKE) -C minized ${step}
+microzed7010: 
+	@echo -e '${CSTR} Building Vitis Platform for MicroZed 7010'
+	$(MAKE) -C microzed7020 ${step}
 microzed7020: 
 	@echo -e '${CSTR} Building Vitis Platform for MicroZed 7020'
 	$(MAKE) -C microzed7020 ${step}
