@@ -63,7 +63,9 @@ if {[string compare $architecture "psu_cortexa53"]} {
 }
 platform config -fsbl-elf $consolidated_folder/fsbl.elf
 domain -runtime opencl
-domain -pmuqemu-args $consolidated_folder/pmu_args.txt
+if {[string compare $architecture "psu_cortexa53"]} {
+	domain -pmuqemu-args $consolidated_folder/pmu_args.txt
+}
 domain -qemu-args $consolidated_folder/qemu_args.txt
 domain -qemu-data $root_folder/$boot_folder
 domain -sysroot  $root_folder/$sysroot_folder
