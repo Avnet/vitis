@@ -267,10 +267,10 @@ app:
 
 dpu:
 	@echo -e '${CSTR} Creating DPU-TRD Project'
-	if [ ! -d "../Vitis-AI-1.2.1" ]; then git clone -b v1.2.1 https://github.com/Xilinx/Vitis-AI ../Vitis-AI-1.2.1 ; fi
+	if [ ! -d "../Vitis-AI-1.3" ]; then git clone -b v1.3 https://github.com/Xilinx/Vitis-AI ../Vitis-AI-1.3 ; fi
 	mkdir -p ../build
 	mkdir -p ../build/DPU-TRD-${HDL_BOARD_NAME}
-	cp -r ../Vitis-AI-1.2.1/DPU-TRD/* ../build/DPU-TRD-${HDL_BOARD_NAME}/.
+	cp -r ../Vitis-AI-1.3/dsa/DPU-TRD/* ../build/DPU-TRD-${HDL_BOARD_NAME}/.
 	cp -r DPU-TRD/* ../build/DPU-TRD-${HDL_BOARD_NAME}/prj/Vitis/.
 	export SDX_PLATFORM=../../../../platform_repo/${HDL_BOARD_NAME}/${HDL_BOARD_NAME}.xpfm ; \
 	export SDX_ROOTFS_EXT4=../../../../platform_repo/${HDL_BOARD_NAME}/sw/${HDL_BOARD_NAME}/PetaLinux/rootfs/rootfs.ext4 ; \

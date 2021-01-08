@@ -11,10 +11,9 @@ VIVADO:=${VIVADO_ROOT}/bin/vivado
 MPSOC_CXX:=aarch64-linux-gnu-g++
 TARGET := hw
 
-#EDGE_COMMON_SW:= /proj/rdi/staff/jiaz/scout/platfrom201/xilinx_zcu102_base_202010_1/sw/xilinx_zcu102_base_202010_1/xrt/image
-#SDX_PLATFORM = /proj/xcdhdstaff2/tianfang/2020.1/0518/102/platform_repo/xilinx_zcu102_base_202010_1/export/xilinx_zcu102_base_202010_1/xilinx_zcu102_base_202010_1.xpfm
+#EDGE_COMMON_SW := /proj/rdi/staff/jiaz/common_rootfs/xilinx-zynqmp-common-v2020.1
+#SDX_PLATFORM = /proj/xbuilds/2020.1_0603_1/internal_platforms/xilinx_zcu102_base_202010_1/xilinx_zcu102_base_202010_1.xpfm
 
-#XOCC_OPTS = -t ${TARGET} --platform ${SDX_PLATFORM} --save-temps --config ${DIR_PRJ}/config_file/prj_config_102_3dpu_LPD --xp param:compiler.userPostSysLinkOverlayTcl=${DIR_PRJ}/syslink/strip_interconnects.tcl 
 XOCC_OPTS = -t ${TARGET} --platform ${SDX_PLATFORM} --save-temps --config ${DIR_PRJ}/config_file/prj_config --xp param:compiler.userPostSysLinkOverlayTcl=${DIR_PRJ}/syslink/strip_interconnects.tcl 
 dpu_HDLSRCS=kernel_xml/dpu/kernel.xml\
 	     scripts/package_dpu_kernel.tcl\
@@ -76,9 +75,10 @@ binary_container_1/dpu.xclbin: $(kernel_xo)
 package:
 #	v++ -t ${TARGET} --platform ${SDX_PLATFORM} -p binary_container_1/dpu.xclbin --package.out_dir binary_container_1 --package.rootfs $(EDGE_COMMON_SW)/rootfs.ext4 --package.sd_file $(EDGE_COMMON_SW)/Image 
 	v++ -t ${TARGET} --platform ${SDX_PLATFORM} -p binary_container_1/dpu.xclbin --package.out_dir binary_container_1 --package.rootfs ${SDX_ROOTFS_EXT4}
-	cp ./binary_*/link/vivado/vpl/prj/prj.srcs/sources_1/bd/*/hw_handoff/*.hwh ./binary_*/sd_card
+	cp ./binary_*/link/vivado/vpl/prj/prj*/sources_1/bd/*/hw_handoff/*.hwh ./binary_*/sd_card
+	cp ./binary_*/link/vivado/vpl/prj/prj.gen/sources_1/bd/*/ip/*_DPUCZDX8G_1_0/arch.json ./binary_*/sd_card
 
 clean:
-	${RM} *.o *.elf *.log *.jou sample* v++*
+	${RM} *.o *.elf *.log *.jou sample* v++* *.xclbin *.xclbin*
 	${RMDIR} binary_container_1/ packaged_*/ tmp_*/ .Xil/ _x/
 
