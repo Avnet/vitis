@@ -47,17 +47,17 @@ BASENAME_FOLDER      = $(shell basename ${PROJECT_ROOT_FOLDER})
 #              PLNX ROOTFS name (from PetaLinux Make Script)
 
 
-HDL_PROJECT_NAME                  := pz_petalinux
-HDL_BOARD_NAME                    := PZ7020_FMC2
-PETALINUX_PROJECT_NAME            := pz7020_fmc2_${PLNX_VER}
-PETALINUX_ROOTFS_NAME             := pz7020_fmc2
+HDL_PROJECT_NAME                  := uz_petalinux
+HDL_BOARD_NAME                    := UZ7EV_EVCC
+PETALINUX_PROJECT_NAME            := uz7ev_evcc_${PLNX_VER}
+PETALINUX_ROOTFS_NAME             := uz7ev_evcc
 
-VITIS_ARCHITECTURE                := ps7_cortexa9
-VITIS_PROJECT_DESCRIPTION         := "PicoZed 7020 Vitis platform based on the Out Of Box image.  More information can be found at https://www.element14.com/community/community/designcenter/zedboardcommunity/picozed"
+VITIS_ARCHITECTURE                := psu_cortexa53
+VITIS_PROJECT_DESCRIPTION         := "UltraZed-EV Vitis platform based on the Out Of Box image.  More information can be found at https://www.element14.com/community/community/designcenter/zedboardcommunity/ultrazed/ultrazed-ev"
 
 # MPSoC     = aarch64-xilinx-linux
 # Zynq 7000 = cortexa9t2hf-neon-xilinx-linux-gnueabi
-SYSROOTTYPE                       := cortexa9t2hf-neon-xilinx-linux-gnueabi
+SYSROOTTYPE                       := aarch64-xilinx-linux
 
 #-=-=-=-=-=-=-=--=-=-=-=-=-=-=--=-=-=-=-=-=-=--=-=-=-=-=-=-=--=-=-=-=-=-=-=--=-=-
 # Check for Environment Configuration
@@ -76,4 +76,4 @@ endif
 #-=-=-=-=-=-=-=--=-=-=-=-=-=-=--=-=-=-=-=-=-=--=-=-=-=-=-=-=--=-=-=-=-=-=-=--=-=-
 
 # generic Makefile
-include ../projectMakefile.mk
+include ../../projectMakefile.mk

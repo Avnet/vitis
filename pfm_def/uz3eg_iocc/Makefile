@@ -48,12 +48,12 @@ BASENAME_FOLDER      = $(shell basename ${PROJECT_ROOT_FOLDER})
 
 
 HDL_PROJECT_NAME                  := uz_petalinux
-HDL_BOARD_NAME                    := UZ7EV_EVCC
-PETALINUX_PROJECT_NAME            := uz7ev_evcc_${PLNX_VER}
-PETALINUX_ROOTFS_NAME             := uz7ev_evcc
+HDL_BOARD_NAME                    := UZ3EG_IOCC
+PETALINUX_PROJECT_NAME            := uz3eg_iocc_${PLNX_VER}
+PETALINUX_ROOTFS_NAME             := uz3eg_iocc
 
 VITIS_ARCHITECTURE                := psu_cortexa53
-VITIS_PROJECT_DESCRIPTION         := "UltraZed-EV Vitis platform based on the Out Of Box image.  More information can be found at https://www.element14.com/community/community/designcenter/zedboardcommunity/ultrazed/ultrazed-ev"
+VITIS_PROJECT_DESCRIPTION         := "UltraZed-EG Vitis platform based on the Out Of Box image.  More information can be found at https://www.element14.com/community/community/designcenter/zedboardcommunity/ultrazed/ultrazed-eg"
 
 # MPSoC     = aarch64-xilinx-linux
 # Zynq 7000 = cortexa9t2hf-neon-xilinx-linux-gnueabi
@@ -76,4 +76,4 @@ endif
 #-=-=-=-=-=-=-=--=-=-=-=-=-=-=--=-=-=-=-=-=-=--=-=-=-=-=-=-=--=-=-=-=-=-=-=--=-=-
 
 # generic Makefile
-include ../projectMakefile.mk
+include ../../projectMakefile.mk
