@@ -58,7 +58,7 @@ CSTR=\033[1;32m /_\\VNET\033[0m
 # Defined Platforms as phony and silent
 #-=-=-=-=-=-=-=--=-=-=-=-=-=-=--=-=-=-=-=-=-=--=-=-=-=-=-=-=--=-=-=-=-=-=-=--=-=-
 
-PLATFORMS=' minized microzed7010 microzed7020 picozed7010 picozed7015 picozed7020 picozed7030 ultra96v2_oob UZ7EV_EVCC UZ3EG_PCIEC UZ3EG_IOCC '
+PLATFORMS=' minized_sbc mz7010_som mz7020_som pz7010_som pz7015_som pz7020_som pz7030_som u96v2_sbc uz7ev_evcc uz3eg_pciec uz3eg_iocc '
 .PHONY:  ${PLATFORMS} list all clean cleanall
 .SILENT: ${PLATFORMS} list all clean cleanall
 
@@ -106,39 +106,39 @@ help:
 	@echo -e '${LGRN}***********************'
 all: $(PLATFORMS)
 	@echo -e '${CSTR} Mega Platform build complete'
-minized: 
+minized_sbc: 
 	@echo -e '${CSTR} Building Vitis Platform for Minized 7007'
-	$(MAKE) -C minized ${step}
-microzed7010: 
+	$(MAKE) -C pfm_def/minized_sbc ${step}
+mz7010_som: 
 	@echo -e '${CSTR} Building Vitis Platform for MicroZed 7010'
-	$(MAKE) -C microzed7010 ${step}
-microzed7020: 
+	$(MAKE) -C pfm_def/mz7010_som ${step}
+mz7020_som: 
 	@echo -e '${CSTR} Building Vitis Platform for MicroZed 7020'
-	$(MAKE) -C microzed7020 ${step}
-picozed7010: 
+	$(MAKE) -C pfm_def/mz7020_som ${step}
+pz7010_fmc2: 
 	@echo -e '${CSTR} Building Vitis Platform for PicoZed 7010'
-	$(MAKE) -C picozed7010 ${step}
-picozed7015: 
+	$(MAKE) -C pfm_def/pz7010_fmc2 ${step}
+pz7015_fmc2: 
 	@echo -e '${CSTR} Building Vitis Platform for PicoZed 7015'
-	$(MAKE) -C picozed7015 ${step}
-picozed7020: 
+	$(MAKE) -C pfm_def/pz7015_fmc2 ${step}
+pz7020_fmc2: 
 	@echo -e '${CSTR} Building Vitis Platform for PicoZed 7020'
-	$(MAKE) -C picozed7020 ${step}
-picozed7030: 
+	$(MAKE) -C pfm_def/pz7020_fmc2 ${step}
+pz7030_fmc2: 
 	@echo -e '${CSTR} Building Vitis Platform for PicoZed 7030'
-	$(MAKE) -C picozed7030 ${step}
-ultra96v2_oob: 
+	$(MAKE) -C pfm_def/pz7030_fmc2 ${step}
+u96v2_sbc: 
 	@echo -e '${CSTR} Building Vitis Platform for Ultra96V2 Out Of Box'
-	$(MAKE) -C ultra96v2_oob ${step}
-UZ7EV_EVCC: 
+	$(MAKE) -C pfm_def/u96v2_sbc ${step}
+uz7ev_evcc: 
 	@echo -e '${CSTR} Building Vitis Platform for UltraZed-EV with EV Carrier Card'
-	$(MAKE) -C UZ7EV_EVCC ${step}
-UZ3EG_PCIEC: 
+	$(MAKE) -C pfm_def/uz7ev_evcc ${step}
+uz3eg_pciec: 
 	@echo -e '${CSTR} Building Vitis Platform for UltraZed-EG with PCIe Carrier Card'
-	$(MAKE) -C UZ3EG_PCIEC ${step}
-UZ3EG_IOCC: 
+	$(MAKE) -C pfm_def/uz3eg_pciec ${step}
+uz3eg_iocc: 
 	@echo -e '${CSTR} Building Vitis Platform for UltraZed-EG with IOCC Carrier Card'
-	$(MAKE) -C UZ3EG_IOCC ${step}
+	$(MAKE) -C pfm_def/uz3eg_iocc ${step}
 clean: cleanall
 	@echo -e '${CSTR} Executed make cleanall instead'
 cleanall: 

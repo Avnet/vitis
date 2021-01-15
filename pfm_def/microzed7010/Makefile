@@ -76,4 +76,4 @@ endif
 #-=-=-=-=-=-=-=--=-=-=-=-=-=-=--=-=-=-=-=-=-=--=-=-=-=-=-=-=--=-=-=-=-=-=-=--=-=-
 
 # generic Makefile
-include ../projectMakefile.mk
+include ../../projectMakefile.mk

@@ -42,15 +42,15 @@ CSTR=\033[1;32m /_\\VNET\033[0m
 XSCT                               := $(XILINX_VITIS)/bin/xsct
 MAKENAME                           := vitis_${HDL_BOARD_NAME}_Makefile
 
-HDL_PROJECTS_FOLDER                := ../../hdl/Projects
-HDL_SCRIPTS_FOLDER                 := ../../hdl/Scripts
-PETALINUX_APPS_FOLDER              := ../../petalinux/apps
-PETALINUX_CONFIGS_FOLDER           := ../../petalinux/configs
-PETALINUX_PROJECTS_FOLDER          := ../../petalinux/projects
-PETALINUX_SCRIPTS_FOLDER           := ../../petalinux/scripts
+HDL_PROJECTS_FOLDER                := ../../../hdl/Projects
+HDL_SCRIPTS_FOLDER                 := ../../../hdl/Scripts
+PETALINUX_APPS_FOLDER              := ../../../petalinux/apps
+PETALINUX_CONFIGS_FOLDER           := ../../../petalinux/configs
+PETALINUX_PROJECTS_FOLDER          := ../../../petalinux/projects
+PETALINUX_SCRIPTS_FOLDER           := ../../../petalinux/scripts
 PETALINUX_TO_VITIS_FOLDER          := ../../../vitis
 
-VITIS_PLATFORM_REPO_FOLDER         := ../platform_repo
+VITIS_PLATFORM_REPO_FOLDER         := ../../platform_repo
 VITIS_PLATFORM_PLATFORM_WORKSPACE  := platform_workspace
 VITIS_CONSOLIDATED_FOLDER          := consolidated
 VITIS_CONSOLIDATED_BOOT_FOLDER     := ${VITIS_CONSOLIDATED_FOLDER}/boot
@@ -81,10 +81,10 @@ ifneq (,$(wildcard linux.bif))
 $(info /_\VNET  Found Platform Specific linux.bif, using platform specific)
 BIF_FILENAME   := linux.bif
 else ifeq ($(VITIS_ARCHITECTURE),psu_cortexa53)
-BIF_FILENAME   := ../mpsoc_linux.bif
+BIF_FILENAME   := ../../mpsoc_linux.bif
 $(info /_\VNET  No Platform Specific file located, using ${BIF_FILENAME})
 else ifeq ($(VITIS_ARCHITECTURE),ps7_cortexa9)
-BIF_FILENAME   := ../zynq_linux.bif
+BIF_FILENAME   := ../../zynq_linux.bif
 $(info /_\VNET  No Platform Specific file located, using ${BIF_FILENAME})
 else
 $(error -=-=-= /_\\VNET Not Able to Determine LINUX.BIF to use =-=-=-)
@@ -93,10 +93,10 @@ endif
 set_pfm_tcl:
 ifneq (,$(wildcard project_pfm.tcl))
 $(info /_\VNET  Located platform specific project_pfm.tcl)
-PFM_TCL_FILENAME   := ../project_pfm.tcl
-else ifneq (,$(wildcard ../project_pfm.tcl))
-$(info /_\VNET  No platform specific project_pfm.tcl, using ../project_pfm.tcl)
-PFM_TCL_FILENAME   := ../project_pfm.tcl
+PFM_TCL_FILENAME   := ../../project_pfm.tcl
+else ifneq (,$(wildcard ../../project_pfm.tcl))
+$(info /_\VNET  No platform specific project_pfm.tcl, using ../../project_pfm.tcl)
+PFM_TCL_FILENAME   := ../../project_pfm.tcl
 else
 $(error -=-=-= /_\\VNET Not Able to Determine project_pfm.tcl to use =-=-=-)
 endif
@@ -111,22 +111,6 @@ else
 	@echo -e 'xsa: \n	@vivado -mode batch -notrace -source make_${HDL_PROJECT_NAME}.tcl \
 	                            -tclargs ${HDL_BOARD_NAME} ${HDL_PROJECT_NAME}' > ${HDL_SCRIPTS_FOLDER}/${MAKENAME}
 	$(MAKE) -f ${MAKENAME} -C ${HDL_SCRIPTS_FOLDER} xsa
-	#@echo
-	#@echo
-	#@echo -e '${LGRN}***********************'
-	#@echo -e '  ${CSTR}'
-	#@echo
-	#@echo -e '  Please execute the XSA build script from the '
-	#@echo -e ' ../hdl/Scripts folder'
-	#@echo -e ' From the above folder, you can copy/paste the below command:'
-	#@echo -e '    vivado -mode batch -notrace -source make_${HDL_PROJECT_NAME}.tcl -tclargs ${HDL_BOARD_NAME} ${HDL_PROJECT_NAME}'
-	#@echo -e ' or execute the build script from the PetaLinux flow,'
-	#@echo -e ' which will auto generate the XSA'
-	#@echo -e ' Scripting should be located:'
-	#@echo -e ' ../petalinux/scripts'
-	#@echo -e '    ./make_${HDL_PROJECT_NAME}_bsp.sh ${HDL_BOARD_NAME}'
-	#@echo	
-	#@echo -e '${LGRN}***********************'
 endif
 
 plnx:
@@ -138,37 +122,13 @@ else
 	@echo -e '${CSTR} Making PLNX Project'
 	@echo -e 'plnx: \n	./make_${PETALINUX_ROOTFS_NAME}.sh' > ${PETALINUX_SCRIPTS_FOLDER}/${MAKENAME}
 	$(MAKE) -f ${MAKENAME} -C ${PETALINUX_SCRIPTS_FOLDER} plnx  
-	#@echo
-	#@echo
-	#@echo -e '${LGRN}***********************'
-	#@echo -e '  ${CSTR}'
-	#@echo
-	#@echo -e ' execute the build script from the PetaLinux flow,'
-	#@echo -e ' which will auto generate the XSA'
-	#@echo -e ' Scripting should be located:'
-	#@echo -e ' ../petalinux/scripts'
-	#@echo -e '    ./make_${HDL_PROJECT_NAME}_bsp.sh ${HDL_BOARD_NAME}'
-	#@echo	
-	#@echo -e '${LGRN}***********************'
 endif
 
 sysroot:
-# removed fast mechanism as appears to be missing pieces for AI/ML
-#ifneq (,$(wildcard ${VITIS_CONSOLIDATED_SYSROOT_FOLDER}))
-#	@echo -e '${CSTR} SYSROOT Exists, cleansysroot before rebuild'
-#	@echo -e '${CSTR}         Skipping extract sysroot'
-#else
-#	@echo -e '${CSTR} Extracting sysroot'
-#	mkdir -p ${VITIS_CONSOLIDATED_SYSROOT_FOLDER}
-#	tar -xvf ${PETALINUX_PROJECTS_FOLDER}/${PETALINUX_PROJECT_NAME}/images/linux/rootfs.tar.gz -C ${VITIS_CONSOLIDATED_SYSROOT_FOLDER} ./usr ./lib
-#	cp -rf ${PETALINUX_PROJECTS_FOLDER}/${PETALINUX_PROJECT_NAME}/build/tmp/work/aarch64-xilinx-linux ${VITIS_CONSOLIDATED_SYSROOT_FOLDER}
-#endif
-
-	#
 	# patch to force inclusion of rootfs packages in sdk.sh
 	#    "petalinux-build --sdk" will not include all content in sdk.sh for avnet-image-minimal build target, unless it is specified in rootfs_config
 	@echo -e '${CSTR} Applying patch to force inclusion of rootfs packages in sdk.sh'
-	cp ../add_petalinux_packages.sh ${PETALINUX_PROJECTS_FOLDER}/${PETALINUX_PROJECT_NAME}/.
+	cp ../../add_petalinux_packages.sh ${PETALINUX_PROJECTS_FOLDER}/${PETALINUX_PROJECT_NAME}/.
 	cd ${PETALINUX_PROJECTS_FOLDER}/${PETALINUX_PROJECT_NAME}; source ./add_petalinux_packages.sh
 	# 
 	#
@@ -215,15 +175,15 @@ ifeq ($(VITIS_ARCHITECTURE),psu_cortexa53)
 	cp -v ${PETALINUX_PROJECTS_FOLDER}/${PETALINUX_PROJECT_NAME}/images/linux/bl31.elf                   ${VITIS_CONSOLIDATED_BOOT_FOLDER}
 	cp -v ${PETALINUX_PROJECTS_FOLDER}/${PETALINUX_PROJECT_NAME}/images/linux/pmufw.elf                  ${VITIS_CONSOLIDATED_BOOT_FOLDER}
 	cp -v ${PETALINUX_PROJECTS_FOLDER}/${PETALINUX_PROJECT_NAME}/images/linux/zynqmp_fsbl.elf            ${VITIS_CONSOLIDATED_BOOT_FOLDER}/fsbl.elf
-	cp -v ../zynqmp_qemu_args.txt                                                                        ${VITIS_CONSOLIDATED_FOLDER}
-	cp -v ../pmu_args.txt                                                                                ${VITIS_CONSOLIDATED_FOLDER}
+	cp -v ../../zynqmp_qemu_args.txt                                                                     ${VITIS_CONSOLIDATED_FOLDER}
+	cp -v ../../pmu_args.txt                                                                             ${VITIS_CONSOLIDATED_FOLDER}
 else ifeq ($(VITIS_ARCHITECTURE),ps7_cortexa9)
 	@echo -e '${CSTR} Starting Platform Generation'
 	cp -v ${PETALINUX_PROJECTS_FOLDER}/${PETALINUX_PROJECT_NAME}/images/linux/zynq_fsbl.elf              ${VITIS_CONSOLIDATED_BOOT_FOLDER}/fsbl.elf
-	cp -v ../zynq_qemu_args.txt                                                                          ${VITIS_CONSOLIDATED_FOLDER}
+	cp -v ../../zynq_qemu_args.txt                                                                       ${VITIS_CONSOLIDATED_FOLDER}
 endif
 	echo ${HDL_BOARD_NAME}                                                                             > ${VITIS_CONSOLIDATED_IMAGE_FOLDER}/platform_desc.txt
-	cp -v ../init.sh                                                                                     ${VITIS_CONSOLIDATED_IMAGE_FOLDER}
+	cp -v ../../init.sh                                                                                  ${VITIS_CONSOLIDATED_IMAGE_FOLDER}
 	cp -v ${HDL_PROJECTS_FOLDER}/${HDL_PROJECT_NAME}/${HDL_BOARD_NAME}_${PLNX_VER}/${HDL_BOARD_NAME}.xsa ${VITIS_CONSOLIDATED_XSA_FOLDER}
 	
 	@echo -e '${CSTR} Executing Platform Generation'
@@ -253,28 +213,28 @@ endif
 
 app:
 	@echo -e '${CSTR} Creating Application Project'
-	mkdir -p ../build
-	mkdir -p ../build/vadd-${HDL_BOARD_NAME}
+	mkdir -p ../../build
+	mkdir -p ../../build/vadd-${HDL_BOARD_NAME}
 	cp -r ../app/vadd/* ../build/vadd-${HDL_BOARD_NAME}/.
 	@echo -e 'VITIS_PLATFORM=${HDL_BOARD_NAME}'
-	@echo -e 'VITIS_PLATFORM_DIR=../../../platform_repo/${HDL_BOARD_NAME}'
-	@echo -e 'VITIS_PLATFORM_PATH=../../../platform_repo/${HDL_BOARD_NAME}/${HDL_BOARD_NAME}.xpfm'
+	@echo -e 'VITIS_PLATFORM_DIR=../../../../platform_repo/${HDL_BOARD_NAME}'
+	@echo -e 'VITIS_PLATFORM_PATH=../../../../platform_repo/${HDL_BOARD_NAME}/${HDL_BOARD_NAME}.xpfm'
 	export VITIS_PLATFORM=${HDL_BOARD_NAME} ; \
-	export VITIS_PLATFORM_DIR=../../../platform_repo/${HDL_BOARD_NAME} ; \
-	export VITIS_PLATFORM_PATH=../../../platform_repo/${HDL_BOARD_NAME}/${HDL_BOARD_NAME}.xpfm ; \
+	export VITIS_PLATFORM_DIR=../../../../platform_repo/${HDL_BOARD_NAME} ; \
+	export VITIS_PLATFORM_PATH=../../../../platform_repo/${HDL_BOARD_NAME}/${HDL_BOARD_NAME}.xpfm ; \
 	export SYSROOTTYPE=${SYSROOTTYPE} ; \
 	make -C ../build/vadd-${HDL_BOARD_NAME}/hw
 
 dpu:
 	@echo -e '${CSTR} Creating DPU-TRD Project'
-	if [ ! -d "../Vitis-AI-1.3" ]; then git clone -b v1.3 https://github.com/Xilinx/Vitis-AI ../Vitis-AI-1.3 ; fi
-	mkdir -p ../build
-	mkdir -p ../build/DPU-TRD-${HDL_BOARD_NAME}
-	cp -r ../Vitis-AI-1.3/dsa/DPU-TRD/* ../build/DPU-TRD-${HDL_BOARD_NAME}/.
-	cp -r DPU-TRD/* ../build/DPU-TRD-${HDL_BOARD_NAME}/prj/Vitis/.
-	export SDX_PLATFORM=../../../../platform_repo/${HDL_BOARD_NAME}/${HDL_BOARD_NAME}.xpfm ; \
-	export SDX_ROOTFS_EXT4=../../../../platform_repo/${HDL_BOARD_NAME}/sw/${HDL_BOARD_NAME}/PetaLinux/rootfs/rootfs.ext4 ; \
-	make -C ../build/DPU-TRD-${HDL_BOARD_NAME}/prj/Vitis
+	if [ ! -d "../../Vitis-AI-1.3" ]; then git clone -b v1.3 https://github.com/Xilinx/Vitis-AI ../../Vitis-AI-1.3 ; fi
+	mkdir -p ../../build
+	mkdir -p ../../build/DPU-TRD-${HDL_BOARD_NAME}
+	cp -r ../../Vitis-AI-1.3/dsa/DPU-TRD/* ../../build/DPU-TRD-${HDL_BOARD_NAME}/.
+	cp -r DPU-TRD/* ../../build/DPU-TRD-${HDL_BOARD_NAME}/prj/Vitis/.
+	export SDX_PLATFORM=../../../../../platform_repo/${HDL_BOARD_NAME}/${HDL_BOARD_NAME}.xpfm ; \
+	export SDX_ROOTFS_EXT4=../../../../../platform_repo/${HDL_BOARD_NAME}/sw/${HDL_BOARD_NAME}/PetaLinux/rootfs/rootfs.ext4 ; \
+	make -C ../../build/DPU-TRD-${HDL_BOARD_NAME}/prj/Vitis
 		
 cleanxsa:
 	@echo -e '${CSTR} Deleting Vivado Project...'
