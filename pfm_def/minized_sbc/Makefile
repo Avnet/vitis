@@ -48,7 +48,7 @@ BASENAME_FOLDER      = $(shell basename ${PROJECT_ROOT_FOLDER})
 
 
 HDL_PROJECT_NAME                  := minized_petalinux
-HDL_BOARD_NAME                    := MINIZED
+HDL_BOARD_NAME                    := minized
 PETALINUX_PROJECT_NAME            := minized_${PLNX_VER}
 PETALINUX_ROOTFS_NAME             := minized
 

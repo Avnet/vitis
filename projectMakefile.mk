@@ -42,8 +42,8 @@ CSTR=\033[1;32m /_\\VNET\033[0m
 XSCT                               := $(XILINX_VITIS)/bin/xsct
 MAKENAME                           := vitis_${HDL_BOARD_NAME}_Makefile
 
-HDL_PROJECTS_FOLDER                := ../../../hdl/Projects
-HDL_SCRIPTS_FOLDER                 := ../../../hdl/Scripts
+HDL_PROJECTS_FOLDER                := ../../../hdl/projects
+HDL_SCRIPTS_FOLDER                 := ../../../hdl/scripts
 PETALINUX_APPS_FOLDER              := ../../../petalinux/apps
 PETALINUX_CONFIGS_FOLDER           := ../../../petalinux/configs
 PETALINUX_PROJECTS_FOLDER          := ../../../petalinux/projects
@@ -102,10 +102,10 @@ $(error -=-=-= /_\\VNET Not Able to Determine project_pfm.tcl to use =-=-=-)
 endif
 
 xsa:
-ifneq (,$(wildcard ${HDL_PROJECTS_FOLDER}/${HDL_PROJECT_NAME}/${HDL_BOARD_NAME}_${PLNX_VER}/${HDL_BOARD_NAME}.xsa))
+ifneq (,$(wildcard ${HDL_PROJECTS_FOLDER}/${HDL_BOARD_NAME}_${HDL_PROJECT_NAME}_${PLNX_VER}/${HDL_BOARD_NAME}.xsa))
 	@echo -e '${CSTR} XSA Exists, cleanxsa before rebuild'
 	@echo -e '${CSTR}         Skipping XSA creation'  
-	@echo '        ' ${HDL_PROJECTS_FOLDER}/${HDL_PROJECT_NAME}/${HDL_BOARD_NAME}_${PLNX_VER}/${HDL_BOARD_NAME}.xsa
+	@echo '        ' ${HDL_PROJECTS_FOLDER}/${HDL_BOARD_NAME}_${HDL_PROJECT_NAME}_${PLNX_VER}/${HDL_BOARD_NAME}.xsa
 else
 	@echo -e '${CSTR} Making XSA'
 	@echo -e 'xsa: \n	@vivado -mode batch -notrace -source make_${HDL_PROJECT_NAME}.tcl \
@@ -184,7 +184,7 @@ else ifeq ($(VITIS_ARCHITECTURE),ps7_cortexa9)
 endif
 	echo ${HDL_BOARD_NAME}                                                                             > ${VITIS_CONSOLIDATED_IMAGE_FOLDER}/platform_desc.txt
 	cp -v ../../init.sh                                                                                  ${VITIS_CONSOLIDATED_IMAGE_FOLDER}
-	cp -v ${HDL_PROJECTS_FOLDER}/${HDL_PROJECT_NAME}/${HDL_BOARD_NAME}_${PLNX_VER}/${HDL_BOARD_NAME}.xsa ${VITIS_CONSOLIDATED_XSA_FOLDER}
+	cp -v ${HDL_PROJECTS_FOLDER}/${HDL_BOARD_NAME}_${HDL_PROJECT_NAME}_${PLNX_VER}/${HDL_BOARD_NAME}.xsa ${VITIS_CONSOLIDATED_XSA_FOLDER}
 	
 	@echo -e '${CSTR} Executing Platform Generation'
 

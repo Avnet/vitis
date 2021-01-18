@@ -47,10 +47,10 @@ BASENAME_FOLDER      = $(shell basename ${PROJECT_ROOT_FOLDER})
 #              PLNX ROOTFS name (from PetaLinux Make Script)
 
 
-HDL_PROJECT_NAME                  := ultra96v2_oob
-HDL_BOARD_NAME                    := ULTRA96V2
-PETALINUX_PROJECT_NAME            := ultra96v2_oob_${PLNX_VER}
-PETALINUX_ROOTFS_NAME             := ultra96v2
+HDL_PROJECT_NAME                  := u96v2_petalinux
+HDL_BOARD_NAME                    := u96v2_sbc
+PETALINUX_PROJECT_NAME            := u96v2_sbc_${PLNX_VER}
+PETALINUX_ROOTFS_NAME             := u96v2_sbc
 
 VITIS_ARCHITECTURE                := psu_cortexa53
 VITIS_PROJECT_DESCRIPTION         := "Ultra96V2 Vitis platform based on the Out Of Box image.  More information can be found at https://www.element14.com/community/community/designcenter/zedboardcommunity/ultra96"

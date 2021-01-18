@@ -48,7 +48,7 @@ BASENAME_FOLDER      = $(shell basename ${PROJECT_ROOT_FOLDER})
 
 
 HDL_PROJECT_NAME                  := pz_petalinux
-HDL_BOARD_NAME                    := PZ7015_FMC2
+HDL_BOARD_NAME                    := pz7015_fmc2
 PETALINUX_PROJECT_NAME            := pz7015_fmc2_${PLNX_VER}
 PETALINUX_ROOTFS_NAME             := pz7015_fmc2
 
