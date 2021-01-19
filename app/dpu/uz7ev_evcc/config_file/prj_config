@@ -52,7 +52,7 @@ nk=DPUCZDX8G:2
 misc=:solution_name=link
 
 #param=compiler.addOutputTypes=sd_card
-param=compiler.skipTimingCheckAndFrequencyScaling=1
+#param=compiler.skipTimingCheckAndFrequencyScaling=1
 
 [vivado]
 prop=run.impl_1.strategy=Performance_ExploreWithRemap

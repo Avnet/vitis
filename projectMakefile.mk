@@ -60,10 +60,13 @@ VITIS_CONSOLIDATED_ROOTFS_FOLDER   := ${VITIS_CONSOLIDATED_FOLDER}/rootfs
 VITIS_CONSOLIDATED_SYSROOT_FOLDER  := ${VITIS_CONSOLIDATED_FOLDER}/sysroot
 VITIS_CONSOLIDATED_SYSROOTS_FOLDER := ${VITIS_CONSOLIDATED_SYSROOT_FOLDER}/sysroots/${SYSROOTTYPE}
 
+VITIS_AI_FOLDER                    := Vitis-AI-1.3
+VITIS_AI_BRANCH                    := "-b v1.3"
+
 #-=-=-=-=-=-=-=--=-=-=-=-=-=-=--=-=-=-=-=-=-=--=-=-=-=-=-=-=--=-=-=-=-=-=-=--=-=-
 
-TARGETS=' all allplus xsa plnx sysroot pfm app dpu '
-CLNTARGETS=' cleanxsa cleanplnx cleansysroot cleanpfm cleanapp cleandpu '
+TARGETS=' all allplus xsa plnx sysroot pfm app dpu zoo '
+CLNTARGETS=' cleanxsa cleanplnx cleansysroot cleanpfm cleanapp cleandpu cleanzoo '
 .PHONY:  ${TARGETS} ${CLNTARGETS}
 .SILENT: ${TARGETS}
 
@@ -227,14 +230,47 @@ app:
 
 dpu:
 	@echo -e '${CSTR} Creating DPU-TRD Project'
-	if [ ! -d "../../Vitis-AI-1.3" ]; then git clone -b v1.3 https://github.com/Xilinx/Vitis-AI ../../Vitis-AI-1.3 ; fi
+	if [ ! -d "../../${VITIS_AI_FOLDER}" ]; then git clone ${VITIS_AI_BRANCH} https://github.com/Xilinx/Vitis-AI ../../${VITIS_AI_FOLDER} ; fi
 	mkdir -p ../../projects
 	mkdir -p ../../projects/DPU-TRD-${HDL_BOARD_NAME}
-	cp -r ../../Vitis-AI-1.3/dsa/DPU-TRD/* ../../projects/DPU-TRD-${HDL_BOARD_NAME}/.
-	cp -r DPU-TRD/* ../../projects/DPU-TRD-${HDL_BOARD_NAME}/prj/Vitis/.
-	export SDX_PLATFORM=../../../../../platform_repo/${HDL_BOARD_NAME}/${HDL_BOARD_NAME}.xpfm ; \
-	export SDX_ROOTFS_EXT4=../../../../../platform_repo/${HDL_BOARD_NAME}/sw/${HDL_BOARD_NAME}/PetaLinux/rootfs/rootfs.ext4 ; \
+	cp -r ../../${VITIS_AI_FOLDER}/dsa/DPU-TRD/* ../../projects/DPU-TRD-${HDL_BOARD_NAME}/.
+	cp -r ../../app/dpu/Makefile ../../projects/DPU-TRD-${HDL_BOARD_NAME}/prj/Vitis/.
+	sed -i 's/DEVICE={DEVICE}/DEVICE=${HDL_BOARD_NAME}/' ../../projects/DPU-TRD-${HDL_BOARD_NAME}/prj/Vitis/Makefile
+	cp -r ../../app/dpu/${HDL_BOARD_NAME}/* ../../projects/DPU-TRD-${HDL_BOARD_NAME}/prj/Vitis/.
+	export SDX_PLATFORM=../../../../platform_repo/${HDL_BOARD_NAME}/${HDL_BOARD_NAME}.xpfm ; \
+	export SDX_ROOTFS_EXT4=../../../../platform_repo/${HDL_BOARD_NAME}/sw/${HDL_BOARD_NAME}/PetaLinux/rootfs/rootfs.ext4 ; \
 	make -C ../../projects/DPU-TRD-${HDL_BOARD_NAME}/prj/Vitis
+
+zoo:
+ifeq (,$(wildcard ../../projects/DPU-TRD-${HDL_BOARD_NAME}/prj/Vitis/binary_container_1/sd_card/arch.json))
+	@echo -e '${CSTR} ERROR : DPU-TRD Project not found, run step=dpu first' 
+else
+	@echo -e '${CSTR} Compiling AI Model Zoo'
+	if [ ! -d "../../${VITIS_AI_FOLDER}" ]; then git clone ${VITIS_AI_BRANCH} https://github.com/Xilinx/Vitis-AI ../../${VITIS_AI_FOLDER} ; fi
+	mkdir -p ../../projects
+	mkdir -p ../../projects/AI-Model-Zoo-${HDL_BOARD_NAME}
+	@echo -e 'Copying AI Model Zoo files'
+	cp -r ../../${VITIS_AI_FOLDER}/models/AI-Model-Zoo/model-list ../../projects/AI-Model-Zoo-${HDL_BOARD_NAME}/.
+	@echo -e 'Copying docker files'
+	cp -r ../../${VITIS_AI_FOLDER}/docker_run.sh ../../projects/AI-Model-Zoo-${HDL_BOARD_NAME}/.
+	mkdir -p ../../projects/AI-Model-Zoo-${HDL_BOARD_NAME}/setup
+	cp -r ../../${VITIS_AI_FOLDER}/setup/docker ../../projects/AI-Model-Zoo-${HDL_BOARD_NAME}/setup/.
+	@echo -e 'Copying arch.json file for ${HDL_BOARD_NAME} platform'
+	cp ../../projects/DPU-TRD-${HDL_BOARD_NAME}/prj/Vitis/binary_container_1/sd_card/arch.json ../../projects/AI-Model-Zoo-${HDL_BOARD_NAME}/.
+	@echo -e 'Copying compilation script (compile_modelzoo.sh)'
+	cp -r ../../app/zoo/compile_modelzoo.sh ../../projects/AI-Model-Zoo-${HDL_BOARD_NAME}/.
+	@echo -e '=================================================================='
+	@echo -e 'Instructions to build AI-Model-Zoo for ${HDL_BOARD_NAME} platform:'
+	@echo -e '=================================================================='
+	@echo -e '   cd projects/AI-Model-Zoo-${HDL_BOARD_NAME}/.'
+	@echo -e '   ./docker_run.sh xilinx/vitis-ai:1.3.411'
+	@echo -e '   source ./compile_modelzoo.sh'
+	@echo -e '=================================================================='
+	@echo -e 'Additional Information:'
+	@echo -e '- to compile only one (or a few) models,'
+	@echo -e '  remove unwanted model sub-directories from model-list directory'
+	@echo -e '=================================================================='
+endif
 		
 cleanxsa:
 	@echo -e '${CSTR} Deleting Vivado Project...'
@@ -273,7 +309,12 @@ cleanapp:
 cleandpu:
 	@echo -e '${CSTR} Deleting DPU-TRD Project...'
 	${RM} -r ../projects/DPU-TRD-${HDL_BOARD_NAME}
-	${RM} -r ../Vitis-AI-1.2.1
+	${RM} -r ../${VITIS_AI_FOLDER}
+
+cleanzoo:
+	@echo -e '${CSTR} Deleting AI-Model-Zoo Project...'
+	${RM} -r ../projects/AI-Model-Zoo-${HDL_BOARD_NAME}
+	${RM} -r ../${VITIS_AI_FOLDER}
 
 cleanall: cleanxsa cleanplnx cleansysroot cleanpfm cleanapp cleandpu
 	@echo -e '${CSTR} Deleted all of the things!!'
