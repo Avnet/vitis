@@ -213,9 +213,9 @@ endif
 
 app:
 	@echo -e '${CSTR} Creating Application Project'
-	mkdir -p ../../build
-	mkdir -p ../../build/vadd-${HDL_BOARD_NAME}
-	cp -r ../app/vadd/* ../build/vadd-${HDL_BOARD_NAME}/.
+	mkdir -p ../../projects
+	mkdir -p ../../projects/vadd-${HDL_BOARD_NAME}
+	cp -r ../app/vadd/* ../projects/vadd-${HDL_BOARD_NAME}/.
 	@echo -e 'VITIS_PLATFORM=${HDL_BOARD_NAME}'
 	@echo -e 'VITIS_PLATFORM_DIR=../../../../platform_repo/${HDL_BOARD_NAME}'
 	@echo -e 'VITIS_PLATFORM_PATH=../../../../platform_repo/${HDL_BOARD_NAME}/${HDL_BOARD_NAME}.xpfm'
@@ -223,18 +223,18 @@ app:
 	export VITIS_PLATFORM_DIR=../../../../platform_repo/${HDL_BOARD_NAME} ; \
 	export VITIS_PLATFORM_PATH=../../../../platform_repo/${HDL_BOARD_NAME}/${HDL_BOARD_NAME}.xpfm ; \
 	export SYSROOTTYPE=${SYSROOTTYPE} ; \
-	make -C ../build/vadd-${HDL_BOARD_NAME}/hw
+	make -C ../projects/vadd-${HDL_BOARD_NAME}/hw
 
 dpu:
 	@echo -e '${CSTR} Creating DPU-TRD Project'
 	if [ ! -d "../../Vitis-AI-1.3" ]; then git clone -b v1.3 https://github.com/Xilinx/Vitis-AI ../../Vitis-AI-1.3 ; fi
-	mkdir -p ../../build
-	mkdir -p ../../build/DPU-TRD-${HDL_BOARD_NAME}
-	cp -r ../../Vitis-AI-1.3/dsa/DPU-TRD/* ../../build/DPU-TRD-${HDL_BOARD_NAME}/.
-	cp -r DPU-TRD/* ../../build/DPU-TRD-${HDL_BOARD_NAME}/prj/Vitis/.
+	mkdir -p ../../projects
+	mkdir -p ../../projects/DPU-TRD-${HDL_BOARD_NAME}
+	cp -r ../../Vitis-AI-1.3/dsa/DPU-TRD/* ../../projects/DPU-TRD-${HDL_BOARD_NAME}/.
+	cp -r DPU-TRD/* ../../projects/DPU-TRD-${HDL_BOARD_NAME}/prj/Vitis/.
 	export SDX_PLATFORM=../../../../../platform_repo/${HDL_BOARD_NAME}/${HDL_BOARD_NAME}.xpfm ; \
 	export SDX_ROOTFS_EXT4=../../../../../platform_repo/${HDL_BOARD_NAME}/sw/${HDL_BOARD_NAME}/PetaLinux/rootfs/rootfs.ext4 ; \
-	make -C ../../build/DPU-TRD-${HDL_BOARD_NAME}/prj/Vitis
+	make -C ../../projects/DPU-TRD-${HDL_BOARD_NAME}/prj/Vitis
 		
 cleanxsa:
 	@echo -e '${CSTR} Deleting Vivado Project...'
@@ -252,7 +252,6 @@ cleanplnx:
 
 cleansysroot:
 	@echo -e '${CSTR} Deleting Sysroot...'
-	# only needed if using the sdk.sh method
 	${RM} ${PETALINUX_PROJECTS_FOLDER}/${PETALINUX_PROJECT_NAME}/${MAKENAME}
 	${RM} ${PETALINUX_PROJECTS_FOLDER}/${PETALINUX_PROJECT_NAME}/images/linux/sdk.sh
 	${RM} -r ${VITIS_CONSOLIDATED_SYSROOT_FOLDER}
@@ -269,11 +268,11 @@ cleanpfm:
 
 cleanapp:
 	@echo -e '${CSTR} Deleting Application Project...'
-	${RM} -r ../build/vadd-${HDL_BOARD_NAME}
+	${RM} -r ../projects/vadd-${HDL_BOARD_NAME}
 
 cleandpu:
 	@echo -e '${CSTR} Deleting DPU-TRD Project...'
-	${RM} -r ../build/DPU-TRD-${HDL_BOARD_NAME}
+	${RM} -r ../projects/DPU-TRD-${HDL_BOARD_NAME}
 	${RM} -r ../Vitis-AI-1.2.1
 
 cleanall: cleanxsa cleanplnx cleansysroot cleanpfm cleanapp cleandpu
