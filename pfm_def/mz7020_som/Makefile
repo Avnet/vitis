@@ -48,9 +48,9 @@ BASENAME_FOLDER      = $(shell basename ${PROJECT_ROOT_FOLDER})
 
 
 HDL_PROJECT_NAME                  := mz_petalinux
-HDL_BOARD_NAME                    := mz7020_fmccc
-PETALINUX_PROJECT_NAME            := mz7020_fmccc_${PLNX_VER}
-PETALINUX_ROOTFS_NAME             := mz7020_fmccc
+HDL_BOARD_NAME                    := mz7020_som
+PETALINUX_PROJECT_NAME            := mz7020_som_${PLNX_VER}
+PETALINUX_ROOTFS_NAME             := mz7020_som
 
 VITIS_ARCHITECTURE                := ps7_cortexa9
 VITIS_PROJECT_DESCRIPTION         := "MicroZed 7020 Vitis platform based on the Out Of Box image.  More information can be found at https://www.element14.com/community/community/designcenter/zedboardcommunity/microzed"
