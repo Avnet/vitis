@@ -277,7 +277,7 @@ cleanxsa:
 	# faster to just delete
 	#@echo -e 'clean: \n	@vivado -mode batch -source make.tcl -notrace -tclargs board=${HDL_BOARD_NAME} project=${HDL_PROJECT_NAME} clean=yes' > ${HDL_SCRIPTS_FOLDER}/${MAKENAME}
 	#$(MAKE) -f ${MAKENAME} -C ${HDL_SCRIPTS_FOLDER}
-	${RM} -r ${HDL_PROJECTS_FOLDER}/${HDL_PROJECT_NAME}/${HDL_BOARD_NAME}_${PLNX_VER}
+	${RM} -r ${HDL_PROJECTS_FOLDER}/${HDL_BOARD_NAME}_${HDL_PROJECT_NAME}_${PLNX_VER}
 	${RM} ${HDL_SCRIPTS_FOLDER}/${MAKENAME}
 
 cleanplnx:
