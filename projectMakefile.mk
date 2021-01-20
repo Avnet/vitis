@@ -111,7 +111,7 @@ ifneq (,$(wildcard ${HDL_PROJECTS_FOLDER}/${HDL_BOARD_NAME}_${HDL_PROJECT_NAME}_
 	@echo '        ' ${HDL_PROJECTS_FOLDER}/${HDL_BOARD_NAME}_${HDL_PROJECT_NAME}_${PLNX_VER}/${HDL_BOARD_NAME}.xsa
 else
 	@echo -e '${CSTR} Making XSA'
-	@echo -e 'xsa: \n	@vivado -mode batch -notrace -source make_${HDL_PROJECT_NAME}.tcl \
+	@echo -e 'xsa: \n	@vivado -mode batch -notrace -source make_${HDL_BOARD_NAME}_${HDL_PROJECT_NAME}.tcl \
 	                            -tclargs ${HDL_BOARD_NAME} ${HDL_PROJECT_NAME}' > ${HDL_SCRIPTS_FOLDER}/${MAKENAME}
 	$(MAKE) -f ${MAKENAME} -C ${HDL_SCRIPTS_FOLDER} xsa
 endif

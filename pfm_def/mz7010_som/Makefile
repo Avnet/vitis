@@ -47,7 +47,7 @@ BASENAME_FOLDER      = $(shell basename ${PROJECT_ROOT_FOLDER})
 #              PLNX ROOTFS name (from PetaLinux Make Script)
 
 
-HDL_PROJECT_NAME                  := mz_petalinux
+HDL_PROJECT_NAME                  := base
 HDL_BOARD_NAME                    := mz7010_som
 PETALINUX_PROJECT_NAME            := mz7010_som_${PLNX_VER}
 PETALINUX_ROOTFS_NAME             := mz7010_som
