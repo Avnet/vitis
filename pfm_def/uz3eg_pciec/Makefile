@@ -49,8 +49,8 @@ BASENAME_FOLDER      = $(shell basename ${PROJECT_ROOT_FOLDER})
 
 HDL_PROJECT_NAME                  := base
 HDL_BOARD_NAME                    := uz3eg_pciec
-PETALINUX_PROJECT_NAME            := uz3eg_pciec_${PLNX_VER}
-PETALINUX_ROOTFS_NAME             := uz3eg_pciec
+PETALINUX_PROJECT_NAME            := ${HDL_PROJECT_NAME}
+PETALINUX_ROOTFS_NAME             := ${HDL_BOARD_NAME}
 
 VITIS_ARCHITECTURE                := psu_cortexa53
 VITIS_PROJECT_DESCRIPTION         := "UltraZed-EG Vitis platform based on the Out Of Box image.  More information can be found at https://www.element14.com/community/community/designcenter/zedboardcommunity/ultrazed/ultrazed-eg"

@@ -49,8 +49,8 @@ BASENAME_FOLDER      = $(shell basename ${PROJECT_ROOT_FOLDER})
 
 HDL_PROJECT_NAME                  := base
 HDL_BOARD_NAME                    := pz7010_fmc2
-PETALINUX_PROJECT_NAME            := pz7010_fmc2_${PLNX_VER}
-PETALINUX_ROOTFS_NAME             := pz7010_fmc2
+PETALINUX_PROJECT_NAME            := ${HDL_PROJECT_NAME}
+PETALINUX_ROOTFS_NAME             := ${HDL_BOARD_NAME}
 
 VITIS_ARCHITECTURE                := ps7_cortexa9
 VITIS_PROJECT_DESCRIPTION         := "PicoZed 7010 Vitis platform based on the Out Of Box image.  More information can be found at https://www.element14.com/community/community/designcenter/zedboardcommunity/picozed"

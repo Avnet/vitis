@@ -117,13 +117,13 @@ else
 endif
 
 plnx:
-ifneq (,$(wildcard ${PETALINUX_PROJECTS_FOLDER}/${PETALINUX_PROJECT_NAME}.bsp))
+ifneq (,$(wildcard ${PETALINUX_PROJECTS_FOLDER}/${PETALINUX_ROOTFS_NAME}_${PETALINUX_PROJECT_NAME}_${PLNX_VER}.bsp))
 	@echo -e '${CSTR} BSP Exists, cleanbsp before rebuild' 
 	@echo -e '${CSTR}         Skipping BSP creation'
-	@echo '        ' ${PETALINUX_PROJECTS_FOLDER}/${PETALINUX_PROJECT_NAME}.bsp
+	@echo '        ' ${PETALINUX_PROJECTS_FOLDER}/${PETALINUX_ROOTFS_NAME}_${PETALINUX_PROJECT_NAME}_${PLNX_VER}.bsp
 else
 	@echo -e '${CSTR} Making PLNX Project'
-	@echo -e 'plnx: \n	./make_${PETALINUX_ROOTFS_NAME}.sh' > ${PETALINUX_SCRIPTS_FOLDER}/${MAKENAME}
+	@echo -e 'plnx: \n	./make_${PETALINUX_ROOTFS_NAME}_${PETALINUX_PROJECT_NAME}.sh' > ${PETALINUX_SCRIPTS_FOLDER}/${MAKENAME}
 	$(MAKE) -f ${MAKENAME} -C ${PETALINUX_SCRIPTS_FOLDER} plnx  
 endif
 
