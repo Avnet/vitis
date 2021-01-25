@@ -105,10 +105,10 @@ $(error -=-=-= /_\\VNET Not Able to Determine project_pfm.tcl to use =-=-=-)
 endif
 
 xsa:
-ifneq (,$(wildcard ${HDL_PROJECTS_FOLDER}/${HDL_BOARD_NAME}_${HDL_PROJECT_NAME}_${PLNX_VER}/${HDL_BOARD_NAME}.xsa))
+ifneq (,$(wildcard ${HDL_PROJECTS_FOLDER}/${HDL_BOARD_NAME}_${HDL_PROJECT_NAME}_${PLNX_VER}/${HDL_BOARD_NAME}_${HDL_PROJECT_NAME}.xsa))
 	@echo -e '${CSTR} XSA Exists, cleanxsa before rebuild'
 	@echo -e '${CSTR}         Skipping XSA creation'  
-	@echo '        ' ${HDL_PROJECTS_FOLDER}/${HDL_BOARD_NAME}_${HDL_PROJECT_NAME}_${PLNX_VER}/${HDL_BOARD_NAME}.xsa
+	@echo '        ' ${HDL_PROJECTS_FOLDER}/${HDL_BOARD_NAME}_${HDL_PROJECT_NAME}_${PLNX_VER}/${HDL_BOARD_NAME}_${HDL_PROJECT_NAME}.xsa
 else
 	@echo -e '${CSTR} Making XSA'
 	@echo -e 'xsa: \n	@vivado -mode batch -notrace -source make_${HDL_BOARD_NAME}_${HDL_PROJECT_NAME}.tcl \
