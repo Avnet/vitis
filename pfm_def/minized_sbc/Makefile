@@ -47,10 +47,10 @@ BASENAME_FOLDER      = $(shell basename ${PROJECT_ROOT_FOLDER})
 #              PLNX ROOTFS name (from PetaLinux Make Script)
 
 
-HDL_PROJECT_NAME                  := minized_petalinux
-HDL_BOARD_NAME                    := minized
-PETALINUX_PROJECT_NAME            := minized_${PLNX_VER}
-PETALINUX_ROOTFS_NAME             := minized
+HDL_PROJECT_NAME                  := base
+HDL_BOARD_NAME                    := minized_sbc
+PETALINUX_PROJECT_NAME            := minized_sbc_${PLNX_VER}
+PETALINUX_ROOTFS_NAME             := minized_sbc
 
 VITIS_ARCHITECTURE                := ps7_cortexa9
 VITIS_PROJECT_DESCRIPTION         := "MiniZed Vitis platform based on the Out Of Box image.  More information can be found at https://www.element14.com/community/community/designcenter/zedboardcommunity/minized"
