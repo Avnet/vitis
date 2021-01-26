@@ -63,6 +63,9 @@ VITIS_CONSOLIDATED_SYSROOTS_FOLDER := ${VITIS_CONSOLIDATED_SYSROOT_FOLDER}/sysro
 VITIS_AI_FOLDER                    := Vitis-AI-1.3
 VITIS_AI_BRANCH                    := "-b v1.3"
 
+DPU_PROJECT_NAME                   := ${HDL_BOARD_NAME}_${HDL_PROJECT_NAME}_${PLNX_VER}_dpu
+ZOO_PROJECT_NAME                   := ${HDL_BOARD_NAME}_${HDL_PROJECT_NAME}_${PLNX_VER}_zoo
+
 #-=-=-=-=-=-=-=--=-=-=-=-=-=-=--=-=-=-=-=-=-=--=-=-=-=-=-=-=--=-=-=-=-=-=-=--=-=-
 
 TARGETS=' all allplus xsa plnx sysroot pfm vadd dpu zoo '
@@ -234,37 +237,37 @@ dpu:
 	@echo -e '${CSTR} Creating DPU-TRD Project'
 	if [ ! -d "../../${VITIS_AI_FOLDER}" ]; then git clone ${VITIS_AI_BRANCH} https://github.com/Xilinx/Vitis-AI ../../${VITIS_AI_FOLDER} ; fi
 	mkdir -p ../../projects
-	mkdir -p ../../projects/DPU-TRD-${HDL_BOARD_NAME}
-	cp -r ../../${VITIS_AI_FOLDER}/dsa/DPU-TRD/* ../../projects/DPU-TRD-${HDL_BOARD_NAME}/.
-	cp -r ../../app/dpu/Makefile ../../projects/DPU-TRD-${HDL_BOARD_NAME}/prj/Vitis/.
-	sed -i 's/DEVICE={DEVICE}/DEVICE=${HDL_BOARD_NAME}/' ../../projects/DPU-TRD-${HDL_BOARD_NAME}/prj/Vitis/Makefile
-	cp -r ../../app/dpu/${HDL_BOARD_NAME}/* ../../projects/DPU-TRD-${HDL_BOARD_NAME}/prj/Vitis/.
-	export SDX_PLATFORM=../../../../platform_repo/${HDL_BOARD_NAME}/${HDL_BOARD_NAME}.xpfm ; \
-	export SDX_ROOTFS_EXT4=../../../../platform_repo/${HDL_BOARD_NAME}/sw/${HDL_BOARD_NAME}/PetaLinux/rootfs/rootfs.ext4 ; \
-	make -C ../../projects/DPU-TRD-${HDL_BOARD_NAME}/prj/Vitis
+	mkdir -p ../../projects/${DPU_PROJECT_NAME}
+	cp -r ../../${VITIS_AI_FOLDER}/dsa/DPU-TRD/* ../../projects/${DPU_PROJECT_NAME}/.
+	cp -r ../../app/dpu/Makefile ../../projects/${DPU_PROJECT_NAME}/prj/Vitis/.
+	sed -i 's/DEVICE={DEVICE}/DEVICE=${HDL_BOARD_NAME}/' ../../projects/${DPU_PROJECT_NAME}/prj/Vitis/Makefile
+	cp -r ../../app/dpu/${HDL_BOARD_NAME}/* ../../projects/${DPU_PROJECT_NAME}/prj/Vitis/.
+	export SDX_PLATFORM=../../../../platform_repo/${HDL_BOARD_NAME}_${HDL_PROJECT_NAME}/${HDL_BOARD_NAME}_${HDL_PROJECT_NAME}.xpfm ; \
+	export SDX_ROOTFS_EXT4=../../../../platform_repo/${HDL_BOARD_NAME}_${HDL_PROJECT_NAME}/sw/${HDL_BOARD_NAME}_${HDL_PROJECT_NAME}/PetaLinux/rootfs/rootfs.ext4 ; \
+	make -C ../../projects/${DPU_PROJECT_NAME}/prj/Vitis
 
 zoo:
-ifeq (,$(wildcard ../../projects/DPU-TRD-${HDL_BOARD_NAME}/prj/Vitis/binary_container_1/sd_card/arch.json))
+ifeq (,$(wildcard ../../projects/${DPU_PROJECT_NAME}/prj/Vitis/binary_container_1/sd_card/arch.json))
 	@echo -e '${CSTR} ERROR : DPU-TRD Project not found, run step=dpu first' 
 else
 	@echo -e '${CSTR} Compiling AI Model Zoo'
 	if [ ! -d "../../${VITIS_AI_FOLDER}" ]; then git clone ${VITIS_AI_BRANCH} https://github.com/Xilinx/Vitis-AI ../../${VITIS_AI_FOLDER} ; fi
 	mkdir -p ../../projects
-	mkdir -p ../../projects/AI-Model-Zoo-${HDL_BOARD_NAME}
+	mkdir -p ../../projects/${ZOO_PROJECT_NAME}
 	@echo -e 'Copying AI Model Zoo files'
-	cp -r ../../${VITIS_AI_FOLDER}/models/AI-Model-Zoo/model-list ../../projects/AI-Model-Zoo-${HDL_BOARD_NAME}/.
+	cp -r ../../${VITIS_AI_FOLDER}/models/AI-Model-Zoo/model-list ../../projects/${ZOO_PROJECT_NAME}/.
 	@echo -e 'Copying docker files'
-	cp -r ../../${VITIS_AI_FOLDER}/docker_run.sh ../../projects/AI-Model-Zoo-${HDL_BOARD_NAME}/.
-	mkdir -p ../../projects/AI-Model-Zoo-${HDL_BOARD_NAME}/setup
-	cp -r ../../${VITIS_AI_FOLDER}/setup/docker ../../projects/AI-Model-Zoo-${HDL_BOARD_NAME}/setup/.
+	cp -r ../../${VITIS_AI_FOLDER}/docker_run.sh ../../projects/${ZOO_PROJECT_NAME}/.
+	mkdir -p ../../projects/${ZOO_PROJECT_NAME}/setup
+	cp -r ../../${VITIS_AI_FOLDER}/setup/docker ../../projects/${ZOO_PROJECT_NAME}/setup/.
 	@echo -e 'Copying arch.json file for ${HDL_BOARD_NAME} platform'
-	cp ../../projects/DPU-TRD-${HDL_BOARD_NAME}/prj/Vitis/binary_container_1/sd_card/arch.json ../../projects/AI-Model-Zoo-${HDL_BOARD_NAME}/.
+	cp ../../projects/${DPU_PROJECT_NAME}/prj/Vitis/binary_container_1/sd_card/arch.json ../../projects/${ZOO_PROJECT_NAME}/.
 	@echo -e 'Copying compilation script (compile_modelzoo.sh)'
-	cp -r ../../app/zoo/compile_modelzoo.sh ../../projects/AI-Model-Zoo-${HDL_BOARD_NAME}/.
+	cp -r ../../app/zoo/compile_modelzoo.sh ../../projects/${ZOO_PROJECT_NAME}/.
 	@echo -e '=================================================================='
 	@echo -e 'Instructions to build AI-Model-Zoo for ${HDL_BOARD_NAME} platform:'
 	@echo -e '=================================================================='
-	@echo -e '   cd projects/AI-Model-Zoo-${HDL_BOARD_NAME}/.'
+	@echo -e '   cd projects/${ZOO_PROJECT_NAME}/.'
 	@echo -e '   ./docker_run.sh xilinx/vitis-ai:1.3.411'
 	@echo -e '   source ./compile_modelzoo.sh'
 	@echo -e '=================================================================='

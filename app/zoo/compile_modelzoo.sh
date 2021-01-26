@@ -42,11 +42,11 @@ function build_model() {
                         else
 				if [ "$outputinfostr" != "tor" ]; then
 					wget $archive1 -O tmp1.zip
-					check_result=`md5sum -c <<<"$checksum1 tmp1.zip"`
-					if [ "$check_result" != "tmp1.zip: OK" ]; then
-	   					echo "md5sum check failed! Please try to download again."
-	   					exit 1
-					else
+					#check_result=`md5sum -c <<<"$checksum1 tmp1.zip"`
+					#if [ "$check_result" != "tmp1.zip: OK" ]; then
+	   				#	echo "md5sum check failed! Please try to download again."
+	   				#	exit 1
+					#else
 						if [ `command -v unzip` ]; then
 	      						unzip tmp1.zip
 	   					else 
@@ -54,16 +54,16 @@ function build_model() {
 	      						unzip tmp1.zip
 	   					fi
 						rm tmp1.zip
-					fi
+					#fi
 					wget $archive2 -O tmp2.tar.gz
-					check_result=`md5sum -c <<<"$checksum2 tmp2.tar.gz"`
-					if [ "$check_result" != "tmp2.tar.gz: OK" ]; then
-	   					echo "md5sum check failed! Please try to download again."
-	   					exit 1
-					else
+					#check_result=`md5sum -c <<<"$checksum2 tmp2.tar.gz"`
+					#if [ "$check_result" != "tmp2.tar.gz: OK" ]; then
+	   				#	echo "md5sum check failed! Please try to download again."
+	   				#	exit 1
+					#else
 						tar -xvzf tmp2.tar.gz
 						rm tmp2.tar.gz
-					fi
+					#fi
 				else
 					echo "Torchvision has no float&quantized model"
 				fi
