@@ -1,0 +1,5 @@
+# Ignore
+consolidated/
+platform_workspace/
+# Except this file
+!.gitignore

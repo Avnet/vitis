@@ -152,7 +152,7 @@ else
 endif
 
 pfm:
-ifneq (,$(wildcard ${VITIS_PLATFORM_REPO_FOLDER}/${HDL_BOARD_NAME}))
+ifneq (,$(wildcard ${VITIS_PLATFORM_REPO_FOLDER}/${HDL_BOARD_NAME}_${HDL_PROJECT_NAME}))
 	@echo -e '${CSTR} Platform Exists, cleanpfm before rebuild'
 	@echo -e '${CSTR}         Skipping create Platform'
 else
@@ -171,25 +171,25 @@ else
 	cp -v ${PETALINUX_PROJECTS_FOLDER}/${PETALINUX_ROOTFS_NAME}_${PETALINUX_PROJECT_NAME}_${PLNX_VER}/images/linux/rootfs.ext4                ${VITIS_CONSOLIDATED_ROOTFS_FOLDER}
 	cp -v ${PETALINUX_PROJECTS_FOLDER}/${PETALINUX_ROOTFS_NAME}_${PETALINUX_PROJECT_NAME}_${PLNX_VER}/images/linux/u-boot.elf                 ${VITIS_CONSOLIDATED_BOOT_FOLDER}
 ifeq ($(VITIS_ARCHITECTURE),psu_cortexa53)
-	@echo -e '${CSTR} Starting Platform Generation'
+	@echo -e '${CSTR} Copying Build Articles for Zynq MPSoC'
 	cp -v ${PETALINUX_PROJECTS_FOLDER}/${PETALINUX_ROOTFS_NAME}_${PETALINUX_PROJECT_NAME}_${PLNX_VER}/images/linux/bl31.elf                   ${VITIS_CONSOLIDATED_BOOT_FOLDER}
 	cp -v ${PETALINUX_PROJECTS_FOLDER}/${PETALINUX_ROOTFS_NAME}_${PETALINUX_PROJECT_NAME}_${PLNX_VER}/images/linux/pmufw.elf                  ${VITIS_CONSOLIDATED_BOOT_FOLDER}
 	cp -v ${PETALINUX_PROJECTS_FOLDER}/${PETALINUX_ROOTFS_NAME}_${PETALINUX_PROJECT_NAME}_${PLNX_VER}/images/linux/zynqmp_fsbl.elf            ${VITIS_CONSOLIDATED_BOOT_FOLDER}/fsbl.elf
 	cp -v ../../zynqmp_qemu_args.txt                                                                                                          ${VITIS_CONSOLIDATED_FOLDER}
 	cp -v ../../pmu_args.txt                                                                                                                  ${VITIS_CONSOLIDATED_FOLDER}
 else ifeq ($(VITIS_ARCHITECTURE),ps7_cortexa9)
-	@echo -e '${CSTR} Starting Platform Generation'
+	@echo -e '${CSTR} Copying Build Articles for Zynq 7000'
 	cp -v ${PETALINUX_PROJECTS_FOLDER}/${PETALINUX_ROOTFS_NAME}_${PETALINUX_PROJECT_NAME}_${PLNX_VER}/images/linux/zynq_fsbl.elf              ${VITIS_CONSOLIDATED_BOOT_FOLDER}/fsbl.elf
 	cp -v ../../zynq_qemu_args.txt                                                                                                            ${VITIS_CONSOLIDATED_FOLDER}
 endif
 	echo ${HDL_BOARD_NAME}                                                                                                                    > ${VITIS_CONSOLIDATED_IMAGE_FOLDER}/platform_desc.txt
 	cp -v ../../init.sh                                                                                                                       ${VITIS_CONSOLIDATED_IMAGE_FOLDER}
-	cp -v ${HDL_PROJECTS_FOLDER}/${HDL_BOARD_NAME}_${HDL_PROJECT_NAME}_${PLNX_VER}/${HDL_BOARD_NAME}.xsa ${VITIS_CONSOLIDATED_XSA_FOLDER}
+	cp -v ${HDL_PROJECTS_FOLDER}/${HDL_BOARD_NAME}_${HDL_PROJECT_NAME}_${PLNX_VER}/${HDL_BOARD_NAME}_${HDL_PROJECT_NAME}.xsa ${VITIS_CONSOLIDATED_XSA_FOLDER}
 	
 	@echo -e '${CSTR} Executing Platform Generation'
 
 	$(XSCT) -sdx ${PFM_TCL_FILENAME} \
-	             ${HDL_BOARD_NAME}                     \
+	             ${HDL_BOARD_NAME}_${HDL_PROJECT_NAME} \
 	             ${VITIS_PLATFORM_PLATFORM_WORKSPACE}  \
 	             ${VITIS_CONSOLIDATED_FOLDER}          \
 	             ${VITIS_CONSOLIDATED_BOOT_FOLDER}     \
@@ -206,7 +206,7 @@ endif
 	# can use make cleanpfm pfm to make this ann up arrow enter action
 	#if [ -d "${VITIS_PLATFORM_REPO_FOLDER}/${HDL_BOARD_NAME}" ]; then rm -rf ${VITIS_PLATFORM_REPO_FOLDER}/${HDL_BOARD_NAME}; fi
 	# for now force overwrite the platform
-	cp -rf ./${VITIS_PLATFORM_PLATFORM_WORKSPACE}/${HDL_BOARD_NAME}/export/${HDL_BOARD_NAME}        ${VITIS_PLATFORM_REPO_FOLDER}/
+	cp -rf ./${VITIS_PLATFORM_PLATFORM_WORKSPACE}/${HDL_BOARD_NAME}_${HDL_PROJECT_NAME}/export/${HDL_BOARD_NAME}_${HDL_PROJECT_NAME}        ${VITIS_PLATFORM_REPO_FOLDER}/
 	#cp -vf ${PETALINUX_PROJECTS_FOLDER}/${PETALINUX_PROJECT_NAME}/images/linux/pmufw.elf            ${VITIS_PLATFORM_REPO_FOLDER}/${HDL_BOARD_NAME}/sw/${HDL_BOARD_NAME}/boot
 	@echo -e '${CSTR} Platform build complete'
 endif
@@ -224,7 +224,7 @@ vadd:
 	export VITIS_PLATFORM_DIR=../../../../platform_repo/${HDL_BOARD_NAME}_${HDL_PROJECT_NAME}_${PLNX_VER} ; \
 	export VITIS_PLATFORM_PATH=../../../../platform_repo/${HDL_BOARD_NAME}_${HDL_PROJECT_NAME}_${PLNX_VER}/${HDL_BOARD_NAME}_${HDL_PROJECT_NAME}.xpfm ; \
 	export SYSROOTTYPE=${SYSROOTTYPE} ; \
-	#make -C ../projects/${HDL_BOARD_NAME}_${HDL_PROJECT_NAME}_${PLNX_VER}_vadd/hw
+	make -C ../projects/${HDL_BOARD_NAME}_${HDL_PROJECT_NAME}_${PLNX_VER}_vadd/hw
 	@echo -e '${LGRN}***********************'
 	@echo -e '  ${CSTR}'
 	@echo -e ' To write image to SDCARD:'
@@ -300,7 +300,7 @@ cleansysroot:
 cleanpfm:
 	@echo -e '${CSTR} Deleting platform and project configuration!'
 	${RM} -r ${VITIS_PLATFORM_PLATFORM_WORKSPACE}
-	${RM} -r ${VITIS_PLATFORM_REPO_FOLDER}/${HDL_BOARD_NAME}
+	${RM} -r ${VITIS_PLATFORM_REPO_FOLDER}/${HDL_BOARD_NAME}_${HDL_PROJECT_NAME}
 	${RM} -r ${VITIS_CONSOLIDATED_FOLDER}/linux.bif
 	${RM} -r ${VITIS_CONSOLIDATED_BOOT_FOLDER}
 	${RM} -r ${VITIS_CONSOLIDATED_IMAGE_FOLDER}
