@@ -8,21 +8,27 @@
 #XILINX_VIVADO ?= /tools/Xilinx/Vivado/2020.1
 XILINX_VIVADO_HLS ?= $(XILINX_VITIS)/Vivado_HLS
 
-$(info /_\VNET  Sysroot  ${SYSROOTTYPE})
 ifeq ($(SYSROOTTYPE),aarch64-xilinx-linux)
 HOST_CXX ?= aarch64-linux-gnu-g++
 else ifeq ($(SYSROOTTYPE),cortexa9t2hf-neon-xilinx-linux-gnueabi)
 HOST_CXX ?= arm-linux-gnueabihf-g++
+else
+$(error /_\VNET  Did not set CRITICAL variables)
 endif
+
+$(info /_\VNET  Sysroot  ${SYSROOTTYPE})
 $(info /_\VNET  HOST_CXX  ${HOST_CXX})
+# variables pulled from projectMakefile.mk
+#VITIS_PLATFORM = $(TARGET)
+#VITIS_PLATFORM_DIR = ../../../platform_repo/$(TARGET)
+#VITIS_PLATFORM_PATH = ../../../platform_repo/$(TARGET)/$(TARGET).xpfm
+$(info /_\VNET  VITIS_PLATFORM      = ${VITIS_PLATFORM})
+$(info /_\VNET  VITIS_PLATFORM_DIR  = ${VITIS_PLATFORM_DIR})
+$(info /_\VNET  VITIS_PLATFORM_PATH = ${VITIS_PLATFORM_PATH})
 
 VPP ?= ${XILINX_VITIS}/bin/v++
 RM = rm -f
 RMDIR = rm -rf
-
-#VITIS_PLATFORM = $(TARGET)
-#VITIS_PLATFORM_DIR = ../../../platform_repo/$(TARGET)
-#VITIS_PLATFORM_PATH = ../../../platform_repo/$(TARGET)/$(TARGET).xpfm
 
 # host compiler global settings
 CXXFLAGS += -std=c++0x -DVITIS_PLATFORM=$(VITIS_PLATFORM) -D__USE_XOPEN2K8 -I$(XILINX_VIVADO)/include/ -I$(VITIS_PLATFORM_DIR)/sw/$(VITIS_PLATFORM)/PetaLinux/sysroot/${SYSROOTTYPE}/usr/include/xrt/ -O2 -g -Wall -c -fmessage-length=0 --sysroot=$(VITIS_PLATFORM_DIR)/sw/$(VITIS_PLATFORM)/PetaLinux/sysroot/${SYSROOTTYPE}

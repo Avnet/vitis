@@ -216,22 +216,19 @@ vadd:
 	mkdir -p ../../projects
 	# keep using HDL name as there are instances where one wants to make a baremetal design!
 	mkdir -p ../../projects/${HDL_BOARD_NAME}_${HDL_PROJECT_NAME}_${PLNX_VER}_vadd
-	cp -r ../app/vadd/* ../projects/${HDL_BOARD_NAME}_${HDL_PROJECT_NAME}_${PLNX_VER}_vadd/.
-	@echo -e 'VITIS_PLATFORM=${HDL_BOARD_NAME}_${HDL_PROJECT_NAME}_${PLNX_VER}'
-	@echo -e 'VITIS_PLATFORM_DIR=../../../../platform_repo/${HDL_BOARD_NAME}_${HDL_PROJECT_NAME}_${PLNX_VER}'
-	@echo -e 'VITIS_PLATFORM_PATH=../../../../platform_repo/${HDL_BOARD_NAME}_${HDL_PROJECT_NAME}_${PLNX_VER}/${HDL_BOARD_NAME}_${HDL_PROJECT_NAME}.xpfm'
-	export VITIS_PLATFORM=${HDL_BOARD_NAME}_${HDL_PROJECT_NAME}_${PLNX_VER} ; \
-	export VITIS_PLATFORM_DIR=../../../../platform_repo/${HDL_BOARD_NAME}_${HDL_PROJECT_NAME}_${PLNX_VER} ; \
-	export VITIS_PLATFORM_PATH=../../../../platform_repo/${HDL_BOARD_NAME}_${HDL_PROJECT_NAME}_${PLNX_VER}/${HDL_BOARD_NAME}_${HDL_PROJECT_NAME}.xpfm ; \
+	cp -r ../../app/vadd/* ../../projects/${HDL_BOARD_NAME}_${HDL_PROJECT_NAME}_${PLNX_VER}_vadd/.
+	export VITIS_PLATFORM=${HDL_BOARD_NAME}_${HDL_PROJECT_NAME} ; \
+	export VITIS_PLATFORM_DIR=../../../platform_repo/${HDL_BOARD_NAME}_${HDL_PROJECT_NAME} ; \
+	export VITIS_PLATFORM_PATH=../../../platform_repo/${HDL_BOARD_NAME}_${HDL_PROJECT_NAME}/${HDL_BOARD_NAME}_${HDL_PROJECT_NAME}.xpfm ; \
 	export SYSROOTTYPE=${SYSROOTTYPE} ; \
-	make -C ../projects/${HDL_BOARD_NAME}_${HDL_PROJECT_NAME}_${PLNX_VER}_vadd/hw
+	make -C ../../projects/${HDL_BOARD_NAME}_${HDL_PROJECT_NAME}_${PLNX_VER}_vadd/hw
 	@echo -e '${LGRN}***********************'
 	@echo -e '  ${CSTR}'
 	@echo -e ' To write image to SDCARD:'
 	@echo -e '  $ sudo dd bs=4M if=${HDL_BOARD_NAME}_${HDL_PROJECT_NAME}_${PLNX_VER}_vadd.img of=/dev/sd{x} status=progress conv=fsync'
 	@echo -e ' Where {x} is a smaller case letter that specifies the device of your SD card'
 	@echo -e '   Note: use df -h to determine which device corresponds to your SD card'
-	@echo -e '${LGRN}***********************{NC}'
+	@echo -e '${LGRN}***********************${NC}'
 
 dpu:
 	@echo -e '${CSTR} Creating DPU-TRD Project'
@@ -309,7 +306,7 @@ cleanpfm:
 
 cleanvadd:
 	@echo -e '${CSTR} Deleting Application Project...'
-	${RM} -r ../projects/vadd-${HDL_BOARD_NAME}
+	${RM} -r ../../projects/${HDL_BOARD_NAME}_${HDL_PROJECT_NAME}_${PLNX_VER}_vadd
 
 cleandpu:
 	@echo -e '${CSTR} Deleting DPU-TRD Project...'
