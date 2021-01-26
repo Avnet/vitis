@@ -313,12 +313,12 @@ cleanvadd:
 
 cleandpu:
 	@echo -e '${CSTR} Deleting DPU-TRD Project...'
-	${RM} -r ../projects/DPU-TRD-${HDL_BOARD_NAME}
+	${RM} -r ../projects/${DPU_PROJECT_NAME}
 	${RM} -r ../${VITIS_AI_FOLDER}
 
 cleanzoo:
 	@echo -e '${CSTR} Deleting AI-Model-Zoo Project...'
-	${RM} -r ../projects/AI-Model-Zoo-${HDL_BOARD_NAME}
+	${RM} -r ../projects/${ZOO_PROJECT_NAME}
 	${RM} -r ../${VITIS_AI_FOLDER}
 
 cleanall: cleanxsa cleanplnx cleansysroot cleanpfm cleanapp cleandpu
