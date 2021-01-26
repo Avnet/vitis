@@ -1,0 +1,7 @@
+# Ignore most...
+pfm_def/*/consolidated
+pfm_def/*/platform_workspace
+projects/*
+
+# Except this file
+!.gitignore
