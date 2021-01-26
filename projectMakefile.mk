@@ -48,7 +48,7 @@ PETALINUX_APPS_FOLDER              := ../../../petalinux/apps
 PETALINUX_CONFIGS_FOLDER           := ../../../petalinux/configs
 PETALINUX_PROJECTS_FOLDER          := ../../../petalinux/projects
 PETALINUX_SCRIPTS_FOLDER           := ../../../petalinux/scripts
-PETALINUX_TO_VITIS_FOLDER          := ../../../vitis
+PETALINUX_TO_VITIS_PFM_FOLDER      := ../../../vitis/pfm_def
 
 VITIS_PLATFORM_REPO_FOLDER         := ../../platform_repo
 VITIS_PLATFORM_PLATFORM_WORKSPACE  := platform_workspace
@@ -133,17 +133,14 @@ sysroot:
 	@echo -e '${CSTR} Applying patch to force inclusion of rootfs packages in sdk.sh'
 	cp ../../add_petalinux_packages.sh ${PETALINUX_PROJECTS_FOLDER}/${PETALINUX_ROOTFS_NAME}_${PETALINUX_PROJECT_NAME}_${PLNX_VER}/.
 	cd ${PETALINUX_PROJECTS_FOLDER}/${PETALINUX_ROOTFS_NAME}_${PETALINUX_PROJECT_NAME}_${PLNX_VER}; source ./add_petalinux_packages.sh
-	# 
-	#
-# mechanism that uses sdk.sh method (recomended by Xilinx)
-# although takes longer for this flow
+
 ifneq (,$(wildcard ${VITIS_CONSOLIDATED_SYSROOTS_FOLDER}))
 	@echo -e '${CSTR} SYSROOT Exists, cleansysroot before rebuild'
 	@echo -e '${CSTR}         Skipping sysroot generation'
 else
 	@echo -e '${CSTR} Generating sysroot'
 	mkdir -p ${VITIS_CONSOLIDATED_SYSROOT_FOLDER}
-	@echo -e 'all: sdk\n  \nsdk:\n	petalinux-build -s\n	petalinux-package --sysroot -d' ${PETALINUX_TO_VITIS_FOLDER}/${BASENAME_FOLDER}/${VITIS_CONSOLIDATED_SYSROOT_FOLDER} > ${PETALINUX_PROJECTS_FOLDER}/${PETALINUX_ROOTFS_NAME}_${PETALINUX_PROJECT_NAME}_${PLNX_VER}/${MAKENAME}
+	@echo -e 'all: sdk\n  \nsdk:\n	petalinux-build -s\n	petalinux-package --sysroot -d' ${PETALINUX_TO_VITIS_PFM_FOLDER}/${BASENAME_FOLDER}/${VITIS_CONSOLIDATED_SYSROOT_FOLDER} > ${PETALINUX_PROJECTS_FOLDER}/${PETALINUX_ROOTFS_NAME}_${PETALINUX_PROJECT_NAME}_${PLNX_VER}/${MAKENAME}
 	if [ ! -f "${PETALINUX_PROJECTS_FOLDER}/${PETALINUX_ROOTFS_NAME}_${PETALINUX_PROJECT_NAME}_${PLNX_VER}/images/linux/sdk.sh" ];                                                      \
               then make -f ${MAKENAME} -C ${PETALINUX_PROJECTS_FOLDER}/${PETALINUX_ROOTFS_NAME}_${PETALINUX_PROJECT_NAME}_${PLNX_VER} all;                                              \
               else echo -e '${CSTR} sdk.sh already packaged';                                                                                      \
