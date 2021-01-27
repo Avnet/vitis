@@ -321,7 +321,7 @@ cleanzoo:
 	${RM} -r ../projects/${ZOO_PROJECT_NAME}
 	${RM} -r ../${VITIS_AI_FOLDER}
 
-cleanall: cleanxsa cleanplnx cleansysroot cleanpfm cleanapp cleandpu
+cleanall: ${CLNTARGETS}
 	@echo -e '${CSTR} Deleted all of the things!!'
 
 	
