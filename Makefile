@@ -163,6 +163,6 @@ cleanall:
 	@echo -e "  ██ ██      ▀█▀▄▄▄▄▄▄▄▄▄▀▀▓▓▓█  "
 	@echo -e "  ████        █${LMAG}▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓${DBLK}█  "
 	@echo -e "  ███         █${LMAG}▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓${DBLK}█  "
-	@echo -e "  ██          █${LMAG}▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓${DBLK}█  "
+	@echo -e "  ██          █${LMAG}▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓${DBLK}█ ${NC} "
 
 	$(MAKE) all step=cleanall

@@ -321,6 +321,9 @@ cleanzoo:
 	${RM} -r ../projects/${ZOO_PROJECT_NAME}
 	${RM} -r ../${VITIS_AI_FOLDER}
 
+clean: cleanall
+	@echo -e '${CSTR} Executed make cleanall instead'
+
 cleanall: ${CLNTARGETS}
 	@echo -e '${CSTR} Deleted all of the things!!'
 
