@@ -59,6 +59,7 @@ VITIS_CONSOLIDATED_XSA_FOLDER      := ${VITIS_CONSOLIDATED_FOLDER}/xsa
 VITIS_CONSOLIDATED_ROOTFS_FOLDER   := ${VITIS_CONSOLIDATED_FOLDER}/rootfs
 VITIS_CONSOLIDATED_SYSROOT_FOLDER  := ${VITIS_CONSOLIDATED_FOLDER}/sysroot
 VITIS_CONSOLIDATED_SYSROOTS_FOLDER := ${VITIS_CONSOLIDATED_SYSROOT_FOLDER}/sysroots/${SYSROOTTYPE}
+VITIS_PROJECT_FOLDER               := ../../projects
 
 VITIS_AI_FOLDER                    := Vitis-AI-1.3
 VITIS_AI_BRANCH                    := "-b v1.3"
@@ -215,6 +216,10 @@ endif
 endif
 
 vadd:
+ifneq (,$(wildcard ${VITIS_PROJECT_FOLDER}/${HDL_BOARD_NAME}_${HDL_PROJECT_NAME}_${PLNX_VER}_vadd/hw/package/sd_card.img))
+	@echo -e '${CSTR} VADD Exists, cleanvadd before rebuild'
+	@echo -e '${CSTR}         Skipping create Application'
+else
 	@echo -e '${CSTR} Creating Application Project'
 	mkdir -p ../../projects
 	# keep using HDL name as there are instances where one wants to make a baremetal design!
@@ -232,6 +237,7 @@ vadd:
 	@echo -e ' Where {x} is a smaller case letter that specifies the device of your SD card'
 	@echo -e '   Note: use df -h to determine which device corresponds to your SD card'
 	@echo -e '${LGRN}***********************${NC}'
+endif
 
 dpu:
 	@echo -e '${CSTR} Creating DPU-TRD Project'
