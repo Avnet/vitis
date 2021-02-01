@@ -58,7 +58,7 @@ CSTR=\033[1;32m /_\\VNET\033[0m
 # Defined Platforms as phony and silent
 #-=-=-=-=-=-=-=--=-=-=-=-=-=-=--=-=-=-=-=-=-=--=-=-=-=-=-=-=--=-=-=-=-=-=-=--=-=-
 
-PLATFORMS=' minized_sbc mz7010_som mz7020_som pz7010_fmc2 pz7015_fmc2 pz7020_fmc2 pz7030_fmc2 u96v2_sbc uz3eg_iocc uz3eg_pciec uz7ev_evcc '
+PLATFORMS=' minized_sbc mz7010_som mz7020_som pz7010_fmc2 pz7015_fmc2 pz7020_fmc2 pz7030_fmc2 u96v2_sbc uz3eg_iocc uz3eg_pciec uz7ev_evcc uz7ev_evcc_quadcam '
 .PHONY:  ${PLATFORMS} list all clean cleanall
 .SILENT: ${PLATFORMS} list all clean cleanall
 
@@ -141,6 +141,9 @@ uz3eg_pciec:
 uz7ev_evcc: 
 	@echo -e '${CSTR} Building Vitis Platform for UltraZed-EV with EV Carrier Card'
 	$(MAKE) -C pfm_def/uz7ev_evcc ${step}
+uz7ev_evcc_quadcam: 
+	@echo -e '${CSTR} Building Vitis Platform for UltraZed-EV with EV Carrier Card and Quad-Camera FMC'
+	$(MAKE) -C pfm_def/uz7ev_evcc_quadcam ${step}
 clean: cleanall
 	@echo -e '${CSTR} Executed make cleanall instead'
 cleanall: 
