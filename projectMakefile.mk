@@ -60,9 +60,11 @@ VITIS_CONSOLIDATED_ROOTFS_FOLDER   := ${VITIS_CONSOLIDATED_FOLDER}/rootfs
 VITIS_CONSOLIDATED_SYSROOT_FOLDER  := ${VITIS_CONSOLIDATED_FOLDER}/sysroot
 VITIS_CONSOLIDATED_SYSROOTS_FOLDER := ${VITIS_CONSOLIDATED_SYSROOT_FOLDER}/sysroots/${SYSROOTTYPE}
 VITIS_PROJECT_FOLDER               := ../../projects
+VITIS_CACHE_FOLDER                 := ${VITIS_PROJECT_FOLDER}/cache
 
-VITIS_AI_FOLDER                    := ../../Vitis-AI-1.3
 VITIS_AI_BRANCH                    := 'v1.3'
+VITIS_AI_FOLDER                    := ${VITIS_CACHE_FOLDER}/Vitis-AI-v1.3
+MODEL_ZOO_FOLDER                   := ${VITIS_CACHE_FOLDER}/AI-Model-Zoo-v1.3
 
 DPU_PROJECT_NAME                   := ${HDL_BOARD_NAME}_${HDL_PROJECT_NAME}_${PLNX_VER}_dpu
 ZOO_PROJECT_NAME                   := ${HDL_BOARD_NAME}_${HDL_PROJECT_NAME}_${PLNX_VER}_zoo
@@ -245,6 +247,7 @@ ifneq (,$(wildcard ${VITIS_PROJECT_FOLDER}/${DPU_PROJECT_NAME}/prj/Vitis/binary_
 	@echo -e '${CSTR}         Skipping create Application'
 else
 	@echo -e '${CSTR} Creating DPU-TRD Project'
+	mkdir -p ${VITIS_CACHE_FOLDER}
 	if [ ! -d "${VITIS_AI_FOLDER}" ]; then git clone -b ${VITIS_AI_BRANCH} https://github.com/Xilinx/Vitis-AI ${VITIS_AI_FOLDER} ; fi
 	mkdir -p ${VITIS_PROJECT_FOLDER}
 	mkdir -p ${VITIS_PROJECT_FOLDER}/${DPU_PROJECT_NAME}
@@ -266,14 +269,19 @@ else
 	@echo -e '${CSTR} ERROR : DPU-TRD Project not found, run step=dpu first' 
   else
 	@echo -e '${CSTR} Compiling AI Model Zoo'
+	mkdir -p ${VITIS_CACHE_FOLDER}
 	if [ ! -d "${VITIS_AI_FOLDER}" ]; then git clone -b ${VITIS_AI_BRANCH} https://github.com/Xilinx/Vitis-AI ${VITIS_AI_FOLDER} ; fi
+	mkdir -p ${MODEL_ZOO_FOLDER}
 	mkdir -p ${VITIS_PROJECT_FOLDER}
 	mkdir -p ${VITIS_PROJECT_FOLDER}/${ZOO_PROJECT_NAME}
 	@echo -e 'Copying AI Model Zoo files'
 	cp -r ${VITIS_AI_FOLDER}/models/AI-Model-Zoo/model-list ${VITIS_PROJECT_FOLDER}/${ZOO_PROJECT_NAME}/.
 	@echo -e 'Copying docker files'
-	cp -r ${VITIS_AI_FOLDER}/docker_run.sh ${VITIS_PROJECT_FOLDER}/${ZOO_PROJECT_NAME}/.
-	mkdir -p ../../${VITIS_PROJECT_FOLDER}/${ZOO_PROJECT_NAME}/setup
+	cp -r ${VITIS_AI_FOLDER}/docker_run.sh ${VITIS_PROJECT_FOLDER}/${ZOO_PROJECT_NAME}/docker_run.sh
+	sed -i 's/$HERE:\/workspace/$HERE\/..:\/workspace/' ${VITIS_PROJECT_FOLDER}/${ZOO_PROJECT_NAME}/docker_run.sh
+	#sed -i 's/-v $HERE:\/workspace/-v $HERE\/..:\/workspace/' ${VITIS_PROJECT_FOLDER}/${ZOO_PROJECT_NAME}/docker_run.sh
+	sed -i 's/-w \/workspace/-w \/workspace\/${ZOO_PROJECT_NAME}/' ${VITIS_PROJECT_FOLDER}/${ZOO_PROJECT_NAME}/docker_run.sh
+	mkdir -p ${VITIS_PROJECT_FOLDER}/${ZOO_PROJECT_NAME}/setup
 	cp -r ${VITIS_AI_FOLDER}/setup/docker ${VITIS_PROJECT_FOLDER}/${ZOO_PROJECT_NAME}/setup/.
 	@echo -e 'Copying arch.json file for ${HDL_BOARD_NAME} platform'
 	cp ${VITIS_PROJECT_FOLDER}/${DPU_PROJECT_NAME}/prj/Vitis/binary_container_1/sd_card/arch.json ${VITIS_PROJECT_FOLDER}/${ZOO_PROJECT_NAME}/.
@@ -282,8 +290,9 @@ else
 	@echo -e '=================================================================='
 	@echo -e 'Instructions to build AI-Model-Zoo for ${HDL_BOARD_NAME} platform:'
 	@echo -e '=================================================================='
-	@echo -e '   cd projects/${ZOO_PROJECT_NAME}/.'
+	@echo -e '   cd projects/${ZOO_PROJECT_NAME}'
 	@echo -e '   ./docker_run.sh xilinx/vitis-ai:1.3.411'
+	@echo -e 'Once inside the docker:'
 	@echo -e '   source ./compile_modelzoo.sh'
 	@echo -e '=================================================================='
 	@echo -e 'Additional Information:'
@@ -331,12 +340,10 @@ cleanvadd:
 cleandpu:
 	@echo -e '${CSTR} Deleting DPU-TRD Project...'
 	${RM} -r ${VITIS_PROJECT_FOLDER}/${DPU_PROJECT_NAME}
-	${RM} -r ${VITIS_AI_FOLDER}
 
 cleanzoo:
 	@echo -e '${CSTR} Deleting AI-Model-Zoo Project...'
 	${RM} -r ${VITIS_PROJECT_FOLDER}/${ZOO_PROJECT_NAME}
-	${RM} -r ${VITIS_AI_FOLDER}
 
 clean: cleanall
 	@echo -e '${CSTR} Executed make cleanall instead'
