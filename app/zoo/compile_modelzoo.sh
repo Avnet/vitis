@@ -11,59 +11,75 @@ function build_model() {
 			build_model $1"/"$file
 		elif [ -f $1"/"$file ];
 		then
-			grep -r "download link:" $1"/"$file > tmp
-			sed -i 's/^.................//' tmp
+			grep -r "download link:" $1"/"$file > download_list.txt
+			sed -i 's/^.................//' download_list.txt
 
-			grep -r "name:" $1"/"$file > tmp0
-			sed -i 's/^........//' tmp0
+			grep -r "name:" $1"/"$file > name_list.txt
+			sed -i 's/^........//' name_list.txt
 	
-			grep -r "checksum:" $1"/"$file > tmp1
-			sed -i 's/^............//' tmp1
+			grep -r "checksum:" $1"/"$file > checksum_list.txt
+			sed -i 's/^............//' checksum_list.txt
 	
-			echo $1 > tmp2
-			sed -i 's/^.............//' tmp2
-			outputinfostr=$(cut -c1-3 tmp2)
-                        #echo "$outputinfostr"
+			echo $1 > model_path.txt
+			sed -i 's/^.............//' model_path.txt
+			framework_prefix=$(cut -c1-3 model_path.txt)
+                        #echo "$framework_prefix"
 
                         # float&quantized model
-                        archive1=$(sed -n '1p' tmp)
-			checksum1=$(sed -n '1p' tmp1)
+                        download1=$(sed -n '1p' download_list.txt)
+                        archive1=$(echo $download1 | cut -f2 -d=)
+                        file1="../cache/AI-Model-Zoo-v1.3/$archive1"
+			checksum1=$(sed -n '1p' checksum_list.txt)
+                        echo "$download1 => $archive1"
                         
                         # pre-built zcu102/zcu04 model
-                        archive2=$(sed -n '2p' tmp)
-			checksum2=$(sed -n '2p' tmp1)
+                        download2=$(sed -n '2p' download_list.txt)
+                        archive2=$(echo $download2 | cut -f2 -d=)
+                        file2="../cache/AI-Model-Zoo-v1.3/$archive2"
+			checksum2=$(sed -n '2p' checksum_list.txt)
+                        echo "$download2 => $archive2"
 
-			modelpath=$(sed -n '1p' tmp2)
+			modelpath=$(sed -n '1p' model_path.txt)
 
-                        netname=$(sed -n '2p' tmp0)
+                        netname=$(sed -n '2p' name_list.txt)
 
                         if [[ -d "${TARGET}/$netname" ]]; then
 				echo "Skipping $modelpath since ${TARGET}/$netname already exists ..."
                         else
-				if [ "$outputinfostr" != "tor" ]; then
-					wget $archive1 -O tmp1.zip
-					#check_result=`md5sum -c <<<"$checksum1 tmp1.zip"`
-					#if [ "$check_result" != "tmp1.zip: OK" ]; then
+				if [ "$framework_prefix" != "tor" ]; then
+                                        if [[ -f "$file1" ]]; then
+						echo "Skipping download of $archive1 since already in cache ..."
+					else
+						echo "Downloading $archive1 ..."
+						wget $download1 -O $file1
+					fi
+					#check_result=`md5sum -c <<<"$checksum1 $file1"`
+					#if [ "$check_result" != "$file1: OK" ]; then
 	   				#	echo "md5sum check failed! Please try to download again."
 	   				#	exit 1
 					#else
 						if [ `command -v unzip` ]; then
-	      						unzip tmp1.zip
+	      						unzip $file1
 	   					else 
 	      						sudo apt install unzip
-	      						unzip tmp1.zip
+	      						unzip $file1
 	   					fi
-						rm tmp1.zip
+						#rm $file1
 					#fi
-					wget $archive2 -O tmp2.tar.gz
-					#check_result=`md5sum -c <<<"$checksum2 tmp2.tar.gz"`
-					#if [ "$check_result" != "tmp2.tar.gz: OK" ]; then
-	   				#	echo "md5sum check failed! Please try to download again."
-	   				#	exit 1
-					#else
-						tar -xvzf tmp2.tar.gz
-						rm tmp2.tar.gz
-					#fi
+                                        if [[ -f "$file2" ]]; then
+						echo "Skipping download of $archive2 since already in cache ..."
+					else
+						echo "Downloading $archive2 ..."
+						wget $download2 -O $file2
+					fi
+					check_result=`md5sum -c <<<"$checksum2 $file2"`
+					if [ "$check_result" != "$file2: OK" ]; then
+	   					echo "md5sum check failed! Please try to download again."
+	   					exit 1
+					else
+						tar -xvzf $file2
+						#rm $file2
+					fi
 				else
 					echo "Torchvision has no float&quantized model"
 				fi
@@ -71,7 +87,7 @@ function build_model() {
 
 				source /opt/vitis_ai/conda/etc/profile.d/conda.sh
 
-				if [ "$outputinfostr" == "cf_" ]; then
+				if [ "$framework_prefix" == "cf_" ]; then
 			                echo "Compiling caffe model $modelpath as $netname"
 					conda activate vitis-ai-caffe
 					vai_c_caffe --prototxt $modelpath/quantized/deploy.prototxt \
@@ -80,7 +96,7 @@ function build_model() {
 		    				--output_dir ${TARGET}/$netname \
 		    				--net_name $netname 
 					conda deactivate
-				elif [ "$outputinfostr" == "dk_" ]; then
+				elif [ "$framework_prefix" == "dk_" ]; then
 			                echo "Compiling darknet model $modelpath as $netname"
 					conda activate vitis-ai-caffe
 					vai_c_caffe --prototxt $modelpath/quantized/deploy.prototxt \
@@ -89,7 +105,7 @@ function build_model() {
 		                                --output_dir ${TARGET}/$netname \
 		                                --net_name $netname 
 					conda deactivate
-				elif [ "$outputinfostr" == "tf_" ]; then
+				elif [ "$framework_prefix" == "tf_" ]; then
 			                echo "Compiling tensorflow model $modelpath as $netname"
 					conda activate vitis-ai-tensorflow
 					if [ "$modelpath" == "tf_yolov3_voc_416_416_65.63G_1.3" ]; then
@@ -117,7 +133,7 @@ function build_model() {
 		                                        --net_name $netname 
 					fi
 					conda deactivate
-				elif [ "$outputinfostr" == "tf2" ]; then
+				elif [ "$framework_prefix" == "tf2" ]; then
 			                echo "Compiling tensorflow 2 model $modelpath as $netname"
 					conda activate vitis-ai-tensorflow2
 					vai_c_tensorflow2 -m $modelpath/quantized/quantized.h5 \
@@ -125,18 +141,18 @@ function build_model() {
 		          			-o ${TARGET}/$netname \
 		          			-n $netname 
 					conda deactivate
-				elif [ "$outputinfostr" == "pt_" ]; then
+				elif [ "$framework_prefix" == "pt_" ]; then
 			                echo "Compiling pytorch model $modelpath as $netname"
 					conda activate vitis-ai-pytorch
 					if [ "$modelpath" == "pt_pointpillars_kitti_12000_100_10.8G_1.3" ]; then
 						vai_c_xir -x $modelpath/quantized/VoxelNet_0_int.xmodel \
 		                                       -a ${ARCH} \
-		                                       -o ${TARGET}/$netname \
-		                                       -n $netname"_0"
+		                                       -o ${TARGET}/pointpillars_kitti_12000_0_pt \
+		                                       -n pointpillars_kitti_12000_0_pt
 						vai_c_xir -x $modelpath/quantized/VoxelNet_1_int.xmodel \
 		                                       -a ${ARCH} \
-		                                       -o ${TARGET}/$netname \
-		                                       -n $netname"_1"
+		                                       -o ${TARGET}/pointpillars_kitti_12000_1_pt \
+		                                       -n pointpillars_kitti_12000_1_pt
 					else
 						vai_c_xir -x $modelpath/quantized/*int.xmodel \
 		                                       -a ${ARCH} \
@@ -152,7 +168,7 @@ function build_model() {
 		  			#	  	-n $netname 
 					#done
 					conda deactivate
-				elif [ "$outputinfostr" == "tor" ]; then
+				elif [ "$framework_prefix" == "tor" ]; then
 			                echo "WARNING : Cannot compile torchvision model $modelpath"
 				else
 			                echo "ERROR : Cannot compile model $modelpath"
@@ -160,13 +176,30 @@ function build_model() {
 
 				rm -rf $modelpath
 
-		                if [[ -d "${TARGET}/$netname" ]]; then
-		                    if [[ -f "$netname/$netname.prototxt" ]]; then
-		                        echo "Copying $netname.prototxt file from pre-built zcu102/zcu104 model"
-		                        cp $netname/$netname.prototxt ${TARGET}/$netname/.
-		                    fi
-		                fi
-		                rm -rf $netname
+                                # additional prep for use with vitis-ai-library
+				if [[ -d "${TARGET}/$netname" ]]; then
+					if [ "$modelpath" == "pt_pointpillars_kitti_12000_100_10.8G_1.3" ]; then
+						# create .prototxt files based on pre-built zcu102/zcu104 models
+						echo "Creating pointpillars_kitti_12000_0_pt.prototxt file from pre-built zcu102/zcu104 model"
+						cp ${netname}/${netname}.prototxt ${TARGET}/pointpillars_kitti_12000_0_pt/pointpillars_kitti_12000_0_pt.prototxt
+						cp ${netname}/${netname}_officialcfg.prototxt ${TARGET}/pointpillars_kitti_12000_0_pt/pointpillars_kitti_12000_0_pt_officialcfg.prototxt
+						echo "Creating pointpillars_kitti_12000_1_pt.prototxt file from pre-built zcu102/zcu104 model"
+						cp ${netname}/${netname}.prototxt ${TARGET}/pointpillars_kitti_12000_1_pt/pointpillars_kitti_12000_1_pt.prototxt
+						sed -i 's/pointpillars_kitti_12000_0_pt/pointpillars_kitti_12000_1_pt/' ${TARGET}/pointpillars_kitti_12000_1_pt/pointpillars_kitti_12000_1_pt.prototxt
+					else
+						# remove unused _org.xmodel files
+						if [[ -f "${TARGET}/${netname}/${netname}_org.xmodel" ]]; then
+							echo "Removing ${TARGET}/${netname}/${netname}_org.xmodel ..."
+							rm ${TARGET}/${netname}/${netname}_org.xmodel
+						fi
+						# create .prototxt file based on pre-built zcu102/zcu104 model
+						if [[ -f "$netname/$netname.prototxt" ]]; then
+							echo "Copying $netname.prototxt file from pre-built zcu102/zcu104 model"
+							cp $netname/$netname.prototxt ${TARGET}/$netname/.
+						fi
+					fi
+				fi
+				rm -rf $netname
 			fi
 		else
 			echo $1"/"$file
@@ -177,5 +210,5 @@ function build_model() {
 mkdir -p ${TARGET}
 path='./model-list'
 build_model $path
-rm tmp tmp0 tmp1 tmp2
+#rm download_list.txt name_list.txt checksum_list.txt model_path.txt
 echo "All models are built succesfully."
