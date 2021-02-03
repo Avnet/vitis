@@ -2,6 +2,7 @@
 
 ARCH=arch.json
 TARGET=vitis_ai_library/models
+CACHE=../cache/AI-Model-Zoo-v1.3
 
 function build_model() {
 	for file in `ls $1`
@@ -27,17 +28,22 @@ function build_model() {
 
                         # float&quantized model
                         download1=$(sed -n '1p' download_list.txt)
-                        archive1=$(echo $download1 | cut -f2 -d=)
-                        file1="../cache/AI-Model-Zoo-v1.3/$archive1"
 			checksum1=$(sed -n '1p' checksum_list.txt)
-                        echo "$download1 => $archive1"
+			if [ "$download1" == "https://www.xilinx.com/bin/public/openDownload?filename=fcf_facerec-resnet64_112_96_11G_1.3.zip" ]; then
+				# fix typo in archive name
+				download1="https://www.xilinx.com/bin/public/openDownload?filename=cf_facerec-resnet64_112_96_11G_1.3.zip"
+				checksum1='c320ae3c7bef2302edfc8e29cb1a36a0'
+			fi
+			archive1=$(echo $download1 | cut -f2 -d=)
+			file1="${CACHE}/$archive1"
+			echo "$download1 => $archive1"
                         
                         # pre-built zcu102/zcu04 model
                         download2=$(sed -n '2p' download_list.txt)
-                        archive2=$(echo $download2 | cut -f2 -d=)
-                        file2="../cache/AI-Model-Zoo-v1.3/$archive2"
 			checksum2=$(sed -n '2p' checksum_list.txt)
-                        echo "$download2 => $archive2"
+                        archive2=$(echo $download2 | cut -f2 -d=)
+			file2="${CACHE}/$archive2"
+			echo "$download2 => $archive2"
 
 			modelpath=$(sed -n '1p' model_path.txt)
 
