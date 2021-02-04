@@ -188,7 +188,7 @@ else ifeq ($(VITIS_ARCHITECTURE),ps7_cortexa9)
 	cp -v ${PETALINUX_PROJECTS_FOLDER}/${PETALINUX_ROOTFS_NAME}_${PETALINUX_PROJECT_NAME}_${PLNX_VER}/images/linux/zynq_fsbl.elf              ${VITIS_CONSOLIDATED_BOOT_FOLDER}/fsbl.elf
 	cp -v ../../zynq_qemu_args.txt                                                                                                            ${VITIS_CONSOLIDATED_FOLDER}
 endif
-	echo ${HDL_BOARD_NAME}                                                                                                                    > ${VITIS_CONSOLIDATED_IMAGE_FOLDER}/platform_desc.txt
+	echo ${HDL_BOARD_NAME}_${HDL_PROJECT_NAME}                                                                                                > ${VITIS_CONSOLIDATED_IMAGE_FOLDER}/platform_desc.txt
 	cp -v ../../init.sh                                                                                                                       ${VITIS_CONSOLIDATED_IMAGE_FOLDER}
 	cp -v ${HDL_PROJECTS_FOLDER}/${HDL_BOARD_NAME}_${HDL_PROJECT_NAME}_${PLNX_VER}/${HDL_BOARD_NAME}_${HDL_PROJECT_NAME}.xsa ${VITIS_CONSOLIDATED_XSA_FOLDER}
 	
