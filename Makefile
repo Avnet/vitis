@@ -58,9 +58,12 @@ CSTR=\033[1;32m /_\\VNET\033[0m
 # Defined Platforms as phony and silent
 #-=-=-=-=-=-=-=--=-=-=-=-=-=-=--=-=-=-=-=-=-=--=-=-=-=-=-=-=--=-=-=-=-=-=-=--=-=-
 
-PLATFORMS=' minized_sbc mz7010_som mz7020_som pz7010_fmc2 pz7015_fmc2 pz7020_fmc2 pz7030_fmc2 u96v2_sbc uz3eg_iocc uz3eg_pciec uz7ev_evcc uz7ev_evcc_quadcam '
-.PHONY:  ${PLATFORMS} list all clean cleanall
-.SILENT: ${PLATFORMS} list all clean cleanall
+# Base Vitis Platforms
+PLATFORMS=' minized_sbc mz7010_som mz7020_som pz7010_fmc2 pz7015_fmc2 pz7020_fmc2 pz7030_fmc2 u96v2_sbc uz3eg_iocc uz3eg_pciec uz7ev_evcc '
+# Project Specific Vitis Platforms
+PROJECTS=' uz7ev_evcc_quadcam '
+.PHONY:  ${PROJECTS} ${PROJECTS} list all allpfm clean cleanall
+.SILENT: ${PROJECTS} ${PROJECTS} list all allpfm clean cleanall
 
 list:
 	@echo
@@ -68,7 +71,7 @@ list:
 	@echo -e '${LGRN}***********************'
 	@echo -e '  ${CSTR}'
 	@echo
-	@echo -e 'Possible make targets:'
+	@echo -e '${LRED}Possible make targets:${NC}'
 	@$(MAKE) -pRrq -f $(lastword $(MAKEFILE_LIST)) : 2>/dev/null | awk -v RS= -F: '/^# File/,/^# Finished Make data base/ {if ($$1 !~ "^[#.]") {print $$1}}' | sort | egrep -v -e '^[^[:alnum:]]' -e '^$@$$' -e 'cleanall'
 	@echo
 	@echo -e 'No step defaults to xsa plnx sysroot pfm:'
@@ -83,13 +86,24 @@ help:
 	@echo -e '${LGRN}***********************'
 	@echo -e '  ${CSTR}'
 	@echo -e '${LYEL}  make <target>${NC}'
-	@echo -e '      build a specific target platform'
+	@echo -e '      run a specific target recipe'
+	@echo -e '  ${LYEL}<target>${NC} of:'
+	@echo -e '   all      builds EVERYTHING'
+	@echo -e '   allpfm   builds all base platforms'
+	@echo -e '   allprj   builds all project platforms'
+	@echo -e '   clean/cleanall executes make all step=cleanall'
+	@echo -e '${LGRN}*****${NC}'
+	@echo -e '${LRED}Possible make targets:${NC}'
 	@$(MAKE) -pRrq -f $(lastword $(MAKEFILE_LIST)) : 2>/dev/null | awk -v RS= -F: '/^# File/,/^# Finished Make data base/ {if ($$1 !~ "^[#.]") {print $$1}}' | sort | egrep -v -e '^[^[:alnum:]]' -e '^$@$$' -e 'cleanall'
+	@echo -e '${LGRN}*****${NC}'
 	@echo -e '${LYEL}  make <target> step=<step>${NC}'
 	@echo -e '      builds a specific target to a specific build point'
 	@echo -e "${LYEL}  make <trgt1> <trgt2>...<trgtn> 'step=<step1> <step2>...<stepn>'${NC}"
 	@echo -e '      builds a specific target to multiple build points'
-	@echo -e '  steps:  xsa          - Builds up to Vivado Project (xsa output)'
+	@echo -e '  steps:  all          - all steps to generate a Platform (default)'
+	@echo -e '          allplus      - Builds Platform and vadd (hello world)'
+	@echo -e "                       - Same as calling make 'step=all vadd'"
+	@echo -e '          xsa          - Builds up to Vivado Project (xsa output)'
 	@echo -e '          plnx         - Builds up to PetaLinux Project (bsp output)'
 	@echo -e '          sysroot      - Builds up to sysroot generation (see ./consolidated)'
 	@echo -e '          pfm          - Builds up to Platform Generation (see ./platform_repo)'
@@ -106,8 +120,12 @@ help:
 	@echo -e '          cleanall     - Cleans all steps'
 	@echo
 	@echo -e '${LGRN}***********************'
-all: $(PLATFORMS)
+all: $(PLATFORMS) $(PROJECTS)
+	@echo -e '${CSTR} Mega Platforms and Project Platforms build complete'
+allpfm: $(PLATFORMS)
 	@echo -e '${CSTR} Mega Platform build complete'
+allprj: $(PROJECTS)
+	@echo -e '${CSTR} Mega Project Platform build complete'
 minized_sbc: 
 	@echo -e '${CSTR} Building Vitis Platform for Minized 7007'
 	$(MAKE) -C pfm_def/minized_sbc ${step}
