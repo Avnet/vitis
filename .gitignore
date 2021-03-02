@@ -2,6 +2,8 @@
 pfm_def/*/consolidated
 pfm_def/*/platform_workspace
 projects/*
+platform_repo/*
+vivado.*
 
 # Except this file
 !.gitignore
