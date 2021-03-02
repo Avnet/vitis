@@ -15,8 +15,11 @@
 #  This design is the property of Avnet.  Publication of this
 #  design is not authorized without written consent from Avnet.
 # 
-#  For product information and support questions:
-#     https://www.element14.com/community/community/designcenter/zedboardcommunity
+#  Please direct any questions to the ZedBoard community support forum:
+#     http://avnet.me/zed-forums
+#
+#  Product information is available at:
+#     http://avnet.me/zed-community
 # 
 #  Disclaimer:
 #     Avnet, Inc. makes no warranty for the use of this code or design.
