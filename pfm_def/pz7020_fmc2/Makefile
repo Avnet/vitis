@@ -56,7 +56,7 @@ PETALINUX_PROJECT_NAME            := ${HDL_PROJECT_NAME}
 PETALINUX_ROOTFS_NAME             := ${HDL_BOARD_NAME}
 
 VITIS_ARCHITECTURE                := ps7_cortexa9
-VITIS_PROJECT_DESCRIPTION         := "PicoZed 7020 Vitis platform based on the Out Of Box image.  More information can be found at https://www.element14.com/community/community/designcenter/zedboardcommunity/picozed"
+VITIS_PROJECT_DESCRIPTION         := "PicoZed 7020 Vitis platform based on the FMCv2 image.  More information can be found at http://avnet.me/picozed"
 
 # MPSoC     = aarch64-xilinx-linux
 # Zynq 7000 = cortexa9t2hf-neon-xilinx-linux-gnueabi

@@ -56,7 +56,7 @@ PETALINUX_PROJECT_NAME            := ${HDL_PROJECT_NAME}
 PETALINUX_ROOTFS_NAME             := ${HDL_BOARD_NAME}
 
 VITIS_ARCHITECTURE                := psu_cortexa53
-VITIS_PROJECT_DESCRIPTION         := "UltraZed-EG Vitis platform based on the Out Of Box image.  More information can be found at https://www.element14.com/community/community/designcenter/zedboardcommunity/ultrazed/ultrazed-eg"
+VITIS_PROJECT_DESCRIPTION         := "UltraZed-EG Vitis platform based on the IOCC image.  More information can be found at http://avnet.me/ultrazed-eg"
 
 # MPSoC     = aarch64-xilinx-linux
 # Zynq 7000 = cortexa9t2hf-neon-xilinx-linux-gnueabi

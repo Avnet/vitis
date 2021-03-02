@@ -169,6 +169,8 @@ clean: cleanall
 	@echo -e '${CSTR} Executed make cleanall instead'
 cleanall: 
 	@echo -e '${CSTR} Delete All the Things!'
+	$(MAKE) all step=cleanall
+	@echo -e '${CSTR} Deleted All the Things!'
 	@echo -e '${DBLK}'
 	@echo -e "                             ▄██▄"
 	@echo -e "                             ▀███"
@@ -190,5 +192,3 @@ cleanall:
 	@echo -e "  ████        █${LMAG}▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓${DBLK}█  "
 	@echo -e "  ███         █${LMAG}▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓${DBLK}█  "
 	@echo -e "  ██          █${LMAG}▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓${DBLK}█ ${NC} "
-
-	$(MAKE) all step=cleanall
