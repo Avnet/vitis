@@ -238,7 +238,7 @@ else
 	@echo -e '${LGRN}***********************'
 	@echo -e '  ${CSTR}'
 	@echo -e ' To write image to SDCARD:'
-	@echo -e '  $ sudo dd bs=4M if=${HDL_BOARD_NAME}_${HDL_PROJECT_NAME}_${PLNX_VER}_vadd.img of=/dev/sd{x} status=progress conv=fsync'
+	@echo -e '  $ sudo dd bs=4M if=./projects/${HDL_BOARD_NAME}_${HDL_PROJECT_NAME}_${PLNX_VER}/hw/package/sd_card.img of=/dev/sd{x} status=progress conv=fsync'
 	@echo -e ' Where {x} is a smaller case letter that specifies the device of your SD card'
 	@echo -e '   Note: use df -h to determine which device corresponds to your SD card'
 	@echo -e '${LGRN}***********************${NC}'
