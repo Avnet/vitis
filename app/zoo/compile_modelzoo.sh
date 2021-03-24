@@ -198,10 +198,15 @@ function build_model() {
 							echo "Removing ${TARGET}/${netname}/${netname}_org.xmodel ..."
 							rm ${TARGET}/${netname}/${netname}_org.xmodel
 						fi
-						# create .prototxt file based on pre-built zcu102/zcu104 model
-						if [[ -f "$netname/$netname.prototxt" ]]; then
+						# create ${netname}.prototxt file based on pre-built zcu102/zcu104 model
+						if [[ -f "${netname}/${netname}.prototxt" ]]; then
 							echo "Copying $netname.prototxt file from pre-built zcu102/zcu104 model"
-							cp $netname/$netname.prototxt ${TARGET}/$netname/.
+							cp ${netname}/${netname}.prototxt ${TARGET}/${netname}/.
+						fi
+						# create ${netname}_officialcfg.prototxt file based on pre-built zcu102/zcu104 model
+						if [[ -f "${netname}/${netname}_officialcfg.prototxt" ]]; then
+							echo "Copying ${netname}_officialcfg file from pre-built zcu102/zcu104 model"
+							cp ${netname}/${netname}_officialcfg.prototxt ${TARGET}/${netname}/.
 						fi
 					fi
 				fi
