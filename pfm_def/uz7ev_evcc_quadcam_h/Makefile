@@ -50,7 +50,7 @@ BASENAME_FOLDER      = $(shell basename ${PROJECT_ROOT_FOLDER})
 #              PLNX ROOTFS name (from PetaLinux Make Script)
 
 
-HDL_PROJECT_NAME                  := quadcam
+HDL_PROJECT_NAME                  := quadcam_h
 HDL_BOARD_NAME                    := uz7ev_evcc
 PETALINUX_PROJECT_NAME            := ${HDL_PROJECT_NAME}
 PETALINUX_ROOTFS_NAME             := ${HDL_BOARD_NAME}

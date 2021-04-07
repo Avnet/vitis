@@ -162,9 +162,12 @@ uz3eg_pciec:
 uz7ev_evcc: 
 	@echo -e '${CSTR} Building Vitis Platform for UltraZed-EV with EV Carrier Card'
 	$(MAKE) -C pfm_def/uz7ev_evcc ${step}
-uz7ev_evcc_quadcam: 
+uz7ev_evcc_quadcam_h: 
 	@echo -e '${CSTR} Building Vitis Platform for UltraZed-EV with EV Carrier Card and Quad-Camera FMC'
-	$(MAKE) -C pfm_def/uz7ev_evcc_quadcam ${step}
+	$(MAKE) -C pfm_def/uz7ev_evcc_quadcam_h ${step}
+uz7ev_evcc_quadcam_h_v: 
+	@echo -e '${CSTR} Building Vitis Platform for UltraZed-EV with EV Carrier Card and Quad-Camera FMC + VCU'
+	$(MAKE) -C pfm_def/uz7ev_evcc_quadcam_h_v ${step}
 clean: cleanall
 	@echo -e '${CSTR} Executed make cleanall instead'
 cleanall: 
