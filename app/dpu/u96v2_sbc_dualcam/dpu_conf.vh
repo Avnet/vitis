@@ -26,6 +26,7 @@
 //`define B4096 
 //`define B2304
 `define B1600
+//`define B1152
 
 // |------------------------------------------------------|
 // | If the FPGA has Uram. You can define URAM_EN parameter               
