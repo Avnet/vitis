@@ -20,7 +20,7 @@
 # clock availability
 #  id=0 150MHz
 #  id=1 300MHz
-#  id=2  75MHz
+#  id=2  48MHz
 #  id=3 100MHz
 #  id=4 200MHz
 #  id=5 400MHz
