@@ -153,6 +153,9 @@ pz7030_fmc2:
 u96v2_sbc: 
 	@echo -e '${CSTR} Building Vitis Platform for Ultra96V2 Out Of Box'
 	$(MAKE) -C pfm_def/u96v2_sbc ${step}
+u96v2_sbc_dualcam: 
+	@echo -e '${CSTR} Building Vitis Platform for Ultra96V2 with Dual Camera Mezzanine'
+	$(MAKE) -C pfm_def/u96v2_sbc_dualcam ${step}
 uz3eg_iocc: 
 	@echo -e '${CSTR} Building Vitis Platform for UltraZed-EG with IOCC Carrier Card'
 	$(MAKE) -C pfm_def/uz3eg_iocc ${step}
