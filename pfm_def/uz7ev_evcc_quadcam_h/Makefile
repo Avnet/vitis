@@ -60,7 +60,7 @@ VITIS_PROJECT_DESCRIPTION         := "UltraZed-EV Vitis Quadcam platform based o
 
 # MPSoC     = aarch64-xilinx-linux
 # Zynq 7000 = cortexa9t2hf-neon-xilinx-linux-gnueabi
-SYSROOTTYPE                       := aarch64-xilinx-linux
+SYSROOTTYPE                       := cortexa72-cortexa53-xilinx-linux
 
 #-=-=-=-=-=-=-=--=-=-=-=-=-=-=--=-=-=-=-=-=-=--=-=-=-=-=-=-=--=-=-=-=-=-=-=--=-=-
 # Check for Environment Configuration

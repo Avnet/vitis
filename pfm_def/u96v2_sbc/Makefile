@@ -60,7 +60,7 @@ VITIS_PROJECT_DESCRIPTION         := "Ultra96V2 Vitis platform based on the Sing
 
 # MPSoC     = aarch64-xilinx-linux
 # Zynq 7000 = cortexa9t2hf-neon-xilinx-linux-gnueabi
-SYSROOTTYPE                       := aarch64-xilinx-linux
+SYSROOTTYPE                       := cortexa72-cortexa53-xilinx-linux
 
 #-=-=-=-=-=-=-=--=-=-=-=-=-=-=--=-=-=-=-=-=-=--=-=-=-=-=-=-=--=-=-=-=-=-=-=--=-=-
 # Check for Environment Configuration
