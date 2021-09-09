@@ -2,7 +2,7 @@
 
 ARCH=arch.json
 TARGET=vitis_ai_library/models
-CACHE=../cache/AI-Model-Zoo-v1.3
+CACHE=../cache/AI-Model-Zoo-v1.4
 
 function build_model() {
 	for file in `ls $1`
@@ -29,11 +29,6 @@ function build_model() {
                         # float&quantized model
                         download1=$(sed -n '1p' download_list.txt)
 			checksum1=$(sed -n '1p' checksum_list.txt)
-			if [ "$download1" == "https://www.xilinx.com/bin/public/openDownload?filename=fcf_facerec-resnet64_112_96_11G_1.3.zip" ]; then
-				# fix typo in archive name
-				download1="https://www.xilinx.com/bin/public/openDownload?filename=cf_facerec-resnet64_112_96_11G_1.3.zip"
-				checksum1='c320ae3c7bef2302edfc8e29cb1a36a0'
-			fi
 			archive1=$(echo $download1 | cut -f2 -d=)
 			file1="${CACHE}/$archive1"
 			echo "$download1 => $archive1"
@@ -78,14 +73,14 @@ function build_model() {
 						echo "Downloading $archive2 ..."
 						wget $download2 -O $file2
 					fi
-					check_result=`md5sum -c <<<"$checksum2 $file2"`
-					if [ "$check_result" != "$file2: OK" ]; then
-	   					echo "md5sum check failed! Please try to download again."
-	   					exit 1
-					else
+					#check_result=`md5sum -c <<<"$checksum2 $file2"`
+					#if [ "$check_result" != "$file2: OK" ]; then
+	   				#	echo "md5sum check failed! Please try to download again."
+	   				#	exit 1
+					#else
 						tar -xvzf $file2
 						#rm $file2
-					fi
+					#fi
 				else
 					echo "Torchvision has no float&quantized model"
 				fi
@@ -114,19 +109,19 @@ function build_model() {
 				elif [ "$framework_prefix" == "tf_" ]; then
 			                echo "Compiling tensorflow model $modelpath as $netname"
 					conda activate vitis-ai-tensorflow
-					if [ "$modelpath" == "tf_yolov3_voc_416_416_65.63G_1.3" ]; then
+					if [ "$modelpath" == "tf_yolov3_voc_416_416_65.63G_1.4" ]; then
 						vai_c_tensorflow --frozen_pb $modelpath/quantized/*quantize_eval_model.pb \
 		         				--arch ${ARCH} \
 		         				--output_dir ${TARGET}/$netname \
 		         				--net_name $netname \
 							--options '{"input_shape": "1,416,416,3"}'
-					elif [ "$modelpath" == "tf_ssdinceptionv2_coco_300_300_9.62G_1.3" ]; then
+					elif [ "$modelpath" == "tf_ssdinceptionv2_coco_300_300_9.62G_1.4" ]; then
 						vai_c_tensorflow --frozen_pb $modelpath/quantized/*quantize_eval_model.pb \
 		                                        --arch ${ARCH} \
 		                                        --output_dir ${TARGET}/$netname \
 		                                        --net_name $netname \
 		                                        --options '{"input_shape": "1,300,300,3"}'
-					elif [ "$modelpath" == "tf_ssdresnet50v1_fpn_coco_640_640_178.4G_1.3" ]; then
+					elif [ "$modelpath" == "tf_ssdresnet50v1_fpn_coco_640_640_178.4G_1.4" ]; then
 						vai_c_tensorflow --frozen_pb $modelpath/quantized/*quantize_eval_model.pb \
 		                                        --arch ${ARCH} \
 		                                        --output_dir ${TARGET}/$netname \
@@ -150,7 +145,7 @@ function build_model() {
 				elif [ "$framework_prefix" == "pt_" ]; then
 			                echo "Compiling pytorch model $modelpath as $netname"
 					conda activate vitis-ai-pytorch
-					if [ "$modelpath" == "pt_pointpillars_kitti_12000_100_10.8G_1.3" ]; then
+					if [ "$modelpath" == "pt_pointpillars_kitti_12000_100_10.8G_1.4" ]; then
 						vai_c_xir -x $modelpath/quantized/VoxelNet_0_int.xmodel \
 		                                       -a ${ARCH} \
 		                                       -o ${TARGET}/pointpillars_kitti_12000_0_pt \
@@ -184,7 +179,7 @@ function build_model() {
 
                                 # additional prep for use with vitis-ai-library
 				if [[ -d "${TARGET}/$netname" ]]; then
-					if [ "$modelpath" == "pt_pointpillars_kitti_12000_100_10.8G_1.3" ]; then
+					if [ "$modelpath" == "pt_pointpillars_kitti_12000_100_10.8G_1.4" ]; then
 						# create .prototxt files based on pre-built zcu102/zcu104 models
 						echo "Creating pointpillars_kitti_12000_0_pt.prototxt file from pre-built zcu102/zcu104 model"
 						cp ${netname}/${netname}.prototxt ${TARGET}/pointpillars_kitti_12000_0_pt/pointpillars_kitti_12000_0_pt.prototxt

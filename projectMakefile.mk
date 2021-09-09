@@ -294,7 +294,7 @@ else
 	@echo -e 'Instructions to build AI-Model-Zoo for ${HDL_BOARD_NAME} platform:'
 	@echo -e '=================================================================='
 	@echo -e '   cd projects/${ZOO_PROJECT_NAME}'
-	@echo -e '   ./docker_run.sh xilinx/vitis-ai:1.3.411'
+	@echo -e '   ./docker_run.sh xilinx/vitis-ai:1.4.916'
 	@echo -e 'Once inside the docker:'
 	@echo -e '   source ./compile_modelzoo.sh'
 	@echo -e '=================================================================='
