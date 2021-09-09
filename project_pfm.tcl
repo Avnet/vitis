@@ -58,7 +58,7 @@ puts "rootfs_folder       : \"$rootfs_folder\""
 
 platform -name $platform_name -no-boot-bsp -desc $description -hw $root_folder/$xsa_folder/$platform_name.xsa -out $root_folder/$pfm_folder
 
-domain -name PetaLinux -proc $architecture -os linux -image $image_folder
+domain -name PetaLinux -proc $architecture -os linux -sd-dir $image_folder
 domain config -boot $root_folder/$boot_folder
 domain config -bif $root_folder/$consolidated_folder/linux.bif
 if {[string compare $architecture "psu_cortexa53"]} {
