@@ -46,6 +46,14 @@ function build_model() {
 
                         if [[ -d "${TARGET}/$netname" ]]; then
 				echo "Skipping $modelpath since ${TARGET}/$netname already exists ..."
+			#elif [ "$modelpath" == "pt_pointpainting_nuscenes_1.4" ]; then
+			#	echo "Skipping $modelpath since unresolved issues ..."
+			#elif [ "$modelpath" == "pt_pointpillars_nuscenes_40000_64_108G_1.4" ]; then
+			#	echo "Skipping $modelpath since unresolved issues ..."
+			#elif [ "$modelpath" == "pt_sa-gate_NYUv2_360_360_178G_1.4" ]; then
+			#	echo "Skipping $modelpath since unresolved issues ..."
+			#elif [ "$modelpath" == "tf_rcan_DIV2K_360_640_0.98_86.95G_1.4" ]; then
+			#	echo "Skipping $modelpath since unresolved issues ..."
                         else
 				if [ "$framework_prefix" != "tor" ]; then
                                         if [[ -f "$file1" ]]; then
@@ -145,29 +153,59 @@ function build_model() {
 				elif [ "$framework_prefix" == "pt_" ]; then
 			                echo "Compiling pytorch model $modelpath as $netname"
 					conda activate vitis-ai-pytorch
+					if [ "$modelpath" == "pt_salsanextv2_semantic-kitti_64_2048_32G_1.4" ]; then
+						modelpath=pt_salsanextv2_semantic-kitti_64_2048_0.75_32G_1.4
+					fi
 					if [ "$modelpath" == "pt_pointpillars_kitti_12000_100_10.8G_1.4" ]; then
-						vai_c_xir -x $modelpath/quantized/VoxelNet_0_int.xmodel \
+						vai_c_xir -x $modelpath/qat/convert_qat_results/VoxelNet_0_int.xmodel \
 		                                       -a ${ARCH} \
 		                                       -o ${TARGET}/pointpillars_kitti_12000_0_pt \
 		                                       -n pointpillars_kitti_12000_0_pt
-						vai_c_xir -x $modelpath/quantized/VoxelNet_1_int.xmodel \
+						vai_c_xir -x $modelpath/qat/convert_qat_results/VoxelNet_1_int.xmodel \
 		                                       -a ${ARCH} \
 		                                       -o ${TARGET}/pointpillars_kitti_12000_1_pt \
 		                                       -n pointpillars_kitti_12000_1_pt
+					elif [ "$modelpath" == "pt_centerpoint_astyx_2560_40_54G_1.4" ]; then
+						vai_c_xir -x $modelpath/qat/convert_qat_results/CenterPoint_quant_0_int.xmodel \
+		                                       -a ${ARCH} \
+		                                       -o ${TARGET}/centerpoint_0_pt \
+		                                       -n centerpoint_0_pt
+						vai_c_xir -x $modelpath/qat/convert_qat_results/CenterPoint_quant_1_int.xmodel \
+		                                       -a ${ARCH} \
+		                                       -o ${TARGET}/centerpoint_1_pt \
+		                                       -n centerpoint_1_pt
+					elif [ "$modelpath" == "pt_fadnet_sceneflow_576_960_359G_1.4" ]; then
+						vai_c_xir -x $modelpath/quantized/FADNet_0_int.xmodel \
+		                                       -a ${ARCH} \
+		                                       -o ${TARGET}/FADNet_0_pt \
+		                                       -n FADNet_0_pt
+						vai_c_xir -x $modelpath/quantized/FADNet_1_int.xmodel \
+		                                       -a ${ARCH} \
+		                                       -o ${TARGET}/FADNet_1_pt \
+		                                       -n FADNet_1_pt
+						vai_c_xir -x $modelpath/quantized/FADNet_2_int.xmodel \
+		                                       -a ${ARCH} \
+		                                       -o ${TARGET}/FADNet_2_pt \
+		                                       -n FADNet_2_pt
+					elif [ "$modelpath" == "pt_pointpainting_nuscenes_1.4" ]; then
+						vai_c_xir -x $modelpath/pointpillars/quantized/MVXFasterRCNN_quant_0_int.xmodel \
+		                                       -a ${ARCH} \
+		                                       -o ${TARGET}/pointpainting_nuscenes_40000_64_0_pt \
+		                                       -n pointpainting_nuscenes_40000_64_0_pt
+						vai_c_xir -x $modelpath/pointpillars/quantized/MVXFasterRCNN_quant_1_int.xmodel \
+		                                       -a ${ARCH} \
+		                                       -o ${TARGET}/pointpainting_nuscenes_40000_64_1_pt \
+		                                       -n pointpainting_nuscenes_40000_64_1_pt
+						vai_c_xir -x $modelpath/semanticfpn/quantized/FPN_int.xmodel \
+		                                       -a ${ARCH} \
+		                                       -o ${TARGET}/semanticfpn_nuimage_576_320_pt \
+		                                       -n semanticfpn_nuimage_576_320_pt
 					else
 						vai_c_xir -x $modelpath/quantized/*int.xmodel \
 		                                       -a ${ARCH} \
 		                                       -o ${TARGET}/$netname \
 		                                       -n $netname
 					fi
-					#ls -p | grep ".xmodel" |
-					#while IFS= read -r line
-					#do 
-					#	vai_c_xir -x $modelpath/quantized/$line \
-					#	  	-a ${ARCH} \
-					#          	-o ${TARGET}/$netname \
-		  			#	  	-n $netname 
-					#done
 					conda deactivate
 				elif [ "$framework_prefix" == "tor" ]; then
 			                echo "WARNING : Cannot compile torchvision model $modelpath"

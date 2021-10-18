@@ -64,7 +64,8 @@ CSTR=\033[1;32m /_\\VNET\033[0m
 # Base Vitis Platforms
 PLATFORMS=' minized_sbc mz7010_som mz7020_som pz7010_fmc2 pz7015_fmc2 pz7020_fmc2 pz7030_fmc2 u96v2_sbc uz3eg_iocc uz3eg_pciec uz7ev_evcc '
 # Project Specific Vitis Platforms
-PROJECTS=' uz7ev_evcc_quadcam '
+#PROJECTS=' u96v2_sbc_dualcam uz7ev_evcc_quadcam_h '
+PROJECTS=' '
 .PHONY:  ${PROJECTS} ${PROJECTS} list all allpfm clean cleanall
 .SILENT: ${PROJECTS} ${PROJECTS} list all allpfm clean cleanall
 
