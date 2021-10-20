@@ -47,12 +47,10 @@ function build_model() {
                         if [[ -d "${TARGET}/$netname" ]]; then
 				echo "Skipping $modelpath since ${TARGET}/$netname already exists ..."
 			#elif [ "$modelpath" == "pt_pointpainting_nuscenes_1.4" ]; then
-			#	echo "Skipping $modelpath since unresolved issues ..."
+			#	echo "Skipping $modelpath since VERY long to compile issues ..."
 			#elif [ "$modelpath" == "pt_pointpillars_nuscenes_40000_64_108G_1.4" ]; then
-			#	echo "Skipping $modelpath since unresolved issues ..."
+			#	echo "Skipping $modelpath since VERY long to compile issues ..."
 			#elif [ "$modelpath" == "pt_sa-gate_NYUv2_360_360_178G_1.4" ]; then
-			#	echo "Skipping $modelpath since unresolved issues ..."
-			#elif [ "$modelpath" == "tf_rcan_DIV2K_360_640_0.98_86.95G_1.4" ]; then
 			#	echo "Skipping $modelpath since unresolved issues ..."
                         else
 				if [ "$framework_prefix" != "tor" ]; then
@@ -135,6 +133,12 @@ function build_model() {
 		                                        --output_dir ${TARGET}/$netname \
 		                                        --net_name $netname \
 		                                        --options '{"input_shape": "1,640,640,3"}'
+					elif [ "$modelpath" == "tf_rcan_DIV2K_360_640_0.98_86.95G_1.4" ]; then
+						vai_c_tensorflow --frozen_pb $modelpath/quantized/*quantize_eval_model.pb \
+		                                        --arch ${ARCH} \
+		                                        --output_dir ${TARGET}/$netname \
+		                                        --net_name $netname \
+		                                        --options '{"input_shape": "1,360,640,3"}'
 					else
 						vai_c_tensorflow --frozen_pb $modelpath/quantized/*quantize_eval_model.pb \
 		                                        --arch ${ARCH} \
@@ -187,6 +191,15 @@ function build_model() {
 		                                       -a ${ARCH} \
 		                                       -o ${TARGET}/FADNet_2_pt \
 		                                       -n FADNet_2_pt
+					elif [ "$modelpath" == "pt_pointpillars_nuscenes_40000_64_108G_1.4" ]; then
+						vai_c_xir -x $modelpath/quantized/MVXFasterRCNN_quant_0_int.xmodel \
+		                                       -a ${ARCH} \
+		                                       -o ${TARGET}/pointpillars_nuscenes_40000_64_0_pt \
+		                                       -n pointpillars_nuscenes_40000_64_0_pt
+						vai_c_xir -x $modelpath/quantized/MVXFasterRCNN_quant_1_int.xmodel \
+		                                       -a ${ARCH} \
+		                                       -o ${TARGET}/pointpillars_nuscenes_40000_64_1_pt \
+		                                       -n pointpillars_nuscenes_40000_64_1_pt
 					elif [ "$modelpath" == "pt_pointpainting_nuscenes_1.4" ]; then
 						vai_c_xir -x $modelpath/pointpillars/quantized/MVXFasterRCNN_quant_0_int.xmodel \
 		                                       -a ${ARCH} \
