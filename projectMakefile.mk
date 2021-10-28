@@ -184,6 +184,7 @@ ifeq ($(VITIS_ARCHITECTURE),psu_cortexa53)
 	cp -v ${PETALINUX_PROJECTS_FOLDER}/${PETALINUX_ROOTFS_NAME}_${PETALINUX_PROJECT_NAME}_${PLNX_VER}/images/linux/bl31.elf                   ${VITIS_CONSOLIDATED_BOOT_FOLDER}
 	cp -v ${PETALINUX_PROJECTS_FOLDER}/${PETALINUX_ROOTFS_NAME}_${PETALINUX_PROJECT_NAME}_${PLNX_VER}/images/linux/pmufw.elf                  ${VITIS_CONSOLIDATED_BOOT_FOLDER}
 	cp -v ${PETALINUX_PROJECTS_FOLDER}/${PETALINUX_ROOTFS_NAME}_${PETALINUX_PROJECT_NAME}_${PLNX_VER}/images/linux/zynqmp_fsbl.elf            ${VITIS_CONSOLIDATED_BOOT_FOLDER}/fsbl.elf
+	cp -v ${PETALINUX_PROJECTS_FOLDER}/${PETALINUX_ROOTFS_NAME}_${PETALINUX_PROJECT_NAME}_${PLNX_VER}/images/linux/system.dtb                 ${VITIS_CONSOLIDATED_BOOT_FOLDER}
 	cp -v ../../zynqmp_qemu_args.txt                                                                                                          ${VITIS_CONSOLIDATED_FOLDER}/qemu_args.txt
 	cp -v ../../pmu_args.txt                                                                                                                  ${VITIS_CONSOLIDATED_FOLDER}
 else ifeq ($(VITIS_ARCHITECTURE),ps7_cortexa9)
