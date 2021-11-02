@@ -68,9 +68,11 @@ VITIS_CACHE_FOLDER                 := ${VITIS_PROJECT_FOLDER}/cache
 VITIS_AI_BRANCH                    := 'v1.4'
 VITIS_AI_FOLDER                    := ${VITIS_CACHE_FOLDER}/Vitis-AI-v1.4
 MODEL_ZOO_FOLDER                   := ${VITIS_CACHE_FOLDER}/AI-Model-Zoo-v1.4
+VVAS_FOLDER                        := ${VITIS_CACHE_FOLDER}/VVAS
 
 DPU_PROJECT_NAME                   := ${HDL_BOARD_NAME}_${HDL_PROJECT_NAME}_${PLNX_VER}_dpu
 ZOO_PROJECT_NAME                   := ${HDL_BOARD_NAME}_${HDL_PROJECT_NAME}_${PLNX_VER}_zoo
+VVAS_PROJECT_NAME                  := ${HDL_BOARD_NAME}_${HDL_PROJECT_NAME}_${PLNX_VER}_vvas
 
 #-=-=-=-=-=-=-=--=-=-=-=-=-=-=--=-=-=-=-=-=-=--=-=-=-=-=-=-=--=-=-=-=-=-=-=--=-=-
 
@@ -306,6 +308,26 @@ else
   endif
 endif
 
+vvas:
+ifneq (,$(wildcard ${VITIS_PROJECT_FOLDER}/${VVAS_PROJECT_NAME}/prj/Vitis/binary_container_1/sd_card.img))
+	@echo -e '${CSTR} VVAS Project Exists, cleanvvas before rebuild'
+	@echo -e '${CSTR}         Skipping create Application'
+else
+	@echo -e '${CSTR} Creating VVAS Project'
+	mkdir -p ${VITIS_CACHE_FOLDER}
+	if [ ! -d "${VITIS_AI_FOLDER}" ]; then git clone -b ${VITIS_AI_BRANCH} https://github.com/Xilinx/Vitis-AI ${VITIS_AI_FOLDER} ; fi
+	if [ ! -d "${VVAS_FOLDER}" ]; then git clone https://github.com/Xilinx/VVAS ${VVAS_FOLDER} ; fi
+	mkdir -p ${VITIS_PROJECT_FOLDER}
+	mkdir -p ${VITIS_PROJECT_FOLDER}/${VVAS_PROJECT_NAME}
+	cp -r ${VVAS_FOLDER}/ivas-examples/Embedded/smart_model_select ${VITIS_PROJECT_FOLDER}/${VVAS_PROJECT_NAME}/.
+	cp -r ../../app/vvas/Makefile ${VITIS_PROJECT_FOLDER}/${VVAS_PROJECT_NAME}/smart_model_select/.
+	sed -i 's/DEVICE={DEVICE}/DEVICE=${HDL_BOARD_NAME}/' ${VITIS_PROJECT_FOLDER}/${VVAS_PROJECT_NAME}/smart_model_select/Makefile
+	cp -r ../../app/vvas/${HDL_BOARD_NAME}_${HDL_PROJECT_NAME}/* ${VITIS_PROJECT_FOLDER}/${VVAS_PROJECT_NAME}/smart_model_select/.
+	make -C ${VITIS_PROJECT_FOLDER}/${VVAS_PROJECT_NAME}/smart_model_select \
+		PLATFORM=../../../platform_repo/${HDL_BOARD_NAME}_${HDL_PROJECT_NAME}/${HDL_BOARD_NAME}_${HDL_PROJECT_NAME}.xpfm \
+		DPU_TRD_PATH=../../cache/Vitis-AI-v1.4/dsa/DPU-TRD \
+		HW_ACCEL_PATH=../../cache/VVAS/ivas-accel-hw
+endif
 	
 cleanxsa:
 	@echo -e '${CSTR} Deleting Vivado Project...'
@@ -348,6 +370,10 @@ cleandpu:
 cleanzoo:
 	@echo -e '${CSTR} Deleting AI-Model-Zoo Project...'
 	${RM} -r ${VITIS_PROJECT_FOLDER}/${ZOO_PROJECT_NAME}
+
+cleanvvas:
+	@echo -e '${CSTR} Deleting VVAS Project...'
+	${RM} -r ${VITIS_PROJECT_FOLDER}/${VVAS_PROJECT_NAME}
 
 clean: cleanall
 	@echo -e '${CSTR} Executed make cleanall instead'

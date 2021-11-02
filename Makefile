@@ -114,6 +114,7 @@ help:
 	@echo -e '          vadd         - Builds Vector Add Example'
 	@echo -e '          dpu          - Builds the DPU-TRD'
 	@echo -e '          zoo          - Builds the AI-Model-Zoo'
+	@echo -e '          vvas         - Builds the VVAS smart_model_select example'
 	@echo -e '          cleanxsa     - Cleans the Vivado Project'
 	@echo -e '          cleanplnx    - Cleans the PetaLinux Project'
 	@echo -e '          cleansysroot - Cleans the sysroot'
@@ -121,6 +122,7 @@ help:
 	@echo -e '          cleanvadd    - Cleans Vector Add Example'
 	@echo -e '          cleandpu     - Cleans the DPU-TRD'
 	@echo -e '          cleanzoo     - Cleans the AI-Model-Zoo'
+	@echo -e '          cleanvvas    - Cleans the VVAS smart_model_select example'
 	@echo -e '          cleanall     - Cleans all steps'
 	@echo
 	@echo -e '${LGRN}***********************'
