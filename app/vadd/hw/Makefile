@@ -8,7 +8,7 @@
 #XILINX_VIVADO ?= /tools/Xilinx/Vivado/2020.1
 XILINX_VIVADO_HLS ?= $(XILINX_VITIS)/Vivado_HLS
 
-ifeq ($(SYSROOTTYPE),aarch64-xilinx-linux)
+ifeq ($(SYSROOTTYPE),cortexa72-cortexa53-xilinx-linux)
 HOST_CXX ?= aarch64-linux-gnu-g++
 else ifeq ($(SYSROOTTYPE),cortexa9t2hf-neon-xilinx-linux-gnueabi)
 HOST_CXX ?= arm-linux-gnueabihf-g++
