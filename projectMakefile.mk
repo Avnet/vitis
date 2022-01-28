@@ -65,9 +65,9 @@ VITIS_CONSOLIDATED_SYSROOTS_FOLDER := ${VITIS_CONSOLIDATED_SYSROOT_FOLDER}/sysro
 VITIS_PROJECT_FOLDER               := ../../projects
 VITIS_CACHE_FOLDER                 := ${VITIS_PROJECT_FOLDER}/cache
 
-VITIS_AI_BRANCH                    := 'v1.4'
-VITIS_AI_FOLDER                    := ${VITIS_CACHE_FOLDER}/Vitis-AI-v1.4
-MODEL_ZOO_FOLDER                   := ${VITIS_CACHE_FOLDER}/AI-Model-Zoo-v1.4
+VITIS_AI_BRANCH                    := 'v2.0'
+VITIS_AI_FOLDER                    := ${VITIS_CACHE_FOLDER}/Vitis-AI-v2.0
+MODEL_ZOO_FOLDER                   := ${VITIS_CACHE_FOLDER}/AI-Model-Zoo-v2.0
 
 DPU_PROJECT_NAME                   := ${HDL_BOARD_NAME}_${HDL_PROJECT_NAME}_${PLNX_VER}_dpu
 ZOO_PROJECT_NAME                   := ${HDL_BOARD_NAME}_${HDL_PROJECT_NAME}_${PLNX_VER}_zoo
@@ -295,7 +295,7 @@ else
 	@echo -e 'Instructions to build AI-Model-Zoo for ${HDL_BOARD_NAME} platform:'
 	@echo -e '=================================================================='
 	@echo -e '   cd projects/${ZOO_PROJECT_NAME}'
-	@echo -e '   ./docker_run.sh xilinx/vitis-ai:1.4.916'
+	@echo -e '   ./docker_run.sh xilinx/vitis-ai:2.0.0.1103'
 	@echo -e 'Once inside the docker:'
 	@echo -e '   source ./compile_modelzoo.sh'
 	@echo -e '=================================================================='
