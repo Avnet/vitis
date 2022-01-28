@@ -2,7 +2,7 @@
 
 ARCH=arch.json
 TARGET=vitis_ai_library/models
-CACHE=../cache/AI-Model-Zoo-v1.4
+CACHE=../cache/AI-Model-Zoo-v2.0
 
 function build_model() {
 	for file in `ls $1`
