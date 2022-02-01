@@ -30,11 +30,23 @@ function build_model() {
                         download1=$(sed -n '1p' download_list.txt)
 			checksum1=$(sed -n '1p' checksum_list.txt)
 			archive1=$(echo $download1 | cut -f2 -d=)
+
+                        # fix incorrect download links
+			if [ "$archive1" == "cf_inceptionv2_imagenet_224_224_4G_1.4.zip" ]; then
+                                archive1=cf_inceptionv2_imagenet_224_224_4G_2.0.zip
+                                download1="https://www.xilinx.com/bin/public/openDownload?filename=cf_inceptionv2_imagenet_224_224_4G_2.0.zip"
+			fi
+			if [ "$archive1" == "cf_reid_market1501_160_80_0.95G_1.4.zip" ]; then
+                                archive1=cf_reid_market1501_160_80_0.95G_2.0.zip
+                                download1="https://www.xilinx.com/bin/public/openDownload?filename=cf_reid_market1501_160_80_0.95G_2.0.zip"
+			fi
+
 			file1="${CACHE}/$archive1"
 			echo "$download1 => $archive1"
                         
                         # pre-built zcu102/zcu04 model
-                        download2=$(sed -n '2p' download_list.txt)
+                        #download2=$(sed -n '2p' download_list.txt)
+                        download2=$(grep zcu104 download_list.txt | sed -n '1p')
 			checksum2=$(sed -n '2p' checksum_list.txt)
                         archive2=$(echo $download2 | cut -f2 -d=)
 			file2="${CACHE}/$archive2"
@@ -44,14 +56,21 @@ function build_model() {
 
                         netname=$(sed -n '2p' name_list.txt)
 
+                        # fix incorrect model names
+			if [ "$netname" == "ppointpainting_nuscenes_40000_64_0_pt" ]; then
+				netname=pointpainting_nuscenes_40000_64_0_pt
+			fi
+
                         if [[ -d "${TARGET}/$netname" ]]; then
 				echo "Skipping $modelpath since ${TARGET}/$netname already exists ..."
-			#elif [ "$modelpath" == "pt_pointpainting_nuscenes_1.4" ]; then
+			#elif [ "$modelpath" == "pt_pointpainting_nuscenes_2.0" ]; then
 			#	echo "Skipping $modelpath since VERY long to compile issues ..."
-			#elif [ "$modelpath" == "pt_pointpillars_nuscenes_40000_64_108G_1.4" ]; then
+			#elif [ "$modelpath" == "pt_pointpillars_nuscenes_40000_64_108G_2.0" ]; then
 			#	echo "Skipping $modelpath since VERY long to compile issues ..."
-			#elif [ "$modelpath" == "pt_sa-gate_NYUv2_360_360_178G_1.4" ]; then
+			#elif [ "$modelpath" == "pt_sa-gate_NYUv2_360_360_178G_2.0" ]; then
 			#	echo "Skipping $modelpath since unresolved issues ..."
+                        elif [ "$download2" == "" ]; then
+				echo "Skipping $modelpath since NOT supported on edge platforms ..."
                         else
 				if [ "$framework_prefix" != "tor" ]; then
                                         if [[ -f "$file1" ]]; then
@@ -66,10 +85,10 @@ function build_model() {
 	   				#	exit 1
 					#else
 						if [ `command -v unzip` ]; then
-	      						unzip $file1
+	      						unzip -o $file1
 	   					else 
 	      						sudo apt install unzip
-	      						unzip $file1
+	      						unzip -o $file1
 	   					fi
 						#rm $file1
 					#fi
@@ -115,25 +134,25 @@ function build_model() {
 				elif [ "$framework_prefix" == "tf_" ]; then
 			                echo "Compiling tensorflow model $modelpath as $netname"
 					conda activate vitis-ai-tensorflow
-					if [ "$modelpath" == "tf_yolov3_voc_416_416_65.63G_1.4" ]; then
+					if [ "$modelpath" == "tf_yolov3_voc_416_416_65.63G_2.0" ]; then
 						vai_c_tensorflow --frozen_pb $modelpath/quantized/*quantize_eval_model.pb \
 		         				--arch ${ARCH} \
 		         				--output_dir ${TARGET}/$netname \
 		         				--net_name $netname \
 							--options '{"input_shape": "1,416,416,3"}'
-					elif [ "$modelpath" == "tf_ssdinceptionv2_coco_300_300_9.62G_1.4" ]; then
+					elif [ "$modelpath" == "tf_ssdinceptionv2_coco_300_300_9.62G_2.0" ]; then
 						vai_c_tensorflow --frozen_pb $modelpath/quantized/*quantize_eval_model.pb \
 		                                        --arch ${ARCH} \
 		                                        --output_dir ${TARGET}/$netname \
 		                                        --net_name $netname \
 		                                        --options '{"input_shape": "1,300,300,3"}'
-					elif [ "$modelpath" == "tf_ssdresnet50v1_fpn_coco_640_640_178.4G_1.4" ]; then
+					elif [ "$modelpath" == "tf_ssdresnet50v1_fpn_coco_640_640_178.4G_2.0" ]; then
 						vai_c_tensorflow --frozen_pb $modelpath/quantized/*quantize_eval_model.pb \
 		                                        --arch ${ARCH} \
 		                                        --output_dir ${TARGET}/$netname \
 		                                        --net_name $netname \
 		                                        --options '{"input_shape": "1,640,640,3"}'
-					elif [ "$modelpath" == "tf_rcan_DIV2K_360_640_0.98_86.95G_1.4" ]; then
+					elif [ "$modelpath" == "tf_rcan_DIV2K_360_640_0.98_86.95G_2.0" ]; then
 						vai_c_tensorflow --frozen_pb $modelpath/quantized/*quantize_eval_model.pb \
 		                                        --arch ${ARCH} \
 		                                        --output_dir ${TARGET}/$netname \
@@ -149,18 +168,22 @@ function build_model() {
 				elif [ "$framework_prefix" == "tf2" ]; then
 			                echo "Compiling tensorflow 2 model $modelpath as $netname"
 					conda activate vitis-ai-tensorflow2
-					vai_c_tensorflow2 -m $modelpath/quantized/quantized.h5 \
-		          			-a ${ARCH} \
-		          			-o ${TARGET}/$netname \
-		          			-n $netname 
+					if [ "$modelpath" == "tf2_mobilenetv3_imagenet_224_224_132M_2.0" ]; then
+						vai_c_tensorflow2 -m $modelpath/quantized/quantized_mobilenet_v3_small_1.0.h5 \
+			          			-a ${ARCH} \
+			          			-o ${TARGET}/$netname \
+			          			-n $netname 
+					else
+						vai_c_tensorflow2 -m $modelpath/quantized/quantized.h5 \
+			          			-a ${ARCH} \
+			          			-o ${TARGET}/$netname \
+			          			-n $netname 
+					fi
 					conda deactivate
 				elif [ "$framework_prefix" == "pt_" ]; then
 			                echo "Compiling pytorch model $modelpath as $netname"
 					conda activate vitis-ai-pytorch
-					if [ "$modelpath" == "pt_salsanextv2_semantic-kitti_64_2048_32G_1.4" ]; then
-						modelpath=pt_salsanextv2_semantic-kitti_64_2048_0.75_32G_1.4
-					fi
-					if [ "$modelpath" == "pt_pointpillars_kitti_12000_100_10.8G_1.4" ]; then
+					if [ "$modelpath" == "pt_pointpillars_kitti_12000_100_10.8G_2.0" ]; then
 						vai_c_xir -x $modelpath/qat/convert_qat_results/VoxelNet_0_int.xmodel \
 		                                       -a ${ARCH} \
 		                                       -o ${TARGET}/pointpillars_kitti_12000_0_pt \
@@ -169,29 +192,7 @@ function build_model() {
 		                                       -a ${ARCH} \
 		                                       -o ${TARGET}/pointpillars_kitti_12000_1_pt \
 		                                       -n pointpillars_kitti_12000_1_pt
-					elif [ "$modelpath" == "pt_centerpoint_astyx_2560_40_54G_1.4" ]; then
-						vai_c_xir -x $modelpath/qat/convert_qat_results/CenterPoint_quant_0_int.xmodel \
-		                                       -a ${ARCH} \
-		                                       -o ${TARGET}/centerpoint_0_pt \
-		                                       -n centerpoint_0_pt
-						vai_c_xir -x $modelpath/qat/convert_qat_results/CenterPoint_quant_1_int.xmodel \
-		                                       -a ${ARCH} \
-		                                       -o ${TARGET}/centerpoint_1_pt \
-		                                       -n centerpoint_1_pt
-					elif [ "$modelpath" == "pt_fadnet_sceneflow_576_960_359G_1.4" ]; then
-						vai_c_xir -x $modelpath/quantized/FADNet_0_int.xmodel \
-		                                       -a ${ARCH} \
-		                                       -o ${TARGET}/FADNet_0_pt \
-		                                       -n FADNet_0_pt
-						vai_c_xir -x $modelpath/quantized/FADNet_1_int.xmodel \
-		                                       -a ${ARCH} \
-		                                       -o ${TARGET}/FADNet_1_pt \
-		                                       -n FADNet_1_pt
-						vai_c_xir -x $modelpath/quantized/FADNet_2_int.xmodel \
-		                                       -a ${ARCH} \
-		                                       -o ${TARGET}/FADNet_2_pt \
-		                                       -n FADNet_2_pt
-					elif [ "$modelpath" == "pt_pointpillars_nuscenes_40000_64_108G_1.4" ]; then
+					elif [ "$modelpath" == "pt_pointpillars_nuscenes_40000_64_108G_2.0" ]; then
 						vai_c_xir -x $modelpath/quantized/MVXFasterRCNN_quant_0_int.xmodel \
 		                                       -a ${ARCH} \
 		                                       -o ${TARGET}/pointpillars_nuscenes_40000_64_0_pt \
@@ -200,7 +201,7 @@ function build_model() {
 		                                       -a ${ARCH} \
 		                                       -o ${TARGET}/pointpillars_nuscenes_40000_64_1_pt \
 		                                       -n pointpillars_nuscenes_40000_64_1_pt
-					elif [ "$modelpath" == "pt_pointpainting_nuscenes_1.4" ]; then
+					elif [ "$modelpath" == "pt_pointpainting_nuscenes_2.0" ]; then
 						vai_c_xir -x $modelpath/pointpillars/quantized/MVXFasterRCNN_quant_0_int.xmodel \
 		                                       -a ${ARCH} \
 		                                       -o ${TARGET}/pointpainting_nuscenes_40000_64_0_pt \
@@ -213,6 +214,105 @@ function build_model() {
 		                                       -a ${ARCH} \
 		                                       -o ${TARGET}/semanticfpn_nuimage_576_320_pt \
 		                                       -n semanticfpn_nuimage_576_320_pt
+					elif [ "$modelpath" == "pt_centerpoint_astyx_2560_40_54G_2.0" ]; then
+						vai_c_xir -x $modelpath/qat/convert_qat_results/CenterPoint_quant_0_int.xmodel \
+		                                       -a ${ARCH} \
+		                                       -o ${TARGET}/centerpoint_0_pt \
+		                                       -n centerpoint_0_pt
+						vai_c_xir -x $modelpath/qat/convert_qat_results/CenterPoint_quant_1_int.xmodel \
+		                                       -a ${ARCH} \
+		                                       -o ${TARGET}/centerpoint_1_pt \
+		                                       -n centerpoint_1_pt
+					elif [ "$modelpath" == "pt_fadnet_sceneflow_576_960_441G_2.0" ]; then
+						vai_c_xir -x $modelpath/quantized/FADNet_0_int.xmodel \
+		                                       -a ${ARCH} \
+		                                       -o ${TARGET}/FADNet_0_pt \
+		                                       -n FADNet_0_pt
+						vai_c_xir -x $modelpath/quantized/FADNet_1_int.xmodel \
+		                                       -a ${ARCH} \
+		                                       -o ${TARGET}/FADNet_1_pt \
+		                                       -n FADNet_1_pt
+						vai_c_xir -x $modelpath/quantized/FADNet_2_int.xmodel \
+		                                       -a ${ARCH} \
+		                                       -o ${TARGET}/FADNet_2_pt \
+		                                       -n FADNet_2_pt
+					elif [ "$modelpath" == "pt_fadnet_sceneflow_576_960_0.65_154G_2.0" ]; then
+						vai_c_xir -x $modelpath/quantized/FADNet_0_int.xmodel \
+		                                       -a ${ARCH} \
+		                                       -o ${TARGET}/FADNet_pruned_0_pt \
+		                                       -n FADNet_pruned_0_pt
+						vai_c_xir -x $modelpath/quantized/FADNet_1_int.xmodel \
+		                                       -a ${ARCH} \
+		                                       -o ${TARGET}/FADNet_pruned_1_pt \
+		                                       -n FADNet_pruned_1_pt
+						vai_c_xir -x $modelpath/quantized/FADNet_2_int.xmodel \
+		                                       -a ${ARCH} \
+		                                       -o ${TARGET}/FADNet_pruned_2_pt \
+		                                       -n FADNet_pruned_2_pt
+					elif [ "$modelpath" == "pt_C2D2lite_CC20_512_512_6.86G_2.0" ]; then
+						vai_c_xir -x $modelpath/quantized/Net_all_int_0.xmodel \
+		                                       -a ${ARCH} \
+		                                       -o ${TARGET}/C2D2_Lite_0_pt \
+		                                       -n C2D2_Lite_0_pt
+						vai_c_xir -x $modelpath/quantized/Net_all_int_1.xmodel \
+		                                       -a ${ARCH} \
+		                                       -o ${TARGET}/C2D2_Lite_1_pt \
+		                                       -n C2D2_Lite_1_pt
+					elif [ "$modelpath" == "pt_SESR-S_DIV2K_360_640_7.48G_2.0" ]; then
+						vai_c_xir -x $modelpath/quantized/qat_result/*int.xmodel \
+		                                       -a ${ARCH} \
+		                                       -o ${TARGET}/$netname \
+		                                       -n $netname
+					elif [ "$modelpath" == "pt_squeezenet_imagenet_224_224_351.7M_2.0" ]; then
+						vai_c_xir -x $modelpath/qat/*int.xmodel \
+		                                       -a ${ARCH} \
+		                                       -o ${TARGET}/$netname \
+		                                       -n $netname
+					elif [ "$modelpath" == "pt_SSR_CVC_256_256_39.72G_2.0" ]; then
+						vai_c_xir -x $modelpath/quantized/qat_results/*int.xmodel \
+		                                       -a ${ARCH} \
+		                                       -o ${TARGET}/$netname \
+		                                       -n $netname
+					elif [ "$modelpath" == "pt_ultrafast_CULane_288_800_8.4G_2.0" ]; then
+						#vai_c_xir -x $modelpath/uantized/tusimple_quantize_result/*int.xmodel
+						vai_c_xir -x $modelpath/quantized/culane_quantize_result/*int.xmodel \
+		                                       -a ${ARCH} \
+		                                       -o ${TARGET}/$netname \
+		                                       -n $netname
+					#elif [ "$modelpath" == "pt_DRUNet_Kvasir_528_608_0.4G_2.0" ]; then
+					elif [ "$modelpath" == "pt_DRUNet_Kvasir_528_608_2.59G_2.0" ]; then
+						#vai_c_xir -x $modelpath/qat/*int.xmodel 
+						vai_c_xir -x pt_DRUNet_Kvasir_528_608_0.4G_2.0/qat/*int.xmodel \
+		                                       -a ${ARCH} \
+		                                       -o ${TARGET}/$netname \
+		                                       -n $netname
+					elif [ "$modelpath" == "pt_resnet50_imagenet_224_224_4.1G_2.0" ]; then
+						vai_c_xir -x $modelpath/qat/*int.xmodel \
+		                                       -a ${ARCH} \
+		                                       -o ${TARGET}/$netname \
+		                                       -n $netname
+					elif [ "$modelpath" == "pt_OFA-depthwise-res50_imagenet_176_176_1.246G_2.0" ]; then
+						vai_c_xir -x $modelpath/qat/convert_qat_results/*int.xmodel \
+		                                       -a ${ARCH} \
+		                                       -o ${TARGET}/$netname \
+		                                       -n $netname
+					elif [ "$modelpath" == "pt_CLOCs_kitti_2.0" ]; then
+						vai_c_xir -x $modelpath/clocs-kitti/quantized/fusion_cnn_0_int.xmodel \
+		                                       -a ${ARCH} \
+		                                       -o ${TARGET}/clocs_fusion_cnn_pt \
+		                                       -n clocs_fusion_cnn_pt
+						vai_c_xir -x $modelpath/pointpillars-kitti/qat/convert_qat_results/VoxelNet_0_int.xmodel \
+		                                       -a ${ARCH} \
+		                                       -o ${TARGET}/clocs_pointpillars_kitti_0_pt \
+		                                       -n clocs_pointpillars_kitti_0_pt
+						vai_c_xir -x $modelpath/pointpillars-kitti/qat/convert_qat_results/VoxelNet_1_int.xmodel \
+		                                       -a ${ARCH} \
+		                                       -o ${TARGET}/clocs_pointpillars_kitti_1_pt \
+		                                       -n clocs_pointpillars_kitti_1_pt
+						vai_c_xir -x $modelpath/yolox-kitti/qat/convert_qat_results/YOLOX_0_int.xmodel \
+		                                       -a ${ARCH} \
+		                                       -o ${TARGET}/clocs_yolox_pt \
+		                                       -n clocs_yolox_pt
 					else
 						vai_c_xir -x $modelpath/quantized/*int.xmodel \
 		                                       -a ${ARCH} \
@@ -230,7 +330,7 @@ function build_model() {
 
                                 # additional prep for use with vitis-ai-library
 				if [[ -d "${TARGET}/$netname" ]]; then
-					if [ "$modelpath" == "pt_pointpillars_kitti_12000_100_10.8G_1.4" ]; then
+					if [ "$modelpath" == "pt_pointpillars_kitti_12000_100_10.8G_2.0" ]; then
 						# create .prototxt files based on pre-built zcu102/zcu104 models
 						echo "Creating pointpillars_kitti_12000_0_pt.prototxt file from pre-built zcu102/zcu104 model"
 						cp ${netname}/${netname}.prototxt ${TARGET}/pointpillars_kitti_12000_0_pt/pointpillars_kitti_12000_0_pt.prototxt
