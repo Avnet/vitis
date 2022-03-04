@@ -46,15 +46,32 @@ function build_model() {
                         
                         # pre-built zcu102/zcu04 model
                         #download2=$(sed -n '2p' download_list.txt)
+			#checksum2=$(sed -n '2p' checksum_list.txt)
+
                         download2=$(grep zcu104 download_list.txt | sed -n '1p')
-			checksum2=$(sed -n '2p' checksum_list.txt)
                         archive2=$(echo $download2 | cut -f2 -d=)
 			file2="${CACHE}/$archive2"
 			echo "$download2 => $archive2"
 
+                        download3=$(grep zcu104 download_list.txt | sed -n '2p')
+                        archive3=$(echo $download3 | cut -f2 -d=)
+			file3="${CACHE}/$archive3"
+			if [ "$download3" != "" ]; then
+				echo "$download3 => $archive3"
+			fi
+
+                        download4=$(grep zcu104 download_list.txt | sed -n '3p')
+                        archive4=$(echo $download4 | cut -f2 -d=)
+			file4="${CACHE}/$archive4"
+			if [ "$download4" != "" ]; then
+				echo "$download4 => $archive4"
+			fi
+
 			modelpath=$(sed -n '1p' model_path.txt)
 
                         netname=$(sed -n '2p' name_list.txt)
+                        netname2=$(sed -n '3p' name_list.txt)
+                        netname3=$(sed -n '4p' name_list.txt)
 
                         # fix incorrect model names
 			if [ "$netname" == "ppointpainting_nuscenes_40000_64_0_pt" ]; then
@@ -106,6 +123,27 @@ function build_model() {
 						tar -xvzf $file2
 						#rm $file2
 					#fi
+
+					if [ "$download3" != "" ]; then
+		                                if [[ -f "$file3" ]]; then
+							echo "Skipping download of $archive3 since already in cache ..."
+						else
+							echo "Downloading $archive3 ..."
+							wget $download3 -O $file3
+						fi
+						tar -xvzf $file3
+					fi
+
+					if [ "$download4" != "" ]; then
+		                                if [[ -f "$file4" ]]; then
+							echo "Skipping download of $archive4 since already in cache ..."
+						else
+							echo "Downloading $archive4 ..."
+							wget $download4 -O $file4
+						fi
+						tar -xvzf $file4
+					fi
+
 				else
 					echo "Torchvision has no float&quantized model"
 				fi
@@ -344,20 +382,244 @@ function build_model() {
 							echo "Removing ${TARGET}/${netname}/${netname}_org.xmodel ..."
 							rm ${TARGET}/${netname}/${netname}_org.xmodel
 						fi
+						# create ${netname}_officialcfg.prototxt file based on pre-built zcu102/zcu104 model
+						if [[ -f "${netname}/${netname}_officialcfg.prototxt" ]]; then
+							echo "Copying ${netname}_officialcfg.prototxt file from pre-built zcu102/zcu104 model"
+							cp ${netname}/${netname}_officialcfg.prototxt ${TARGET}/${netname}/.
+						fi
+
 						# create ${netname}.prototxt file based on pre-built zcu102/zcu104 model
 						if [[ -f "${netname}/${netname}.prototxt" ]]; then
 							echo "Copying $netname.prototxt file from pre-built zcu102/zcu104 model"
 							cp ${netname}/${netname}.prototxt ${TARGET}/${netname}/.
 						fi
-						# create ${netname}_officialcfg.prototxt file based on pre-built zcu102/zcu104 model
-						if [[ -f "${netname}/${netname}_officialcfg.prototxt" ]]; then
-							echo "Copying ${netname}_officialcfg file from pre-built zcu102/zcu104 model"
-							cp ${netname}/${netname}_officialcfg.prototxt ${TARGET}/${netname}/.
+						# create ${netname2}.prototxt file based on pre-built zcu102/zcu104 model
+						if [[ -f "${netname2}/${netname2}.prototxt" ]]; then
+							echo "Copying $netname2.prototxt file from pre-built zcu102/zcu104 model"
+							cp ${netname2}/${netname2}.prototxt ${TARGET}/${netname2}/.
+						fi
+						# create ${netname3}.prototxt file based on pre-built zcu102/zcu104 model
+						if [[ -f "${netname3}/${netname3}.prototxt" ]]; then
+							echo "Copying $netname3.prototxt file from pre-built zcu102/zcu104 model"
+							cp ${netname3}/${netname3}.prototxt ${TARGET}/${netname3}/.
 						fi
 					fi
 				fi
+
 				rm -rf $netname
+				if [ "$netname2" != "" ]; then
+					rm -rf $netname2
+				fi
+				if [ "$netname3" != "" ]; then
+					rm -rf $netname3
+				fi
+
 			fi
+
+			# Special case of accuracy testing model
+			if [[ -d "${netname}_acc" ]]; then
+				mkdir -p ${TARGET}/${netname}_acc
+				# copy accuracy testing specific prototxt file
+				if [[ -f "${netname}_acc/${netname}_acc.prototxt" ]]; then
+					echo "Copying ${netname}_acc.prototxt file from pre-built zcu102/zcu104 model"
+					cp ${netname}_acc/${netname}_acc.prototxt ${TARGET}/${netname}_acc/.
+				fi
+				# create ${netname}_acc_officialcfg.prototxt file based on pre-built zcu102/zcu104 model
+				if [[ -f "${netname}_acc/${netname}_acc_officialcfg.prototxt" ]]; then
+					echo "Copying ${netname}_acc_officialcfg.prototxt file from pre-built zcu102/zcu104 model"
+					cp ${netname}_acc/${netname}_acc_officialcfg.prototxt ${TARGET}/${netname}_acc/.
+				fi
+				# copy xmodel (same as previously built)
+				if [[ -f "${TARGET}/${netname}/${netname}.xmodel" ]]; then
+					#echo "Copying ${netname}_acc.xmodel file from previously built model"
+					#cp ${TARGET}/${netname}/${netname}.xmodel ${TARGET}/${netname}_acc/${netname}_acc.xmodel
+					echo "Linking ${netname}_acc.xmodel file to previously built model"
+					cd ${TARGET}/${netname}_acc/
+					ln -sf ../${netname}/${netname}.xmodel ${netname}_acc.xmodel
+					cd -
+				fi
+				rm -rf ${netname}_acc				
+
+				if [ "$netname2" != "" ]; then
+					mkdir -p ${TARGET}/${netname2}_acc
+					# copy accuracy testing specific prototxt file
+					if [[ -f "${netname2}_acc/${netname2}_acc.prototxt" ]]; then
+						echo "Copying ${netname2}_acc.prototxt file from pre-built zcu102/zcu104 model"
+						cp ${netname2}_acc/${netname2}_acc.prototxt ${TARGET}/${netname2}_acc/.
+					fi
+					# create ${netname2}_acc_officialcfg.prototxt file based on pre-built zcu102/zcu104 model
+					if [[ -f "${netname2}_acc/${netname2}_acc_officialcfg.prototxt" ]]; then
+						echo "Copying ${netname2}_acc_officialcfg.prototxt file from pre-built zcu102/zcu104 model"
+						cp ${netname2}_acc/${netname2}_acc_officialcfg.prototxt ${TARGET}/${netname2}_acc/.
+					fi
+					# copy xmodel (same as previously built)
+					if [[ -f "${TARGET}/${netname2}/${netname2}.xmodel" ]]; then
+						echo "Linking ${netname2}_acc.xmodel file to previously built model"
+						cd ${TARGET}/${netname2}_acc/
+						ln -sf ../${netname2}/${netname2}.xmodel ${netname2}_acc.xmodel
+						cd -
+					fi
+					rm -rf ${netname2}_acc
+				fi
+
+				if [ "$netname3" != "" ]; then
+					mkdir -p ${TARGET}/${netname3}_acc
+					# copy accuracy testing specific prototxt file
+					if [[ -f "${netname3}_acc/${netname3}_acc.prototxt" ]]; then
+						echo "Copying ${netname3}_acc.prototxt file from pre-built zcu102/zcu104 model"
+						cp ${netname3}_acc/${netname3}_acc.prototxt ${TARGET}/${netname3}_acc/.
+					fi
+					# create ${netname3}_acc_officialcfg.prototxt file based on pre-built zcu102/zcu104 model
+					if [[ -f "${netname3}_acc/${netname3}_acc_officialcfg.prototxt" ]]; then
+						echo "Copying ${netname3}_acc_officialcfg.prototxt file from pre-built zcu102/zcu104 model"
+						cp ${netname3}_acc/${netname3}_acc_officialcfg.prototxt ${TARGET}/${netname3}_acc/.
+					fi
+					# copy xmodel (same as previously built)
+					if [[ -f "${TARGET}/${netname3}/${netname3}.xmodel" ]]; then
+						echo "Linking ${netname3}_acc.xmodel file to previously built model"
+						cd ${TARGET}/${netname3}_acc/
+						ln -sf ../${netname3}/${netname3}.xmodel ${netname3}_acc.xmodel
+						cd -
+					fi
+					rm -rf ${netname3}_acc
+				fi
+
+                        fi
+			# model specific cases
+			if [[ -d "C2D2_Lite_1_pt" ]]; then
+				name=C2D2_Lite_1_pt
+				# copy prototxt file
+				if [[ -f "${name}/${name}.prototxt" ]]; then
+					echo "Copying ${name}.prototxt file from pre-built zcu102/zcu104 model"
+					cp ${name}/${name}.prototxt ${TARGET}/${name}/.
+				fi
+                        fi
+			if [[ -d "centerpoint_1_pt" ]]; then
+				name=centerpoint_1_pt
+				# copy prototxt file
+				if [[ -f "${name}/${name}.prototxt" ]]; then
+					echo "Copying ${name}.prototxt file from pre-built zcu102/zcu104 model"
+					cp ${name}/${name}.prototxt ${TARGET}/${name}/.
+				fi
+                        fi
+
+			if [[ -d "pointpainting_nuscenes_40000_64_0_pt_acc" ]]; then
+				name=pointpainting_nuscenes_40000_64_0_pt
+				accname=${name}_acc
+				mkdir -p ${TARGET}/${accname}
+				# copy accuracy testing specific prototxt file
+				if [[ -f "${accname}/${accname}.prototxt" ]]; then
+					echo "Copying ${accname}.prototxt file from pre-built zcu102/zcu104 model"
+					cp ${accname}/${accname}.prototxt ${TARGET}/${accname}/.
+				fi
+				# copy xmodel (same as previously built)
+				if [[ -f "${TARGET}/${name}/${name}.xmodel" ]]; then
+					#echo "Copying ${accname}.xmodel file from previously built model"
+					#cp ${TARGET}/${name}/${name}.xmodel ${TARGET}/${accname}/${accname}.xmodel
+					echo "Linking ${accname}.xmodel file to previously built model"
+					cd ${TARGET}/${accname}/
+					ln -sf ../${netname}/${netname}.xmodel ${accname}.xmodel
+					cd -
+				fi
+
+				rm -rf ${accname}				
+                        fi
+			if [[ -d "pointpainting_nuscenes_40000_64_1_pt_acc" ]]; then
+				name=pointpainting_nuscenes_40000_64_1_pt
+				accname=${name}_acc
+				mkdir -p ${TARGET}/${accname}
+				# copy accuracy testing specific prototxt file
+				if [[ -f "${accname}/${accname}.prototxt" ]]; then
+					echo "Copying ${accname}.prototxt file from pre-built zcu102/zcu104 model"
+					cp ${accname}/${accname}.prototxt ${TARGET}/${accname}/.
+				fi
+				# copy xmodel (same as previously built)
+				if [[ -f "${TARGET}/${name}/${name}.xmodel" ]]; then
+					echo "Linking ${accname}.xmodel file to previously built model"
+					cd ${TARGET}/${accname}/
+					ln -sf ../${netname}/${netname}.xmodel ${accname}.xmodel
+					cd -
+				fi
+
+				rm -rf ${accname}				
+                        fi
+			if [[ -d "pointpillars_kitti_12000_1_pt_acc" ]]; then
+				name=pointpillars_kitti_12000_1_pt
+				accname=${name}_acc
+				mkdir -p ${TARGET}/${accname}
+				# copy accuracy testing specific prototxt file
+				if [[ -f "${accname}/${accname}.prototxt" ]]; then
+					echo "Copying ${accname}.prototxt file from pre-built zcu102/zcu104 model"
+					cp ${accname}/${accname}.prototxt ${TARGET}/${accname}/.
+				fi
+				# copy xmodel (same as previously built)
+				if [[ -f "${TARGET}/${name}/${name}.xmodel" ]]; then
+					echo "Linking ${accname}.xmodel file to previously built model"
+					cd ${TARGET}/${accname}/
+					ln -sf ../${netname}/${netname}.xmodel ${accname}.xmodel
+					cd -
+				fi
+
+				rm -rf ${accname}				
+                        fi
+			if [[ -d "pointpillars_nuscenes_40000_64_1_pt_acc" ]]; then
+				name=pointpillars_nuscenes_40000_64_1_pt
+				accname=${name}_acc
+				mkdir -p ${TARGET}/${accname}
+				# copy accuracy testing specific prototxt file
+				if [[ -f "${accname}/${accname}.prototxt" ]]; then
+					echo "Copying ${accname}.prototxt file from pre-built zcu102/zcu104 model"
+					cp ${accname}/${accname}.prototxt ${TARGET}/${accname}/.
+				fi
+				# copy xmodel (same as previously built)
+				if [[ -f "${TARGET}/${name}/${name}.xmodel" ]]; then
+					echo "Linking ${accname}.xmodel file to previously built model"
+					cd ${TARGET}/${accname}/
+					ln -sf ../${netname}/${netname}.xmodel ${accname}.xmodel
+					cd -
+				fi
+
+				rm -rf ${accname}				
+                        fi
+			if [[ -d "semanticfpn_nuimage_576_320_pt_acc" ]]; then
+				name=semanticfpn_nuimage_576_320_pt
+				accname=${name}_acc
+				mkdir -p ${TARGET}/${accname}
+				# copy accuracy testing specific prototxt file
+				if [[ -f "${accname}/${accname}.prototxt" ]]; then
+					echo "Copying ${accname}.prototxt file from pre-built zcu102/zcu104 model"
+					cp ${accname}/${accname}.prototxt ${TARGET}/${accname}/.
+				fi
+				# copy xmodel (same as previously built)
+				if [[ -f "${TARGET}/${name}/${name}.xmodel" ]]; then
+					echo "Linking ${accname}.xmodel file to previously built model"
+					cd ${TARGET}/${accname}/
+					ln -sf ../${netname}/${netname}.xmodel ${accname}.xmodel
+					cd -
+				fi
+
+				rm -rf ${accname}				
+                        fi
+			if [[ -d "clocs_yolox_pt_acc" ]]; then
+				name=clocs_yolox_pt
+				accname=${name}_acc
+				mkdir -p ${TARGET}/${accname}
+				# copy accuracy testing specific prototxt file
+				if [[ -f "${accname}/${accname}.prototxt" ]]; then
+					echo "Copying ${accname}.prototxt file from pre-built zcu102/zcu104 model"
+					cp ${accname}/${accname}.prototxt ${TARGET}/${accname}/.
+				fi
+				# copy xmodel (same as previously built)
+				if [[ -f "${TARGET}/${name}/${name}.xmodel" ]]; then
+					echo "Linking ${accname}.xmodel file to previously built model"
+					cd ${TARGET}/${accname}/
+					ln -sf ../${netname}/${netname}.xmodel ${accname}.xmodel
+					cd -
+				fi
+
+				rm -rf ${accname}				
+                        fi
+
 		else
 			echo $1"/"$file
 		fi
