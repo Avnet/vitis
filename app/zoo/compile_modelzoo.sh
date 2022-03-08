@@ -462,7 +462,7 @@ function build_model() {
                         fi
 
 			if [ "$netname2" != "" ]; then
-				if [[ -d "${netnam2}_acc" ]]; then
+				if [[ -d "${netname2}_acc" ]]; then
 					mkdir -p ${TARGET}/${netname2}_acc
 					# copy accuracy testing specific prototxt file
 					if [[ -f "${netname2}_acc/${netname2}_acc.prototxt" ]]; then
@@ -486,7 +486,7 @@ function build_model() {
 			fi
 
 			if [ "$netname3" != "" ]; then
-				if [[ -d "${netnam3}_acc" ]]; then
+				if [[ -d "${netname3}_acc" ]]; then
 					mkdir -p ${TARGET}/${netname3}_acc
 					# copy accuracy testing specific prototxt file
 					if [[ -f "${netname3}_acc/${netname3}_acc.prototxt" ]]; then
@@ -510,7 +510,7 @@ function build_model() {
 			fi
 
 			if [ "$netname4" != "" ]; then
-				if [[ -d "${netnam4}_acc" ]]; then
+				if [[ -d "${netname4}_acc" ]]; then
 					mkdir -p ${TARGET}/${netname4}_acc
 					# copy accuracy testing specific prototxt file
 					if [[ -f "${netname4}_acc/${netname4}_acc.prototxt" ]]; then
