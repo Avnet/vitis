@@ -65,9 +65,9 @@ VITIS_CONSOLIDATED_SYSROOTS_FOLDER := ${VITIS_CONSOLIDATED_SYSROOT_FOLDER}/sysro
 VITIS_PROJECT_FOLDER               := ../../projects
 VITIS_CACHE_FOLDER                 := ${VITIS_PROJECT_FOLDER}/cache
 
-VITIS_AI_BRANCH                    := 'v2.0'
-VITIS_AI_FOLDER                    := ${VITIS_CACHE_FOLDER}/Vitis-AI-v2.0
-MODEL_ZOO_FOLDER                   := ${VITIS_CACHE_FOLDER}/AI-Model-Zoo-v2.0
+VITIS_AI_BRANCH                    := 'v2.5'
+VITIS_AI_FOLDER                    := ${VITIS_CACHE_FOLDER}/Vitis-AI-v2.5
+MODEL_ZOO_FOLDER                   := ${VITIS_CACHE_FOLDER}/AI-Model-Zoo-v2.5
 
 DPU_PROJECT_NAME                   := ${HDL_BOARD_NAME}_${HDL_PROJECT_NAME}_${PLNX_VER}_dpu
 ZOO_PROJECT_NAME                   := ${HDL_BOARD_NAME}_${HDL_PROJECT_NAME}_${PLNX_VER}_zoo
@@ -253,9 +253,11 @@ else
 	@echo -e '${CSTR} Creating DPU-TRD Project'
 	mkdir -p ${VITIS_CACHE_FOLDER}
 	if [ ! -d "${VITIS_AI_FOLDER}" ]; then git clone -b ${VITIS_AI_BRANCH} https://github.com/Xilinx/Vitis-AI ${VITIS_AI_FOLDER} ; fi
+	if [ ! -f "${VITIS_CACHE_FOLDER}/DPUCZDX8G.tar.gz" ]; then wget "https://www.xilinx.com/bin/public/openDownload?filename=DPUCZDX8G.tar.gz" -O "${VITIS_CACHE_FOLDER}/DPUCZDX8G.tar.gz" ; fi
 	mkdir -p ${VITIS_PROJECT_FOLDER}
 	mkdir -p ${VITIS_PROJECT_FOLDER}/${DPU_PROJECT_NAME}
-	cp -r ${VITIS_AI_FOLDER}/dsa/DPU-TRD/* ${VITIS_PROJECT_FOLDER}/${DPU_PROJECT_NAME}/.
+	#cp -r ${VITIS_AI_FOLDER}/dsa/DPU-TRD/* ${VITIS_PROJECT_FOLDER}/${DPU_PROJECT_NAME}/.
+	tar -xvzf ${VITIS_CACHE_FOLDER}/DPUCZDX8G.tar.gz -C ${VITIS_PROJECT_FOLDER}/${DPU_PROJECT_NAME}/
 	cp -r ../../app/dpu/Makefile ${VITIS_PROJECT_FOLDER}/${DPU_PROJECT_NAME}/prj/Vitis/.
 	sed -i 's/DEVICE={DEVICE}/DEVICE=${HDL_BOARD_NAME}/' ${VITIS_PROJECT_FOLDER}/${DPU_PROJECT_NAME}/prj/Vitis/Makefile
 	cp -r ../../app/dpu/${HDL_BOARD_NAME}_${HDL_PROJECT_NAME}/* ${VITIS_PROJECT_FOLDER}/${DPU_PROJECT_NAME}/prj/Vitis/.
@@ -295,7 +297,7 @@ else
 	@echo -e 'Instructions to build AI-Model-Zoo for ${HDL_BOARD_NAME} platform:'
 	@echo -e '=================================================================='
 	@echo -e '   cd projects/${ZOO_PROJECT_NAME}'
-	@echo -e '   ./docker_run.sh xilinx/vitis-ai:2.0.0.1103'
+	@echo -e '   ./docker_run.sh xilinx/vitis-ai:2.5.0.1260'
 	@echo -e 'Once inside the docker:'
 	@echo -e '   source ./compile_modelzoo.sh'
 	@echo -e '=================================================================='
