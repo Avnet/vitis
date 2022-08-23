@@ -62,9 +62,9 @@ CSTR=\033[1;32m /_\\VNET\033[0m
 #-=-=-=-=-=-=-=--=-=-=-=-=-=-=--=-=-=-=-=-=-=--=-=-=-=-=-=-=--=-=-=-=-=-=-=--=-=-
 
 # Base Vitis Platforms
-PLATFORMS=' minized_sbc mz7010_som mz7020_som pz7010_fmc2 pz7015_fmc2 pz7020_fmc2 pz7030_fmc2 u96v2_sbc uz3eg_iocc uz3eg_pciec uz7ev_evcc '
+PLATFORMS=' mz7010_som mz7020_som pz7010_fmc2 pz7015_fmc2 pz7020_fmc2 pz7030_fmc2 u96v2_sbc uz3eg_iocc uz3eg_pciec uz7ev_evcc '
 # Project Specific Vitis Platforms
-#PROJECTS=' u96v2_sbc_dualcam uz7ev_evcc_quadcam_h '
+#PROJECTS=' u96v2_sbc_dualcam '
 PROJECTS=' '
 .PHONY:  ${PROJECTS} ${PROJECTS} list all allpfm clean cleanall
 .SILENT: ${PROJECTS} ${PROJECTS} list all allpfm clean cleanall
@@ -130,9 +130,6 @@ allpfm: $(PLATFORMS)
 	@echo -e '${CSTR} Mega Platform build complete'
 allprj: $(PROJECTS)
 	@echo -e '${CSTR} Mega Project Platform build complete'
-minized_sbc: 
-	@echo -e '${CSTR} Building Vitis Platform for Minized 7007'
-	$(MAKE) -C pfm_def/minized_sbc ${step}
 mz7010_som: 
 	@echo -e '${CSTR} Building Vitis Platform for MicroZed 7010'
 	$(MAKE) -C pfm_def/mz7010_som ${step}
@@ -166,12 +163,6 @@ uz3eg_pciec:
 uz7ev_evcc: 
 	@echo -e '${CSTR} Building Vitis Platform for UltraZed-EV with EV Carrier Card'
 	$(MAKE) -C pfm_def/uz7ev_evcc ${step}
-uz7ev_evcc_quadcam_h: 
-	@echo -e '${CSTR} Building Vitis Platform for UltraZed-EV with EV Carrier Card and Quad-Camera FMC'
-	$(MAKE) -C pfm_def/uz7ev_evcc_quadcam_h ${step}
-uz7ev_evcc_quadcam_h_v: 
-	@echo -e '${CSTR} Building Vitis Platform for UltraZed-EV with EV Carrier Card and Quad-Camera FMC + VCU'
-	$(MAKE) -C pfm_def/uz7ev_evcc_quadcam_h_v ${step}
 clean: cleanall
 	@echo -e '${CSTR} Executed make cleanall instead'
 cleanall: 
