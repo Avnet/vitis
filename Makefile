@@ -164,7 +164,7 @@ uz7ev_evcc:
 	@echo -e '${CSTR} Building Vitis Platform for UltraZed-EV with EV Carrier Card'
 	$(MAKE) -C pfm_def/uz7ev_evcc ${step}
 zub1cg_sbc:
-	@echo -e '${CSTR} Building Vitis Platform for ZUBoard 1CG Base"
+	@echo -e '${CSTR} Building Vitis Platform for ZUBoard 1CG Base'
 	$(MAKE) -C pfm_def/zub1cg_sbc ${step}
 clean: cleanall
 	@echo -e '${CSTR} Executed make cleanall instead'
