@@ -62,7 +62,7 @@ CSTR=\033[1;32m /_\\VNET\033[0m
 #-=-=-=-=-=-=-=--=-=-=-=-=-=-=--=-=-=-=-=-=-=--=-=-=-=-=-=-=--=-=-=-=-=-=-=--=-=-
 
 # Base Vitis Platforms
-PLATFORMS=' mz7010_som mz7020_som pz7010_fmc2 pz7015_fmc2 pz7020_fmc2 pz7030_fmc2 u96v2_sbc uz3eg_iocc uz3eg_pciec uz7ev_evcc zub1cg_sbc'
+PLATFORMS=' mz7010_som mz7020_som pz7010_fmc2 pz7015_fmc2 pz7020_fmc2 pz7030_fmc2 u96v2_sbc uz3eg_iocc uz3eg_pciec uz7ev_evcc zub1cg_sbc zub1cg_sbc_dualcam'
 # Project Specific Vitis Platforms
 #PROJECTS=' u96v2_sbc_dualcam '
 PROJECTS=' '
@@ -166,6 +166,9 @@ uz7ev_evcc:
 zub1cg_sbc:
 	@echo -e '${CSTR} Building Vitis Platform for ZUBoard 1CG Base'
 	$(MAKE) -C pfm_def/zub1cg_sbc ${step}
+zub1cg_sbc_dualcam:
+        @echo -e '${CSTR} Building Vitis Platform for ZUBoard 1CG with SYZYGY Dual Camera'
+        $(MAKE) -C pfm_def/zub1cg_sbc_dualcam ${step}
 clean: cleanall
 	@echo -e '${CSTR} Executed make cleanall instead'
 cleanall: 
