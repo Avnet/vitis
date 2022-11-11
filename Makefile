@@ -167,8 +167,8 @@ zub1cg_sbc:
 	@echo -e '${CSTR} Building Vitis Platform for ZUBoard 1CG Base'
 	$(MAKE) -C pfm_def/zub1cg_sbc ${step}
 zub1cg_sbc_dualcam:
-        @echo -e '${CSTR} Building Vitis Platform for ZUBoard 1CG with SYZYGY Dual Camera'
-        $(MAKE) -C pfm_def/zub1cg_sbc_dualcam ${step}
+	@echo -e '${CSTR} Building Vitis Platform for ZUBoard 1CG with SYZYGY Dual Camera'
+	$(MAKE) -C pfm_def/zub1cg_sbc_dualcam ${step}
 clean: cleanall
 	@echo -e '${CSTR} Executed make cleanall instead'
 cleanall: 
