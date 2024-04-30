@@ -130,24 +130,6 @@ allpfm: $(PLATFORMS)
 	@echo -e '${CSTR} Mega Platform build complete'
 allprj: $(PROJECTS)
 	@echo -e '${CSTR} Mega Project Platform build complete'
-mz7010_som: 
-	@echo -e '${CSTR} Building Vitis Platform for MicroZed 7010'
-	$(MAKE) -C pfm_def/mz7010_som ${step}
-mz7020_som: 
-	@echo -e '${CSTR} Building Vitis Platform for MicroZed 7020'
-	$(MAKE) -C pfm_def/mz7020_som ${step}
-pz7010_fmc2: 
-	@echo -e '${CSTR} Building Vitis Platform for PicoZed 7010'
-	$(MAKE) -C pfm_def/pz7010_fmc2 ${step}
-pz7015_fmc2: 
-	@echo -e '${CSTR} Building Vitis Platform for PicoZed 7015'
-	$(MAKE) -C pfm_def/pz7015_fmc2 ${step}
-pz7020_fmc2: 
-	@echo -e '${CSTR} Building Vitis Platform for PicoZed 7020'
-	$(MAKE) -C pfm_def/pz7020_fmc2 ${step}
-pz7030_fmc2: 
-	@echo -e '${CSTR} Building Vitis Platform for PicoZed 7030'
-	$(MAKE) -C pfm_def/pz7030_fmc2 ${step}
 u96v2_sbc: 
 	@echo -e '${CSTR} Building Vitis Platform for Ultra96V2 Out Of Box'
 	$(MAKE) -C pfm_def/u96v2_sbc ${step}
