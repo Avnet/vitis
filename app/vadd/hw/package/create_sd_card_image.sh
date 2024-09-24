@@ -20,7 +20,7 @@
 #        ----| image.ub
 #        ----| init.sh
 #        ----| platform_desc.txt
-#        ----| binary_container_1.xclbin
+#        ----| a.xclbin
 #        ----| vadd
 #        ----| rootfs.tar.gz
 #
@@ -82,12 +82,12 @@ BOOT_DIM=512
 FREELO="$( losetup -f)"
 
 RF_LIST=(\
-    sd_card/BOOT.BIN \ls 
+    sd_card/BOOT.BIN \
     sd_card/boot.scr \
     sd_card/image.ub \
     sd_card/init.sh \
     sd_card/platform_desc.txt  \
-    sd_card/binary_container_1.xclbin \
+    sd_card/a.xclbin \
     sd_card/vadd \
 )
 

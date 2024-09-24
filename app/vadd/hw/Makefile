@@ -99,7 +99,7 @@ binary_container_1.build/krnl_vadd.xo: ../src/krnl_vadd.cpp krnl_vadd-compile.cf
 	$(VPP) $(VPP_OPTS) --compile -I"$(<D)" --platform ${VITIS_PLATFORM_PATH} --config common-config.cfg --config krnl_vadd-compile.cfg -o"$@" "$<"
 
 binary_container_1.xclbin: $(BINARY_CONTAINER_1_OBJS) link.cfg common-config.cfg
-	-@echo $(VPP) $(VPP_OPTS) --link --platform ${VITIS_PLATFORM_PATH} --config common-config.cfg --config ink.cfg -o"$@" $(BINARY_CONTAINER_1_OBJS) > binary_container_1.xclbin.sh
+	-@echo $(VPP) $(VPP_OPTS) --link --platform ${VITIS_PLATFORM_PATH} --config common-config.cfg --config link.cfg -o"$@" $(BINARY_CONTAINER_1_OBJS) > binary_container_1.xclbin.sh
 	$(VPP) $(VPP_OPTS) --link --platform ${VITIS_PLATFORM_PATH} --config common-config.cfg --config link.cfg -o"$@" $(BINARY_CONTAINER_1_OBJS)
 
 #
@@ -113,10 +113,12 @@ src/vadd.o: ../src/vadd.cpp ../src/vadd.h
 $(HOST_EXE): $(HOST_OBJECTS)
 	$(HOST_CXX) -o "$@" $(+) $(LDFLAGS)
 	-@echo $(VPP) $(VPP_OPTS) --platform ${VITIS_PLATFORM_PATH} -p binary_container_1.xclbin \
+		-o a.xclbin \
 		--package.out_dir package \
 		--package.rootfs $(VITIS_PLATFORM_DIR)/sw/$(VITIS_PLATFORM)/PetaLinux/rootfs/rootfs.ext4 \
 		--package.sd_file $(HOST_EXE)
 	-@$(VPP) $(VPP_OPTS) --platform ${VITIS_PLATFORM_PATH} -p binary_container_1.xclbin \
+		-o a.xclbin \
 		--package.out_dir package \
 		--package.rootfs $(VITIS_PLATFORM_DIR)/sw/$(VITIS_PLATFORM)/PetaLinux/rootfs/rootfs.ext4 \
 		--package.sd_file $(HOST_EXE)
