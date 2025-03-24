@@ -62,9 +62,9 @@ CSTR=\033[1;32m /_\\VNET\033[0m
 #-=-=-=-=-=-=-=--=-=-=-=-=-=-=--=-=-=-=-=-=-=--=-=-=-=-=-=-=--=-=-=-=-=-=-=--=-=-
 
 # Base Vitis Platforms
-PLATFORMS=' u96v2_sbc uz3eg_iocc uz3eg_pciec uz7ev_evcc zub1cg_sbc zub1cg_sbc_dualcam'
+PLATFORMS=' uz3eg_iocc uz3eg_pciec uz7ev_evcc zub1cg_sbc zub1cg_sbc_dualcam'
 # Project Specific Vitis Platforms
-#PROJECTS=' u96v2_sbc_dualcam '
+#PROJECTS=' zub1cg_sbc '
 PROJECTS=' '
 .PHONY:  ${PROJECTS} ${PROJECTS} list all allpfm clean cleanall
 .SILENT: ${PROJECTS} ${PROJECTS} list all allpfm clean cleanall
@@ -130,12 +130,6 @@ allpfm: $(PLATFORMS)
 	@echo -e '${CSTR} Mega Platform build complete'
 allprj: $(PROJECTS)
 	@echo -e '${CSTR} Mega Project Platform build complete'
-u96v2_sbc: 
-	@echo -e '${CSTR} Building Vitis Platform for Ultra96V2 Out Of Box'
-	$(MAKE) -C pfm_def/u96v2_sbc ${step}
-u96v2_sbc_dualcam: 
-	@echo -e '${CSTR} Building Vitis Platform for Ultra96V2 with Dual Camera Mezzanine'
-	$(MAKE) -C pfm_def/u96v2_sbc_dualcam ${step}
 uz3eg_iocc: 
 	@echo -e '${CSTR} Building Vitis Platform for UltraZed-EG with IOCC Carrier Card'
 	$(MAKE) -C pfm_def/uz3eg_iocc ${step}
